@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bihar Polytechnic (DCECE PE) 2026 Complete Counselling Portal by LK SMART STUDIES. Get rank predictor, cutoff, and college list.">
+    <title>Bihar Polytechnic (DCECE PE) 2026 Complete Counselling Portal</title>
+    
+    <!-- Google Fonts for Premium Look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ================= CSS VARIABLES ================= */
+        :root {
+            --bg-color: #050814;
+            --text-main: #f0f4f8;
+            --text-muted: #a0aec0;
+            --primary-color: #00f3ff;
+            --secondary-color: #bd00ff;
+            --accent-color: #ffb800;
+            --success-color: #00ff88;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --font-en: 'Poppins', sans-serif;
+            --font-hi: 'Noto Sans Devanagari', sans-serif;
+            --transition: all 0.3s ease;
+        }
+
+        /* ================= RESET & BASE ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-en);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-hi);
+            font-weight: 700;
+        }
+
+        p, span, li, a {
+            font-family: var(--font-hi);
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* ================= ANIMATED BACKGROUND ================= */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        .shape-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary-color);
+            top: -100px;
+            left: -100px;
+        }
+
+        .shape-2 {
+            width: 500px;
+            height: 500px;
+            background: var(--secondary-color);
+            bottom: -200px;
+            right: -100px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.2); }
+        }
+
+        /* ================= LOADER ================= */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(0, 243, 255, 0.2);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ================= NAVBAR ================= */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(5, 8, 20, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--glass-border);
+            transition: var(--transition);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links li a {
+            color: var(--text-main);
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .nav-links li a:hover {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 24px;
+            color: var(--text-main);
+            cursor: pointer;
+        }
+
+        /* ================= GLASSMORPHISM UTILITIES ================= */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            background: linear-gradient(to right, #fff, var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ================= HERO SECTION ================= */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 5% 60px;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-content h1 span {
+            color: var(--accent-color);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-inline: auto;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff4d4d;
+            padding: 8px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            margin-bottom: 30px;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        .live-badge i {
+            font-size: 12px;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 77, 77, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), #0077ff);
+            color: #fff;
+            box-shadow: 0 10px 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(0, 243, 255, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        /* ================= NOTIFICATION MARQUEE ================= */
+        .marquee-container {
+            background: rgba(255, 184, 0, 0.1);
+            border-top: 1px solid rgba(255, 184, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 184, 0, 0.2);
+            padding: 10px 0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .marquee-label {
+            background: var(--accent-color);
+            color: #000;
+            padding: 5px 15px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .marquee-content {
+            white-space: nowrap;
+            animation: marquee 20s linear infinite;
+            color: var(--accent-color);
+            padding-left: 20px;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* ================= SECTIONS LAYOUT ================= */
+        section {
+            padding: 100px 5%;
+        }
+
+        /* ================= 2. STATUS DASHBOARD ================= */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .status-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            transition: var(--transition);
+        }
+
+        .status-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .status-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .status-completed .status-icon {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .status-running .status-icon {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            animation: pulse 2s infinite;
+        }
+
+        .status-pending .status-icon {
+            background: rgba(255, 184, 0, 0.1);
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+        }
+
+        /* ================= 3. TIMELINE ================= */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background: var(--glass-border);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            background: inherit;
+            width: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: -10px;
+            background: var(--bg-color);
+            border: 4px solid var(--primary-color);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .left { left: 0; }
+        .right { left: 50%; }
+
+        .right::after {
+            left: -10px;
+        }
+
+        .timeline-content {
+            padding: 20px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+        }
+
+        .timeline-date {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        /* ================= 4. PROCESS STEPS ================= */
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .process-card {
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-number {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 100px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.03);
+            line-height: 1;
+        }
+
+        .process-card i {
+            font-size: 50px;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        /* ================= 5. DOCUMENTS ================= */
+        .doc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .doc-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+        }
+
+        .doc-item i {
+            color: var(--accent-color);
+            font-size: 20px;
+        }
+
+        /* ================= 6. COLLEGES & SEARCH ================= */
+        .search-container {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-main);
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .college-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .college-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        /* ================= 7. BRANCHES ================= */
+        .branch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* ================= 8. CUTOFF ANALYSIS ================= */
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            background: var(--glass-bg);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            overflow-x: auto;
+        }
+
+        canvas {
+            width: 100%;
+            min-width: 600px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .data-table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primary-color);
+        }
+
+        /* ================= 9. PREDICTOR ================= */
+        .predictor-box {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 18px;
+        }
+
+        #predictionResult {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* ================= 11. FAQS ================= */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 15px;
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            background: var(--glass-bg);
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            color: var(--text-muted);
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 0 20px 20px;
+            max-height: 500px;
+        }
+
+        /* ================= 13. STATS ================= */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item h2 {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        /* ================= FOOTER ================= */
+        footer {
+            background: #02040a;
+            padding: 50px 5% 20px;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        .footer-content {
+            margin-bottom: 30px;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .footer-bottom {
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Back to top */
+        #backToTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: #000;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: none;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(0,243,255,0.4);
+            transition: var(--transition);
+        }
+
+        #backToTop:hover {
+            transform: translateY(-5px);
+        }
+
+        /* ================= SCROLL REVEAL ANIMATIONS ================= */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ================= MEDIA QUERIES ================= */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: 100vh;
+                background: var(--bg-color);
+                flex-direction: column;
+                align-items: center;
+                padding-top: 50px;
+                transition: 0.5s;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .timeline::after {
+                left: 31px;
+            }
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+            .timeline-item::after {
+                left: 21px;
+            }
+            .right {
+                left: 0%;
+            }
+            .input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated Background Shapes -->
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="spinner"></div>
+        <h3 style="margin-top: 20px; color: var(--primary-color);">Loading Portal...</h3>
+    </div>
+
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>DCECE 2026</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#status">Status</a></li>
+            <li><a href="#timeline">Timeline</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#colleges">Colleges</a></li>
+            <li><a href="#predictor">Predictor</a></li>
+            <li><a href="#faq">FAQs</a></li>
+        </ul>
+        <div class="mobile-menu-btn">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Notification Marquee -->
+    <div class="marquee-container" style="margin-top: 70px;">
+        <div class="marquee-label">LIVE UPDATE</div>
+        <div class="marquee-content">
+            <i class="fa-solid fa-bell"></i> बिहार पॉलिटेक्निक 2026 चॉइस फिलिंग की प्रक्रिया शुरू हो चुकी है। कृपया अंतिम तिथि से पहले अपने चॉइस लॉक करें। | प्रथम सीट आवंटन (First Seat Allotment) का परिणाम जल्द ही घोषित किया जाएगा।
+        </div>
+    </div>
+
+    <!-- 1. Hero Section -->
+    <header class="hero">
+        <div class="hero-content reveal">
+            <div class="live-badge">
+                <i class="fa-solid fa-circle"></i> Choice Filling Running
+            </div>
+            <h1>बिहार पॉलिटेक्निक (DCECE PE) <span>2026</span></h1>
+            <p>Complete Counselling Guide, Rank Predictor, Government College List और Cutoff Analysis का एकमात्र विश्वसनीय पोर्टल।</p>
+            <div class="btn-group">
+                <a href="#predictor" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass-chart"></i> Rank Predictor</a>
+                <a href="#process" class="btn btn-outline"><i class="fa-solid fa-shoe-prints"></i> Counselling Steps</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 2. Current Status Dashboard -->
+        <section id="status">
+            <h2 class="section-title reveal">Current Status Dashboard</h2>
+            <div class="status-grid">
+                <div class="status-card status-completed reveal">
+                    <div class="status-icon"><i class="fa-solid fa-check"></i></div>
+                    <div>
+                        <h4>Application Form</h4>
+                        <span style="color: var(--success-color); font-size: 0.9rem;">Completed</span>
+                    </div>
+                </div>
+                <div class="status-card status-completed reveal">
+                    <div class="status-icon"><i class="fa-solid fa-check"></i></div>
+                    <div>
+                        <h4>Admit Card</h4>
+                        <span style="color: var(--success-color); font-size: 0.9rem;">Released</span>
+                    </div>
+                </div>
+                <div class="status-card status-completed reveal">
+                    <div class="status-icon"><i class="fa-solid fa-check"></i></div>
+                    <div>
+                        <h4>Entrance Exam</h4>
+                        <span style="color: var(--success-color); font-size: 0.9rem;">Conducted</span>
+                    </div>
+                </div>
+                <div class="status-card status-completed reveal">
+                    <div class="status-icon"><i class="fa-solid fa-check"></i></div>
+                    <div>
+                        <h4>Result & Rank Card</h4>
+                        <span style="color: var(--success-color); font-size: 0.9rem;">Published</span>
+                    </div>
+                </div>
+                <div class="status-card status-running reveal">
+                    <div class="status-icon"><i class="fa-solid fa-spinner"></i></div>
+                    <div>
+                        <h4>Counselling Process</h4>
+                        <span style="color: var(--primary-color); font-size: 0.9rem;">Running (Choice Filling)</span>
+                    </div>
+                </div>
+                <div class="status-card status-pending reveal">
+                    <div class="status-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <div>
+                        <h4>Seat Allotment</h4>
+                        <span style="color: var(--accent-color); font-size: 0.9rem;">Pending</span>
+                    </div>
+                </div>
+                <div class="status-card status-pending reveal">
+                    <div class="status-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <div>
+                        <h4>Admission Process</h4>
+                        <span style="color: var(--accent-color); font-size: 0.9rem;">Pending</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Complete Official Timeline -->
+        <section id="timeline">
+            <h2 class="section-title reveal">Official Timeline 2026</h2>
+            <div class="timeline">
+                <div class="timeline-item left reveal">
+                    <div class="timeline-content">
+                        <div class="timeline-date">19 March 2026</div>
+                        <h3>Application Started</h3>
+                        <p>ऑनलाइन आवेदन फॉर्म भरने की प्रक्रिया शुरू हुई।</p>
+                    </div>
+                </div>
+                <div class="timeline-item right reveal">
+                    <div class="timeline-content">
+                        <div class="timeline-date">27 April 2026</div>
+                        <h3>Last Date of Application</h3>
+                        <p>फॉर्म भरने और फीस जमा करने की अंतिम तिथि।</p>
+                    </div>
+                </div>
+                <div class="timeline-item left reveal">
+                    <div class="timeline-content">
+                        <div class="timeline-date">14 May 2026</div>
+                        <h3>Admit Card Released</h3>
+                        <p>BCECEB द्वारा एडमिट कार्ड जारी किए गए।</p>
+                    </div>
+                </div>
+                <div class="timeline-item right reveal">
+                    <div class="timeline-content">
+                        <div class="timeline-date">23 May 2026</div>
+                        <h3>Examination Conducted</h3>
+                        <p>पॉलिटेक्निक प्रवेश परीक्षा का आयोजन।</p>
+                    </div>
+                </div>
+                <div class="timeline-item left reveal">
+                    <div class="timeline-content">
+                        <div class="timeline-date">11 June 2026</div>
+                        <h3>Result & Rank Card</h3>
+                        <p>परीक्षा परिणाम और छात्रों का रैंक कार्ड जारी हुआ।</p>
+                    </div>
+                </div>
+                <div class="timeline-item right reveal" style="border: 2px solid var(--primary-color); border-radius: 20px;">
+                    <div class="timeline-content">
+                        <div class="timeline-date" style="color: #fff;">23 June 2026 - CURRENT</div>
+                        <h3 style="color: var(--primary-color);">Counselling Registration</h3>
+                        <p>चॉइस फिलिंग और रजिस्ट्रेशन की प्रक्रिया चल रही है।</p>
+                    </div>
+                </div>
+                <div class="timeline-item left reveal">
+                    <div class="timeline-content" style="opacity: 0.6;">
+                        <div class="timeline-date" style="color: var(--accent-color);">Future Event</div>
+                        <h3>Seat Allotment (Round 1)</h3>
+                        <p>प्रथम चरण का सीट आवंटन परिणाम।</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Counselling Process Section -->
+        <section id="process">
+            <h2 class="section-title reveal">Counselling Process Steps</h2>
+            <div class="process-grid">
+                <div class="glass-panel process-card reveal">
+                    <div class="step-number">1</div>
+                    <i class="fa-solid fa-user-plus"></i>
+                    <h3>Registration</h3>
+                    <p>अपना रोल नंबर और जन्म तिथि डालकर रजिस्ट्रेशन करें और पासवर्ड बनाएं।</p>
+                </div>
+                <div class="glass-panel process-card reveal">
+                    <div class="step-number">2</div>
+                    <i class="fa-solid fa-list-check"></i>
+                    <h3>Choice Filling</h3>
+                    <p>अपने पसंदीदा कॉलेज और ब्रांच का चयन करें। ज्यादा से ज्यादा चॉइस भरें।</p>
+                </div>
+                <div class="glass-panel process-card reveal">
+                    <div class="step-number">3</div>
+                    <i class="fa-solid fa-lock"></i>
+                    <h3>Choice Locking</h3>
+                    <p>चॉइस भरने के बाद उसे लॉक करना अनिवार्य है। OTP के माध्यम से लॉक करें।</p>
+                </div>
+                <div class="glass-panel process-card reveal">
+                    <div class="step-number">4</div>
+                    <i class="fa-solid fa-award"></i>
+                    <h3>Seat Allotment</h3>
+                    <p>आपके रैंक और चॉइस के आधार पर कॉलेज और ब्रांच का आवंटन किया जाएगा।</p>
+                </div>
+                <div class="glass-panel process-card reveal">
+                    <div class="step-number">5</div>
+                    <i class="fa-solid fa-file-signature"></i>
+                    <h3>Document Verification</h3>
+                    <p>आवंटित कॉलेज के रिपोर्टिंग सेंटर पर जाकर अपने ओरिजिनल डाक्यूमेंट्स वेरीफाई कराएं।</p>
+                </div>
+                <div class="glass-panel process-card reveal">
+                    <div class="step-number">6</div>
+                    <i class="fa-solid fa-school"></i>
+                    <h3>Admission</h3>
+                    <p>डॉक्यूमेंट वेरिफिकेशन के बाद फीस जमा कर अपना एडमिशन कंफर्म करें।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Required Documents -->
+        <section id="documents">
+            <h2 class="section-title reveal">Required Documents</h2>
+            <div class="glass-panel reveal">
+                <p style="margin-bottom: 20px; text-align: center; color: var(--text-muted);">वेरिफिकेशन के समय इन सभी डाक्यूमेंट्स की ओरिजिनल और 3-3 फोटोकॉपी साथ रखें।</p>
+                <div class="doc-list">
+                    <div class="doc-item"><i class="fa-solid fa-file-lines"></i> DCECE 2026 Rank Card</div>
+                    <div class="doc-item"><i class="fa-solid fa-id-card"></i> DCECE Admit Card</div>
+                    <div class="doc-item"><i class="fa-solid fa-certificate"></i> 10th Marksheet</div>
+                    <div class="doc-item"><i class="fa-solid fa-id-badge"></i> 10th Admit Card / Passing Certificate</div>
+                    <div class="doc-item"><i class="fa-regular fa-address-card"></i> Aadhaar Card</div>
+                    <div class="doc-item"><i class="fa-solid fa-house-user"></i> Residence Certificate (निवास प्रमाण पत्र)</div>
+                    <div class="doc-item"><i class="fa-solid fa-users"></i> Caste Certificate (जाति प्रमाण पत्र - if applicable)</div>
+                    <div class="doc-item"><i class="fa-solid fa-money-bill-wave"></i> Income Certificate (आय प्रमाण पत्र)</div>
+                    <div class="doc-item"><i class="fa-solid fa-user-shield"></i> Character Certificate (चरित्र प्रमाण पत्र)</div>
+                    <div class="doc-item"><i class="fa-solid fa-file-export"></i> Transfer/School Leaving Certificate (TC/SLC)</div>
+                    <div class="doc-item"><i class="fa-solid fa-camera"></i> 6 Passport Size Photos (Same as Admit Card)</div>
+                    <div class="doc-item"><i class="fa-solid fa-notes-medical"></i> Medical Fitness Certificate</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Government Polytechnic Colleges -->
+        <section id="colleges">
+            <h2 class="section-title reveal">Govt. Polytechnic Colleges</h2>
+            <div class="search-container reveal">
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="कॉलेज या जिले का नाम खोजें (e.g., Patna, Civil)...">
+                </div>
+            </div>
+            <div class="college-grid" id="collegeGrid">
+                <!-- Data populated by JS -->
+            </div>
+        </section>
+
+        <!-- 7. Branch Information -->
+        <section id="branches">
+            <h2 class="section-title reveal">Engineering Branches</h2>
+            <div class="branch-grid">
+                <div class="glass-panel reveal">
+                    <h3 style="color: var(--primary-color);">Civil Engineering (CE)</h3>
+                    <p><strong>Scope:</strong> रेलवे, PWD, नगर निगम और प्राइवेट कंस्ट्रक्शन कंपनियों में भारी मांग।</p>
+                    <p><strong>Eligibility:</strong> 10th Pass</p>
+                </div>
+                <div class="glass-panel reveal">
+                    <h3 style="color: var(--secondary-color);">Electrical Engineering (EE)</h3>
+                    <p><strong>Scope:</strong> बिजली विभाग, पावर ग्रिड, रेलवे (Loco Pilot) और मैन्युफैक्चरिंग सेक्टर।</p>
+                    <p><strong>Eligibility:</strong> 10th Pass</p>
+                </div>
+                <div class="glass-panel reveal">
+                    <h3 style="color: var(--accent-color);">Mechanical Engineering (ME)</h3>
+                    <p><strong>Scope:</strong> ऑटोमोबाइल, रेलवे, स्टील प्लांट और प्रोडक्शन इंडस्ट्री।</p>
+                    <p><strong>Eligibility:</strong> 10th Pass</p>
+                </div>
+                <div class="glass-panel reveal">
+                    <h3 style="color: #ff0055;">Computer Science (CSE)</h3>
+                    <p><strong>Scope:</strong> IT कंपनियां, सॉफ्टवेयर डेवलपमेंट, वेब डिजाइनिंग और सरकारी IT विभाग।</p>
+                    <p><strong>Eligibility:</strong> 10th Pass</p>
+                </div>
+                <div class="glass-panel reveal">
+                    <h3 style="color: var(--success-color);">Electronics Engg. (ECE)</h3>
+                    <p><strong>Scope:</strong> टेलीकॉम कंपनियां, मोबाइल मैन्युफैक्चरिंग, BSNL और रेलवे सिग्नलिंग।</p>
+                    <p><strong>Eligibility:</strong> 10th Pass</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Cutoff Analysis & Chart -->
+        <section id="cutoff">
+            <h2 class="section-title reveal">Previous Year Cutoff Analysis</h2>
+            <div class="glass-panel reveal">
+                <p style="text-align: center; margin-bottom: 20px;">General (UR) Category Closing Rank Trend</p>
+                <div class="chart-container">
+                    <canvas id="cutoffChart" width="700" height="300"></canvas>
+                </div>
+                
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">Top 5 Colleges Cutoff (Approximate UR Rank)</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>College Name</th>
+                                <th>Civil (CE)</th>
+                                <th>Electrical (EE)</th>
+                                <th>Mechanical (ME)</th>
+                                <th>Computer (CS)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>NGP Patna-13</td>
+                                <td>600</td>
+                                <td>800</td>
+                                <td>1200</td>
+                                <td>1500</td>
+                            </tr>
+                            <tr>
+                                <td>GWP Patna-14</td>
+                                <td>1200</td>
+                                <td>1500</td>
+                                <td>2000</td>
+                                <td>2200</td>
+                            </tr>
+                            <tr>
+                                <td>GP Muzaffarpur</td>
+                                <td>1800</td>
+                                <td>2200</td>
+                                <td>3000</td>
+                                <td>3500</td>
+                            </tr>
+                            <tr>
+                                <td>GP Gaya</td>
+                                <td>2000</td>
+                                <td>2500</td>
+                                <td>3500</td>
+                                <td>4000</td>
+                            </tr>
+                            <tr>
+                                <td>GP Bhagalpur</td>
+                                <td>2500</td>
+                                <td>3000</td>
+                                <td>4000</td>
+                                <td>4500</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. College Predictor -->
+        <section id="predictor">
+            <h2 class="section-title reveal">Smart College Predictor</h2>
+            <div class="glass-panel predictor-box reveal">
+                <p style="margin-bottom: 20px;">अपना UR (Unreserved) Rank दर्ज करें और जानें कि आपको गवर्नमेंट कॉलेज मिलने के कितने चांस हैं।</p>
+                <div class="input-group">
+                    <input type="number" id="rankInput" placeholder="Enter your UR Rank here..." min="1">
+                    <button id="predictBtn" class="btn btn-primary">Predict College</button>
+                </div>
+                <div id="predictionResult"></div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 15px;">* यह प्रेडिक्शन पिछले वर्षों के डाटा पर आधारित है। वास्तविक आवंटन भिन्न हो सकता है।</p>
+            </div>
+        </section>
+
+        <!-- 10. Seat Matrix -->
+        <section id="seat-matrix">
+            <h2 class="section-title reveal">Seat Matrix 2026 (Expected)</h2>
+            <div class="glass-panel reveal" style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Reservation %</th>
+                            <th>Approximate Seats</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>UR (Unreserved)</td><td>40%</td><td>~6,400</td></tr>
+                        <tr><td>EBC (Extremely Backward)</td><td>25%</td><td>~4,000</td></tr>
+                        <tr><td>BC (Backward Class)</td><td>18%</td><td>~2,880</td></tr>
+                        <tr><td>SC (Scheduled Caste)</td><td>20%</td><td>~3,200</td></tr>
+                        <tr><td>EWS (Economically Weaker)</td><td>10%</td><td>~1,600</td></tr>
+                        <tr><td>RCG (Reserved Category Girls)</td><td>3%</td><td>~480</td></tr>
+                        <tr><td>ST (Scheduled Tribe)</td><td>2%</td><td>~320</td></tr>
+                        <tr style="font-weight: bold; background: rgba(0,243,255,0.1);">
+                            <td>Total Seats in Govt Colleges</td>
+                            <td>100%</td>
+                            <td>~16,000+</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 13. Statistics Dashboard (Moved up for better flow) -->
+        <section id="stats">
+            <div class="stats-grid">
+                <div class="glass-panel stat-item reveal">
+                    <h2 class="counter" data-target="46">0</h2>
+                    <p>Government Colleges</p>
+                </div>
+                <div class="glass-panel stat-item reveal">
+                    <h2 class="counter" data-target="16000">0</h2>
+                    <span>+</span>
+                    <p>Total Govt. Seats</p>
+                </div>
+                <div class="glass-panel stat-item reveal">
+                    <h2 class="counter" data-target="20">0</h2>
+                    <p>Engineering Branches</p>
+                </div>
+                <div class="glass-panel stat-item reveal">
+                    <h2 class="counter" data-target="2026">0</h2>
+                    <p>Session Year</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 14. Student Tips -->
+        <section id="tips">
+            <h2 class="section-title reveal">Counselling Tips & Mistakes to Avoid</h2>
+            <div class="process-grid">
+                <div class="glass-panel reveal" style="border-left: 4px solid var(--success-color);">
+                    <h3 style="color: var(--success-color); margin-bottom: 15px;"><i class="fa-solid fa-lightbulb"></i> Pro Tips</h3>
+                    <ul style="list-style-position: inside; color: var(--text-muted); line-height: 2;">
+                        <li>चॉइस फिलिंग में <strong>Maximum Colleges</strong> और Branches भरें।</li>
+                        <li>टॉप कॉलेजों को ऊपर (Top Priority) पर रखें, भले ही रैंक कम हो।</li>
+                        <li>डॉक्यूमेंट्स पहले से तैयार रखें, विशेषकर जाति और आय प्रमाण पत्र।</li>
+                        <li>हमेशा आधिकारिक वेबसाइट (bceceboard.bihar.gov.in) ही चेक करें।</li>
+                    </ul>
+                </div>
+                <div class="glass-panel reveal" style="border-left: 4px solid #ff4d4d;">
+                    <h3 style="color: #ff4d4d; margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i> Common Mistakes</h3>
+                    <ul style="list-style-position: inside; color: var(--text-muted); line-height: 2;">
+                        <li>केवल 2-4 कॉलेज भरकर छोड़ देना।</li>
+                        <li>चॉइस भरने के बाद उसे <strong>Lock</strong> करना भूल जाना।</li>
+                        <li>पासवर्ड किसी अजनबी या साइबर कैफे वाले के साथ शेयर करना।</li>
+                        <li>सीट अलॉटमेंट के बाद ऑटो-अपग्रेडेशन (Yes/No) गलत चुनना।</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. FAQ Section -->
+        <section id="faq">
+            <h2 class="section-title reveal">Frequently Asked Questions (FAQ)</h2>
+            <div class="faq-container reveal">
+                <!-- FAQs injected via JS to keep HTML cleaner, but writing directly as requested -->
+                
+                <div class="faq-item">
+                    <div class="faq-question">1. पॉलिटेक्निक काउंसलिंग 2026 कब शुरू हुई? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>काउंसलिंग की प्रक्रिया (रजिस्ट्रेशन और चॉइस फिलिंग) 23 जून 2026 से आधिकारिक वेबसाइट पर शुरू हो चुकी है।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">2. काउंसलिंग के लिए कौन सी वेबसाइट है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>सभी प्रक्रियाएं बिहार संयुक्त प्रवेश प्रतियोगिता परीक्षा पर्षद (BCECEB) की आधिकारिक वेबसाइट bceceboard.bihar.gov.in पर होती हैं।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">3. सीट अलॉटमेंट कैसे होता है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>सीट अलॉटमेंट आपके DCECE PE रैंक, आपके द्वारा भरी गई चॉइस (प्राथमिकता) और आपकी कैटेगरी में उपलब्ध सीटों के आधार पर कंप्यूटर द्वारा स्वचालित रूप से किया जाता है।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">4. अपग्रेडेशन (Auto-Upgradation) क्या होता है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>यदि आपको फर्स्ट राउंड में कोई कॉलेज मिलता है लेकिन आप उससे संतुष्ट नहीं हैं और ऊपर के चॉइस वाले कॉलेज चाहते हैं, तो आप 'Yes' फॉर ऑटो-अपग्रेडेशन चुन सकते हैं। आपको फर्स्ट राउंड वाले कॉलेज में जाकर डॉक्यूमेंट वेरिफिकेशन कराना होगा।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">5. फ्रीज (Freeze/No Upgradation) क्या है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>यदि आपको आवंटित कॉलेज और ब्रांच पसंद है और आप आगे के राउंड में भाग नहीं लेना चाहते हैं, तो 'No' चुनकर अपनी सीट फ्रीज करें और एडमिशन लें।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">6. चॉइस लॉकिंग भूल गए तो क्या होगा? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>यदि आप अंतिम तिथि तक चॉइस लॉक करना भूल जाते हैं, तो सिस्टम द्वारा अंतिम भरी गई चॉइस को अपने आप लॉक (Auto-lock) कर दिया जाता है। लेकिन खुद से लॉक करना सुरक्षित रहता है।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">7. एडमिशन के समय कितनी फीस लगती है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>सरकारी पॉलिटेक्निक कॉलेज में एडमिशन के समय लगभग 1000 रुपये से लेकर 2500 रुपये तक (कॉलेज के अनुसार थोड़ा भिन्न) लगते हैं।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">8. मेडिकल सर्टिफिकेट कहाँ से बनेगा? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>मेडिकल फिटनेस सर्टिफिकेट किसी भी रजिस्टर्ड एमबीबीएस (MBBS) डॉक्टर या सरकारी अस्पताल से बनवाया जा सकता है।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">9. क्या काउंसलिंग की कोई फीस है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>नहीं, चॉइस फिलिंग और रजिस्ट्रेशन पूरी तरह से मुफ्त होता है। इसके लिए बोर्ड कोई शुल्क नहीं लेता है।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">10. अगर फर्स्ट राउंड में सीट नहीं मिली तो क्या करें? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>आपको घबराने की जरूरत नहीं है, बस सेकंड राउंड के सीट अलॉटमेंट रिजल्ट का इंतजार करें। आपको कुछ नहीं करना है।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">11. क्या मैं बाद में चॉइस बदल सकता हूँ? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>एक बार चॉइस लॉक होने और अंतिम तिथि समाप्त होने के बाद आप अपनी चॉइस बदल या एडिट नहीं कर सकते।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">12. टीसी (TC) या माइग्रेशन नहीं है, क्या एडमिशन होगा? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>हां, एडमिशन हो जाएगा। कॉलेज आपको TC जमा करने के लिए 10 से 15 दिन का समय देता है। इसके लिए एक अंडरटेकिंग फॉर्म भरना होता है।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">13. ईडब्ल्यूएस (EWS) आरक्षण का लाभ कैसे मिलेगा? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>जिन छात्रों ने फॉर्म भरते समय EWS सेलेक्ट किया था, उन्हें डॉक्यूमेंट वेरिफिकेशन के समय CO/SDO/DM स्तर से बना EWS सर्टिफिकेट दिखाना अनिवार्य है, अन्यथा उनका EWS रैंक रद्द हो जाएगा।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">14. एंटी-रैगिंग एफिडेविट क्या है और कैसे बनेगा? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>यह एक शपथ पत्र है कि आप रैगिंग नहीं करेंगे। यह एडमिशन के बाद कोर्ट (वकील) के माध्यम से या ऑनलाइन (antiragging.in) बनता है।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">15. रिपोर्टिंग सेंटर क्या होता है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>सीट अलॉटमेंट लेटर पर एक नोडल सेंटर (अक्सर कोई सरकारी पॉलिटेक्निक या इंजीनियरिंग कॉलेज) का नाम होता है, जहाँ जाकर आपको अपने डॉक्यूमेंट्स वेरीफाई कराने होते हैं।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">16. क्या गैप सर्टिफिकेट जरूरी है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>यदि आपके 10वीं/12वीं पास करने और पॉलिटेक्निक एडमिशन के बीच सालों का गैप है, तो कुछ कॉलेज गैप सर्टिफिकेट (Court Affidavit) मांग सकते हैं।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">17. क्या हॉस्टल सुविधा सभी कॉलेजों में उपलब्ध है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>बिहार के लगभग सभी सरकारी पॉलिटेक्निक कॉलेजों में लड़कों और लड़कियों के लिए हॉस्टल की सुविधा उपलब्ध है। (कुछ नए कॉलेजों में निर्माणाधीन हो सकता है)।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">18. लड़कियों के लिए कोई विशेष आरक्षण है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>हां, लड़कियों के लिए RCG (Reserved Category Girls) के तहत 3% का अलग से आरक्षण होता है। इसके अलावा पटना में दो महिला पॉलिटेक्निक (GWP) भी हैं।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">19. मॉप-अप (Mop-up) राउंड क्या होता है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>फर्स्ट और सेकंड राउंड की काउंसलिंग के बाद जो सीटें खाली बच जाती हैं, उन्हें भरने के लिए ऑफलाइन मॉप-अप राउंड पटना (BCECE बोर्ड ऑफिस) में आयोजित किया जाता है।</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">20. पॉलिटेक्निक के बाद क्या करियर स्कोप है? <i class="fa-solid fa-chevron-down"></i></div>
+                    <div class="faq-answer"><br>पॉलिटेक्निक के बाद आप जूनियर इंजीनियर (JE) के रूप में रेलवे (RRB JE/ALP), SSC JE, बिजली विभाग में सरकारी नौकरी पा सकते हैं, या बी.टेक (B.Tech LE) में सीधे सेकंड ईयर में एडमिशन ले सकते हैं।</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">DCECE 2026</div>
+            <p style="color: var(--text-muted); max-width: 500px; margin: 0 auto 20px;">Your ultimate companion for Bihar Polytechnic Counselling. Fast, secure, and user-friendly portal designed for students.</p>
+            <div style="display: flex; gap: 15px; justify-content: center; font-size: 20px;">
+                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#"><i class="fa-brands fa-telegram"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Developer: <strong>Lalan Kumar</strong> | Platform: <strong>LK SMART STUDIES</strong></p>
+            <p style="margin-top: 10px;">Copyright © 2026 Lalan Kumar. All rights reserved.</p>
+            <p style="font-size: 0.8rem; margin-top: 5px;">* This is an informational portal. Please refer to official BCECE website for official notices.</p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 1. Hide Loader
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }, 1000);
+
+            // 2. Mobile Menu Toggle
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            
+            menuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                if(navLinks.classList.contains('active')){
+                    menuBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                } else {
+                    menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                }
+            });
+
+            // Close menu when link is clicked
+            document.querySelectorAll('.nav-links li a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    menuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                });
+            });
+
+            // 3. Navbar scroll effect & Back to Top
+            const nav = document.querySelector('nav');
+            const backToTop = document.getElementById('backToTop');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    nav.style.background = 'rgba(5, 8, 20, 0.95)';
+                    nav.style.boxShadow = '0 5px 20px rgba(0,0,0,0.5)';
+                } else {
+                    nav.style.background = 'rgba(5, 8, 20, 0.8)';
+                    nav.style.boxShadow = 'none';
+                }
+
+                if (window.scrollY > 500) {
+                    backToTop.style.display = 'block';
+                } else {
+                    backToTop.style.display = 'none';
+                }
+            });
+
+            backToTop.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // 4. Scroll Reveal (Intersection Observer)
+            const revealElements = document.querySelectorAll('.reveal');
+            
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // 5. College Data & Search Functionality
+            const colleges = [
+                { name: 'NGP Patna-13', district: 'Patna', branches: ['Civil', 'Mechanical', 'Electrical', 'Electronics', 'Computer'] },
+                { name: 'GWP Patna-14 (Women)', district: 'Patna', branches: ['Civil', 'Electrical', 'Computer'] },
+                { name: 'Government Polytechnic Muzaffarpur', district: 'Muzaffarpur', branches: ['Civil', 'Mechanical', 'Electrical', 'Computer'] },
+                { name: 'Government Polytechnic Gaya', district: 'Gaya', branches: ['Civil', 'Mechanical', 'Electrical', 'Computer'] },
+                { name: 'Government Polytechnic Bhagalpur', district: 'Bhagalpur', branches: ['Civil', 'Electrical', 'Electronics'] },
+                { name: 'Government Polytechnic Darbhanga', district: 'Darbhanga', branches: ['Civil', 'Mechanical', 'Electrical'] },
+                { name: 'Government Polytechnic Purnea', district: 'Purnea', branches: ['Civil', 'Electrical', 'Electronics'] },
+                { name: 'Government Polytechnic Katihar', district: 'Katihar', branches: ['Civil', 'Mechanical', 'Electrical'] },
+                { name: 'Government Polytechnic Banka', district: 'Banka', branches: ['Civil', 'Electrical', 'Electronics'] },
+                { name: 'Government Polytechnic Saharsa', district: 'Saharsa', branches: ['Civil', 'Mechanical', 'Electrical', 'Computer'] }
+            ];
+
+            const collegeGrid = document.getElementById('collegeGrid');
+            const searchInput = document.getElementById('searchInput');
+
+            function renderColleges(data) {
+                collegeGrid.innerHTML = '';
+                if(data.length === 0) {
+                    collegeGrid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: var(--text-muted);">कोई कॉलेज नहीं मिला।</p>';
+                    return;
+                }
+                data.forEach(college => {
+                    const card = document.createElement('div');
+                    card.className = 'glass-panel college-card reveal active';
+                    
+                    const tagsHtml = college.branches.map(b => `<span class="tag"><i class="fa-solid fa-microchip"></i> ${b}</span>`).join('');
+                    
+                    card.innerHTML = `
+                        <h3><i class="fa-solid fa-building-columns"></i> ${college.name}</h3>
+                        <p><i class="fa-solid fa-location-dot" style="color: var(--accent-color);"></i> District: ${college.district}</p>
+                        <div class="tags">
+                            ${tagsHtml}
+                        </div>
+                    `;
+                    collegeGrid.appendChild(card);
+                });
+            }
+
+            renderColleges(colleges); // Initial render
+
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = colleges.filter(c => 
+                    c.name.toLowerCase().includes(term) || 
+                    c.district.toLowerCase().includes(term) ||
+                    c.branches.some(b => b.toLowerCase().includes(term))
+                );
+                renderColleges(filtered);
+            });
+
+            // 6. College Predictor Logic & Local Storage
+            const rankInput = document.getElementById('rankInput');
+            const predictBtn = document.getElementById('predictBtn');
+            const predictionResult = document.getElementById('predictionResult');
+
+            // Load saved rank from Local Storage
+            const savedRank = localStorage.getItem('userRank');
+            if(savedRank) {
+                rankInput.value = savedRank;
+            }
+
+            predictBtn.addEventListener('click', () => {
+                const rank = parseInt(rankInput.value);
+                
+                if(isNaN(rank) || rank <= 0) {
+                    predictionResult.style.display = 'block';
+                    predictionResult.style.background = 'rgba(255, 0, 0, 0.1)';
+                    predictionResult.style.color = '#ff4d4d';
+                    predictionResult.style.border = '1px solid #ff4d4d';
+                    predictionResult.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> कृपया सही रैंक दर्ज करें।';
+                    return;
+                }
+
+                // Save to local storage
+                localStorage.setItem('userRank', rank);
+
+                predictionResult.style.display = 'block';
+                
+                if (rank <= 3000) {
+                    predictionResult.style.background = 'rgba(0, 255, 136, 0.1)';
+                    predictionResult.style.color = 'var(--success-color)';
+                    predictionResult.style.border = '1px solid var(--success-color)';
+                    predictionResult.innerHTML = `<i class="fa-solid fa-face-laugh-beam"></i> Excellent Chance! (Top 5 Colleges & Core Branches Confirm)`;
+                } else if (rank <= 10000) {
+                    predictionResult.style.background = 'rgba(0, 243, 255, 0.1)';
+                    predictionResult.style.color = 'var(--primary-color)';
+                    predictionResult.style.border = '1px solid var(--primary-color)';
+                    predictionResult.innerHTML = `<i class="fa-solid fa-face-smile"></i> Good Chance! (Top 10-20 Colleges in Civil/Elect/Mech)`;
+                } else if (rank <= 25000) {
+                    predictionResult.style.background = 'rgba(255, 184, 0, 0.1)';
+                    predictionResult.style.color = 'var(--accent-color)';
+                    predictionResult.style.border = '1px solid var(--accent-color)';
+                    predictionResult.innerHTML = `<i class="fa-solid fa-face-meh"></i> Possible Chance. (New Govt Colleges, Electronics or CS/Agri possible. Participate in Mop-up.)`;
+                } else {
+                    predictionResult.style.background = 'rgba(255, 0, 0, 0.1)';
+                    predictionResult.style.color = '#ff4d4d';
+                    predictionResult.style.border = '1px solid #ff4d4d';
+                    predictionResult.innerHTML = `<i class="fa-solid fa-face-frown"></i> Difficult. (Government college chances are very low. Try for private or next year.)`;
+                }
+            });
+
+            // 7. FAQ Accordion
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close all others
+                    faqItems.forEach(faq => faq.classList.remove('active'));
+                    
+                    // Open clicked one if it wasn't open
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+
+            // 8. Animated Counters
+            const counters = document.querySelectorAll('.counter');
+            let hasCounted = false;
+
+            const counterObserver = new IntersectionObserver((entries) => {
+                if(entries[0].isIntersecting && !hasCounted) {
+                    hasCounted = true;
+                    counters.forEach(counter => {
+                        const target = +counter.getAttribute('data-target');
+                        const duration = 2000; // ms
+                        const increment = target / (duration / 16); // 60fps
+                        
+                        let current = 0;
+                        const updateCounter = () => {
+                            current += increment;
+                            if (current < target) {
+                                counter.innerText = Math.ceil(current);
+                                requestAnimationFrame(updateCounter);
+                            } else {
+                                counter.innerText = target;
+                            }
+                        };
+                        updateCounter();
+                    });
+                }
+            }, { threshold: 0.5 });
+            
+            counterObserver.observe(document.querySelector('.stats-grid'));
+
+            // 9. Canvas Chart - Cutoff Trend
+            const canvas = document.getElementById('cutoffChart');
+            if(canvas && canvas.getContext) {
+                const ctx = canvas.getContext('2d');
+                
+                // Data
+                const years = ['2023', '2024', '2025'];
+                const civilData = [25000, 22000, 24000]; // Closing ranks approx
+                const electData = [28000, 25000, 26000];
+                
+                const padding = 50;
+                const width = canvas.width - padding * 2;
+                const height = canvas.height - padding * 2;
+                
+                // Find max value for scaling
+                const maxRank = 30000; 
+
+                // Draw Grid & Axes
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                ctx.lineWidth = 1;
+                
+                // Y-axis (Ranks)
+                for(let i=0; i<=5; i++) {
+                    const y = padding + (height / 5) * i;
+                    const rankVal = maxRank - (maxRank / 5) * i;
+                    
+                    ctx.moveTo(padding, y);
+                    ctx.lineTo(canvas.width - padding, y);
+                    ctx.fillStyle = '#a0aec0';
+                    ctx.font = '12px Poppins';
+                    ctx.fillText(rankVal, 10, y + 4);
+                }
+                ctx.stroke();
+
+                // X-axis (Years)
+                ctx.fillStyle = '#a0aec0';
+                for(let i=0; i<years.length; i++) {
+                    const x = padding + (width / (years.length - 1)) * i;
+                    ctx.fillText(years[i], x - 15, canvas.height - 20);
+                }
+
+                // Plot Function
+                function plotLine(data, color, label) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 3;
+                    
+                    for(let i=0; i<data.length; i++) {
+                        const x = padding + (width / (data.length - 1)) * i;
+                        // Invert Y since 0 is top in canvas, but lower rank is better (we show rank size)
+                        const y = padding + height - ((data[i] / maxRank) * height);
+                        
+                        if(i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                    
+                    // Draw dots
+                    for(let i=0; i<data.length; i++) {
+                        const x = padding + (width / (data.length - 1)) * i;
+                        const y = padding + height - ((data[i] / maxRank) * height);
+                        
+                        ctx.beginPath();
+                        ctx.arc(x, y, 5, 0, Math.PI*2);
+                        ctx.fillStyle = color;
+                        ctx.fill();
+                        ctx.strokeStyle = '#050814';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                }
+
+                plotLine(civilData, '#00f3ff', 'Civil');
+                plotLine(electData, '#bd00ff', 'Electrical');
+
+                // Legend
+                ctx.fillStyle = '#00f3ff';
+                ctx.fillRect(canvas.width - 150, 10, 15, 15);
+                ctx.fillStyle = '#f0f4f8';
+                ctx.fillText('Civil Closing Rank', canvas.width - 125, 22);
+
+                ctx.fillStyle = '#bd00ff';
+                ctx.fillRect(canvas.width - 150, 35, 15, 15);
+                ctx.fillStyle = '#f0f4f8';
+                ctx.fillText('Elect Closing Rank', canvas.width - 125, 47);
+            }
+        });
+    </script>
+</body>
+</html>
