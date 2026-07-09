@@ -949,12 +949,56 @@ padding:14px;
     </nav>
 
     <!-- Notification Marquee -->
-    <div class="marquee-container" style="margin-top: 70px;">
-        <div class="marquee-label">LIVE UPDATE</div>
-        
-            <i class="fa-solid fa-bell"></i> ✅ Round 1 Counselling / Seat Allotment भी जारी हो चुका है। जिन उम्मीदवारों ने Choice Filling की थी, वे अपना Allotment Status देख सकते हैं। 📌 आगे के राउंड (Round 2 / Mop-up) की तिथियाँ BCECEB द्वारा आधिकारिक नोटिस में जारी की जाएँगी।  
-        </div>
-    </div>
+    <style>
+  .marquee-container {
+    margin-top: 70px;
+    display: flex;
+    align-items: center;
+    background-color: #ffeb3b; /* Yellow background */
+    padding: 10px;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+  .marquee-label {
+    background: #d32f2f;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-right: 10px;
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  .marquee-container i {
+    color: #d32f2f;
+    margin-right: 10px;
+    z-index: 2;
+  }
+
+  .marquee-text {
+    white-space: nowrap;
+    display: inline-block;
+    animation: scroll-left 15s linear infinite;
+    font-weight: 500;
+    color: #333;
+  }
+
+  @keyframes scroll-left {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
+</style>
+
+<div class="marquee-container">
+  <div class="marquee-label">LIVE UPDATE</div>
+  <i class="fa-solid fa-bell"></i>
+  <div class="marquee-text">
+    ✅ Round 1 Counselling / Seat Allotment भी जारी हो चुका है। जिन उम्मीदवारों ने Choice Filling की थी, वे अपना Allotment Status देख सकते हैं। 📌 आगे के राउंड की तिथियाँ BCECEB द्वारा आधिकारिक नोटिस में जारी की जाएँगी।
+  </div>
+</div>
     </div>
 <section class="portal-menu">
 
