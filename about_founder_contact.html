@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lalan Kumar | POLYTECHNIC HUB</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Poppins for Body, Outfit for Headings, Caveat for Notebook Story -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Outfit:wght@300;400;500;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                        handwriting: ['Caveat', 'cursive'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#030712',
+                            primary: '#2563eb',
+                            secondary: '#7c3aed',
+                            accent: '#06b6d4',
+                            glass: 'rgba(255, 255, 255, 0.03)',
+                            glassBorder: 'rgba(255, 255, 255, 0.08)'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Internal CSS for Premium Effects -->
+    <style>
+        /* Base & Scrollbar */
+        body {
+            background-color: #030712;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-thumb { background: #2563eb; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 20%, rgba(37, 99, 235, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(124, 58, 237, 0.15) 0%, transparent 40%);
+            animation: bg-shift 15s ease-in-out infinite alternate;
+        }
+        @keyframes bg-shift {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: #030712;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+        .loader-ring {
+            width: 80px;
+            height: 80px;
+            border: 4px solid transparent;
+            border-top-color: #2563eb;
+            border-bottom-color: #06b6d4;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--brand-glassBorder);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+
+        /* Dark Notebook Style */
+        .notebook-dark {
+            background-color: rgba(15, 23, 42, 0.8);
+            border-radius: 8px 24px 24px 8px;
+            border-left: 12px solid #8b1e1e; /* Binder Color */
+            box-shadow: -10px 0 20px rgba(0,0,0,0.5), inset 0 0 30px rgba(0,0,0,0.2);
+            position: relative;
+            background-image: repeating-linear-gradient(
+                transparent, 
+                transparent 39px, 
+                rgba(255, 255, 255, 0.05) 39px, 
+                rgba(255, 255, 255, 0.05) 40px
+            );
+            background-position: 0 40px;
+        }
+        .notebook-dark::before {
+            content: '';
+            position: absolute;
+            top: 0; bottom: 0; left: 50px;
+            width: 2px;
+            background-color: rgba(239, 68, 68, 0.3); /* Red margin */
+        }
+        .notebook-content {
+            padding: 40px 40px 60px 80px;
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            line-height: 40px;
+            color: #93c5fd; /* Light blue ink */
+        }
+        .notebook-content h3 {
+            color: #f87171; /* Red ink for headings */
+            font-size: 2rem;
+            margin-top: 40px;
+            margin-bottom: 0px;
+            font-weight: 700;
+        }
+
+        /* 3D Premium Cards */
+        .perspective-grid { perspective: 1500px; }
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+        .card-3d:hover {
+            transform: translateY(-10px) rotateX(var(--rx, 5deg)) rotateY(var(--ry, -5deg));
+            box-shadow: 20px 25px 40px -10px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.2);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        .card-content-layer { transform: translateZ(30px); }
+        .card-icon-layer { transform: translateZ(60px); transition: transform 0.4s; }
+        .card-3d:hover .card-icon-layer { transform: translateZ(80px) scale(1.1); }
+
+        /* Scroll Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Image styling */
+        .founder-img {
+            background-color: #1e293b; /* Fallback */
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        /* Input styling */
+        .glass-input {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            background: rgba(255,255,255,0.06);
+            border-color: #2563eb;
+            box-shadow: 0 0 15px rgba(37,99,235,0.2);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Background Animation -->
+    <div class="animated-bg"></div>
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-ring mb-6"></div>
+        <h2 class="text-xl font-bold font-heading tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">LK SMART STUDY</h2>
+    </div>
+
+    <!-- Navigation -->
+    <header class="fixed w-full top-0 z-50 glass-panel border-b-0 border-white/10 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-cyan-500 flex items-center justify-center shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+                    <i class="fa-solid fa-graduation-cap text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold font-heading tracking-wide text-white">POLYTECHNIC <span class="text-cyan-400">HUB</span></h1>
+                </div>
+            </div>
+            <nav class="hidden md:flex gap-6 items-center">
+                <a href="#about" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">About</a>
+                <a href="#story" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Story</a>
+                <a href="#skills" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Skills</a>
+                <a href="#contact" class="px-5 py-2 rounded-full bg-blue-600/20 border border-blue-500/50 text-blue-400 text-sm font-semibold hover:bg-blue-600 hover:text-white transition-all">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= HERO SECTION ================= -->
+    <section class="min-h-screen flex flex-col justify-center items-center pt-28 pb-20 px-6 relative z-10 text-center">
+        <!-- Founder Image Area -->
+        <div class="relative reveal">
+            <div class="absolute inset-0 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-full blur-[40px] opacity-40 animate-pulse"></div>
+            <div class="relative w-48 h-48 md:w-56 md:h-56 rounded-full p-2 bg-gradient-to-br from-blue-500 to-cyan-400 mx-auto mb-8 shadow-2xl">
+                <!-- Using specified exact file name -->
+                <img src="IMG_20260614_132123.jpg" alt="Lalan Kumar" class="w-full h-full rounded-full founder-img shadow-inner border-4 border-[#030712]" onerror="this.src='https://via.placeholder.com/400x400/1e293b/3b82f6?text=Lalan+Kumar'">
+            </div>
+        </div>
+
+        <div class="inline-block px-5 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-sm font-semibold mb-6 reveal">
+            <i class="fa-solid fa-code text-xs mr-2"></i> Founder of LK SMART STUDY
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-extrabold font-heading mb-4 tracking-tight reveal">
+            Lalan <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Kumar</span>
+        </h1>
+        
+        <h2 class="text-xl md:text-2xl text-gray-300 font-medium mb-8 max-w-2xl mx-auto reveal">
+            Electrical Engineering Diploma Student | Creator & Developer of <strong class="text-white">POLYTECHNIC HUB</strong>
+        </h2>
+
+        <div class="flex flex-wrap justify-center gap-4 reveal">
+            <a href="#contact" class="px-8 py-3.5 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] hover:-translate-y-1 transition-all">
+                Let's Connect <i class="fa-solid fa-arrow-right ml-2"></i>
+            </a>
+            <a href="#about" class="px-8 py-3.5 rounded-full glass-panel text-white font-semibold hover:bg-white/10 transition-all">
+                Know My Story
+            </a>
+        </div>
+    </section>
+
+    <!-- ================= ABOUT SECTION ================= -->
+    <section id="about" class="py-24 px-6 relative z-10">
+        <div class="container mx-auto max-w-6xl">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <div class="reveal">
+                    <h2 class="text-4xl font-bold font-heading mb-6">Who is <span class="text-blue-400">Lalan Kumar?</span></h2>
+                    <p class="text-gray-300 leading-relaxed mb-6">
+                        I am an Electrical Engineering student pursuing my Diploma at <strong>Government Polytechnic Banka</strong>. Beyond being a student, I am a passionate developer, educator, and the driving force behind <strong>LK SMART STUDY</strong> and <strong>POLYTECHNIC HUB</strong>.
+                    </p>
+                    <p class="text-gray-300 leading-relaxed mb-8">
+                        My journey bridges the gap between core engineering and modern web technology. I realized that polytechnic students lacked a centralized, premium platform for study materials, notes, and career guidance. That realization sparked the creation of this platform.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-blue-500">
+                            <h4 class="text-blue-400 font-bold mb-1"><i class="fa-solid fa-bullseye"></i> Mission</h4>
+                            <p class="text-xs text-gray-400">To provide free, high-quality technical education and resources to every polytechnic student.</p>
+                        </div>
+                        <div class="glass-panel p-5 rounded-2xl border-l-4 border-l-cyan-500">
+                            <h4 class="text-cyan-400 font-bold mb-1"><i class="fa-solid fa-eye"></i> Vision</h4>
+                            <p class="text-xs text-gray-400">To build India's most advanced digital ecosystem for diploma engineering students.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goals & Future Plans Cards -->
+                <div class="grid grid-cols-1 gap-6 perspective-grid reveal">
+                    <div class="card-3d glass-panel p-8 rounded-3xl group">
+                        <div class="card-icon-layer w-14 h-14 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/30 text-purple-400 text-2xl mb-4">
+                            <i class="fa-solid fa-rocket"></i>
+                        </div>
+                        <div class="card-content-layer">
+                            <h3 class="text-xl font-bold text-white mb-2">My Goals</h3>
+                            <ul class="text-sm text-gray-400 space-y-2">
+                                <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> Simplify complex engineering concepts.</li>
+                                <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> Integrate AI for personalized study assistance.</li>
+                                <li><i class="fa-solid fa-check text-emerald-400 mr-2"></i> Build a strong community of future engineers.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card-3d glass-panel p-8 rounded-3xl group">
+                        <div class="card-icon-layer w-14 h-14 rounded-full bg-orange-500/20 flex items-center justify-center border border-orange-500/30 text-orange-400 text-2xl mb-4">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </div>
+                        <div class="card-content-layer">
+                            <h3 class="text-xl font-bold text-white mb-2">Future Plans</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">
+                                To expand POLYTECHNIC HUB to all states, develop mobile applications, and launch comprehensive placement preparation modules to ensure every diploma student lands their dream job.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= NOTEBOOK STORY SECTION ================= -->
+    <section id="story" class="py-24 px-6 relative z-10">
+        <div class="container mx-auto max-w-4xl reveal">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-bold font-heading mb-4">The <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">Founder's Story</span></h2>
+                <p class="text-gray-400">My journey from a village student to a platform creator.</p>
+            </div>
+
+            <div class="notebook-dark">
+                <div class="notebook-content">
+                    <h3>Village Background & Early Life</h3>
+                    <p>Coming from a humble village background, accessing quality education was always a challenge. The struggle to find proper guidance taught me the value of resources early in my student life.</p>
+
+                    <h3>The Polytechnic Journey</h3>
+                    <p>When I joined Government Polytechnic Banka to pursue Electrical Engineering, I noticed my peers facing the same struggles: scattered notes, confusing syllabus, and lack of mentorship.</p>
+
+                    <h3>Passion for Tech & Teaching</h3>
+                    <p>I have always had a deep passion for understanding how technology works. While studying electrical circuits, I started learning web development and AI on the side. I realized I could combine my technical skills with my desire to teach.</p>
+
+                    <h3>Creating POLYTECHNIC HUB</h3>
+                    <p>Under the umbrella of LK SMART STUDY, I began coding POLYTECHNIC HUB. It wasn't just about building a website; it was about building a lifeline for diploma students. Today, this platform is a step towards my future dream of revolutionizing technical education in India.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= SKILLS SECTION ================= -->
+    <section id="skills" class="py-24 px-6 relative z-10 bg-black/30 border-y border-white/5">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl font-bold font-heading text-center mb-16">Core <span class="text-cyan-400">Skills</span></h2>
+            
+            <div class="flex flex-wrap justify-center gap-4 reveal">
+                <!-- Skill Tags -->
+                <div class="glass-panel px-6 py-4 rounded-2xl flex items-center gap-3 hover:-translate-y-1 transition-transform border border-yellow-500/30 group">
+                    <i class="fa-solid fa-bolt text-yellow-400 text-xl group-hover:scale-125 transition-transform"></i>
+                    <span class="font-bold text-gray-200">Electrical Engineering</span>
+                </div>
+                <div class="glass-panel px-6 py-4 rounded-2xl flex items-center gap-3 hover:-translate-y-1 transition-transform border border-blue-500/30 group">
+                    <i class="fa-solid fa-code text-blue-400 text-xl group-hover:scale-125 transition-transform"></i>
+                    <span class="font-bold text-gray-200">Web Development</span>
+                </div>
+                <div class="glass-panel px-6 py-4 rounded-2xl flex items-center gap-3 hover:-translate-y-1 transition-transform border border-purple-500/30 group">
+                    <i class="fa-solid fa-video text-purple-400 text-xl group-hover:scale-125 transition-transform"></i>
+                    <span class="font-bold text-gray-200">Content Creation</span>
+                </div>
+                <div class="glass-panel px-6 py-4 rounded-2xl flex items-center gap-3 hover:-translate-y-1 transition-transform border border-emerald-500/30 group">
+                    <i class="fa-solid fa-microchip text-emerald-400 text-xl group-hover:scale-125 transition-transform"></i>
+                    <span class="font-bold text-gray-200">Technology Learning</span>
+                </div>
+                <div class="glass-panel px-6 py-4 rounded-2xl flex items-center gap-3 hover:-translate-y-1 transition-transform border border-cyan-500/30 group">
+                    <i class="fa-solid fa-robot text-cyan-400 text-xl group-hover:scale-125 transition-transform"></i>
+                    <span class="font-bold text-gray-200">AI Learning</span>
+                </div>
+                <div class="glass-panel px-6 py-4 rounded-2xl flex items-center gap-3 hover:-translate-y-1 transition-transform border border-pink-500/30 group">
+                    <i class="fa-solid fa-palette text-pink-400 text-xl group-hover:scale-125 transition-transform"></i>
+                    <span class="font-bold text-gray-200">Graphic Design</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= ACHIEVEMENTS SECTION ================= -->
+    <section class="py-24 px-6 relative z-10">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl font-bold font-heading text-center mb-16">Roles & <span class="text-purple-400">Achievements</span></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 perspective-grid">
+                
+                <div class="card-3d glass-panel p-8 rounded-3xl text-center reveal">
+                    <div class="card-icon-layer w-16 h-16 mx-auto rounded-full bg-blue-500/20 flex items-center justify-center border border-blue-500/30 text-blue-400 text-2xl mb-4">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div class="card-content-layer">
+                        <h3 class="text-xl font-bold text-white">Polytechnic Student</h3>
+                        <p class="text-sm text-gray-400 mt-2">Electrical Engineering at Govt. Polytechnic Banka.</p>
+                    </div>
+                </div>
+
+                <div class="card-3d glass-panel p-8 rounded-3xl text-center reveal" style="transition-delay: 100ms;">
+                    <div class="card-icon-layer w-16 h-16 mx-auto rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 text-emerald-400 text-2xl mb-4">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <div class="card-content-layer">
+                        <h3 class="text-xl font-bold text-white">Founder, Polytechnic Hub</h3>
+                        <p class="text-sm text-gray-400 mt-2">Creator and lead developer of the platform.</p>
+                    </div>
+                </div>
+
+                <div class="card-3d glass-panel p-8 rounded-3xl text-center reveal" style="transition-delay: 200ms;">
+                    <div class="card-icon-layer w-16 h-16 mx-auto rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/30 text-purple-400 text-2xl mb-4">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <div class="card-content-layer">
+                        <h3 class="text-xl font-bold text-white">Founder, LK SMART STUDY</h3>
+                        <p class="text-sm text-gray-400 mt-2">The parent educational organization.</p>
+                    </div>
+                </div>
+
+                <div class="card-3d glass-panel p-8 rounded-3xl text-center reveal" style="transition-delay: 300ms;">
+                    <div class="card-icon-layer w-16 h-16 mx-auto rounded-full bg-pink-500/20 flex items-center justify-center border border-pink-500/30 text-pink-400 text-2xl mb-4">
+                        <i class="fa-brands fa-youtube"></i>
+                    </div>
+                    <div class="card-content-layer">
+                        <h3 class="text-xl font-bold text-white">Content Creator</h3>
+                        <p class="text-sm text-gray-400 mt-2">Producing high-quality educational content.</p>
+                    </div>
+                </div>
+
+                <div class="card-3d glass-panel p-8 rounded-3xl text-center reveal" style="transition-delay: 400ms;">
+                    <div class="card-icon-layer w-16 h-16 mx-auto rounded-full bg-orange-500/20 flex items-center justify-center border border-orange-500/30 text-orange-400 text-2xl mb-4">
+                        <i class="fa-solid fa-gear"></i>
+                    </div>
+                    <div class="card-content-layer">
+                        <h3 class="text-xl font-bold text-white">Future Engineer</h3>
+                        <p class="text-sm text-gray-400 mt-2">Dedicated to building sustainable tech solutions.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= GALLERY SECTION ================= -->
+    <section class="py-24 px-6 relative z-10 bg-black/20">
+        <div class="container mx-auto max-w-6xl">
+            <h2 class="text-4xl font-bold font-heading text-center mb-16">Life & <span class="text-emerald-400">Gallery</span></h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 reveal">
+                <!-- Main Founder Photo -->
+                <div class="glass-panel p-2 rounded-3xl lg:col-span-2 lg:row-span-2 group overflow-hidden">
+                    <div class="w-full h-full min-h-[300px] rounded-2xl overflow-hidden relative">
+                        <img src="IMG_20260614_132123.jpg" alt="Lalan Kumar" class="w-full h-full object-cover founder-img group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent">
+                            <h3 class="text-xl font-bold text-white">Lalan Kumar</h3>
+                            <p class="text-sm text-gray-300">Founder Profile</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study Area Placeholder -->
+                <div class="glass-panel p-2 rounded-3xl group overflow-hidden">
+                    <div class="w-full h-48 rounded-2xl bg-gradient-to-br from-blue-900/50 to-slate-800 flex flex-col items-center justify-center border border-white/5 relative">
+                        <i class="fa-solid fa-book-open-reader text-4xl text-blue-400 mb-2 opacity-50"></i>
+                        <p class="text-sm text-gray-400 font-medium">Study Area</p>
+                    </div>
+                </div>
+
+                <!-- Project Area Placeholder -->
+                <div class="glass-panel p-2 rounded-3xl group overflow-hidden">
+                    <div class="w-full h-48 rounded-2xl bg-gradient-to-br from-purple-900/50 to-slate-800 flex flex-col items-center justify-center border border-white/5 relative">
+                        <i class="fa-solid fa-microchip text-4xl text-purple-400 mb-2 opacity-50"></i>
+                        <p class="text-sm text-gray-400 font-medium">Project Area</p>
+                    </div>
+                </div>
+
+                <!-- Achievement Area Placeholder -->
+                <div class="glass-panel p-2 rounded-3xl lg:col-span-2 group overflow-hidden">
+                    <div class="w-full h-48 rounded-2xl bg-gradient-to-br from-emerald-900/50 to-slate-800 flex flex-col items-center justify-center border border-white/5 relative">
+                        <i class="fa-solid fa-trophy text-4xl text-emerald-400 mb-2 opacity-50"></i>
+                        <p class="text-sm text-gray-400 font-medium">Achievement Showcase</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= STUDENT MESSAGE ================= -->
+    <section class="py-24 px-6 relative z-10">
+        <div class="container mx-auto max-w-4xl text-center reveal">
+            <i class="fa-solid fa-quote-left text-5xl text-blue-500/20 mb-6"></i>
+            <h2 class="text-3xl md:text-5xl font-light italic leading-relaxed text-gray-200 mb-8">
+                "Engineering is not just about passing semester exams. It is about understanding how things work and building solutions that matter. Keep learning, keep building, and never let limited resources stop your big dreams."
+            </h2>
+            <div class="w-20 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 mx-auto rounded-full mb-6"></div>
+            <p class="text-2xl font-bold tracking-wide font-handwriting text-blue-400">Lalan Kumar</p>
+            <p class="text-gray-500 text-sm font-medium mt-1">To all Polytechnic Students</p>
+        </div>
+    </section>
+
+    <!-- ================= CONTACT SECTION ================= -->
+    <section id="contact" class="py-24 px-6 relative z-10 bg-black/40 border-t border-white/5">
+        <div class="container mx-auto max-w-6xl">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-bold font-heading mb-4">Get In <span class="text-blue-400">Touch</span></h2>
+                <p class="text-gray-400">Have questions, suggestions, or want to collaborate? Reach out to me.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-10">
+                
+                <!-- Contact Info (Left) -->
+                <div class="lg:col-span-2 space-y-6 reveal">
+                    <!-- WhatsApp Card -->
+                    <div class="glass-panel p-6 rounded-3xl border-l-4 border-l-green-500 flex items-start gap-4 group">
+                        <div class="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
+                            <i class="fa-brands fa-whatsapp text-2xl text-green-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white mb-1">WhatsApp Me</h4>
+                            <p class="text-xl font-mono text-gray-200 mb-2">+91 9296783086</p>
+                            <p class="text-xs text-red-400 font-bold bg-red-500/10 inline-block px-2 py-1 rounded"><i class="fa-solid fa-ban mr-1"></i> Please do not call directly. Send a WhatsApp message first.</p>
+                        </div>
+                    </div>
+
+                    <!-- Email Card -->
+                    <div class="glass-panel p-6 rounded-3xl flex items-center gap-4 group hover:border-red-500/50 transition-colors">
+                        <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-envelope text-xl text-red-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-gray-400 mb-1">Email Address</h4>
+                            <p class="text-md text-white">lkstudiokatoriya@gmail.com</p>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Links -->
+                    <h4 class="font-bold text-white mt-8 mb-4">Connect on Social Media</h4>
+                    <div class="flex gap-4">
+                        <a href="https://linkedin.com/in/lalankumarbanka" target="_blank" class="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center text-blue-400 hover:bg-blue-600 hover:text-white hover:-translate-y-1 transition-all">
+                            <i class="fa-brands fa-linkedin-in text-xl"></i>
+                        </a>
+                        <a href="https://youtube.com/@polytechnic_hub" target="_blank" class="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center text-red-500 hover:bg-red-600 hover:text-white hover:-translate-y-1 transition-all">
+                            <i class="fa-brands fa-youtube text-xl"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 rounded-2xl glass-panel flex items-center justify-center text-green-400 hover:bg-green-500 hover:text-white hover:-translate-y-1 transition-all">
+                            <i class="fa-brands fa-whatsapp text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact Form (Right) -->
+                <div class="lg:col-span-3 reveal">
+                    <form id="contactForm" class="glass-panel p-8 md:p-10 rounded-3xl space-y-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 blur-[50px] rounded-full pointer-events-none"></div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">Full Name</label>
+                                <input type="text" required placeholder="John Doe" class="glass-input w-full px-5 py-3.5 rounded-xl">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-400 mb-2">Email Address</label>
+                                <input type="email" required placeholder="john@example.com" class="glass-input w-full px-5 py-3.5 rounded-xl">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Subject</label>
+                            <input type="text" required placeholder="Query regarding resources" class="glass-input w-full px-5 py-3.5 rounded-xl">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Message</label>
+                            <textarea rows="4" required placeholder="Write your message here..." class="glass-input w-full px-5 py-3.5 rounded-xl resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 text-white font-bold text-lg hover:from-blue-700 hover:to-cyan-700 shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center gap-2 group">
+                            Send Message <i class="fa-solid fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-[#02040a] border-t border-white/10 pt-12 pb-8 relative z-10">
+        <div class="container mx-auto px-6 text-center">
+            <div class="mb-6 flex justify-center items-center gap-2">
+                <i class="fa-solid fa-graduation-cap text-blue-500 text-2xl"></i>
+                <h2 class="text-2xl font-bold font-heading tracking-wide text-white">POLYTECHNIC HUB</h2>
+            </div>
+            
+            <p class="text-gray-400 text-sm mb-2">Powered By <strong class="text-white">LK SMART STUDY</strong></p>
+            <p class="text-gray-500 text-sm mb-8">Founder: <span class="text-cyan-400 font-semibold">Lalan Kumar</span></p>
+            
+            <div class="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8"></div>
+            
+            <p class="text-gray-600 text-xs">
+                &copy; <script>document.write(new Date().getFullYear())</script> POLYTECHNIC HUB. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Interactive Custom Alert for Form Demo -->
+    <div id="formAlert" class="fixed bottom-[-100px] left-1/2 transform -translate-x-1/2 bg-black/90 backdrop-blur-xl border border-blue-500/30 text-white px-6 py-4 rounded-full flex items-center gap-4 transition-all duration-500 z-[100] shadow-[0_10px_40px_rgba(37,99,235,0.3)]">
+        <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-check text-blue-400"></i>
+        </div>
+        <div>
+            <p class="font-bold text-sm text-white">Message Interface Ready</p>
+            <p class="text-xs text-gray-400">Backend connectivity will be implemented soon.</p>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Loading Screen ---
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 1500); // 1.5s premium loading
+
+            // --- Scroll Animations (Intersection Observer) ---
+            const revealElements = document.querySelectorAll('.reveal');
+            
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); // Reveal only once
+                    }
+                });
+            }, {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // --- 3D Card Hover Effect ---
+            document.addEventListener('mousemove', (e) => {
+                document.querySelectorAll('.card-3d').forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    // Lighting Tracking
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+
+                    // Perspective Tilt
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateY = ((x - centerX) / centerX) * 8; // Max 8deg
+                    const rotateX = -((y - centerY) / centerY) * 8;
+                    
+                    card.style.setProperty('--rx', `${rotateX}deg`);
+                    card.style.setProperty('--ry', `${rotateY}deg`);
+                });
+            });
+
+            // --- Navbar Scroll Effect ---
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('shadow-lg', 'bg-[#030712]/90');
+                    navbar.classList.remove('border-b-0');
+                } else {
+                    navbar.classList.remove('shadow-lg', 'bg-[#030712]/90');
+                    navbar.classList.add('border-b-0');
+                }
+            });
+
+            // --- Form Submission Demo ---
+            const form = document.getElementById('contactForm');
+            const alertBox = document.getElementById('formAlert');
+            let alertTimer;
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Show Alert
+                clearTimeout(alertTimer);
+                alertBox.style.bottom = '30px';
+                
+                alertTimer = setTimeout(() => {
+                    alertBox.style.bottom = '-100px';
+                }, 400); // Wait and hide
+                
+                setTimeout(() => {
+                   alertBox.style.bottom = '-100px';
+                   form.reset();
+                }, 3500);
+            });
+        });
+    </script>
+</body>
+</html>
