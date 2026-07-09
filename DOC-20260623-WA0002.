@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SBTE Bihar - Applied Chemistry-B Smart Board (Full Syllabus)</title>
+    <!-- Google Font for Handwriting (Supports English & Hindi) -->
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --board-bg: #0a0f0d;
+            --chalk-white: #f4f4f0;
+            --chalk-yellow: #ffeb3b;
+            --chalk-green: #4caf50;
+            --chalk-blue: #4fc3f7;
+            --chalk-red: #ff5252;
+            --chalk-orange: #ff9800;
+            --chalk-purple: #e040fb;
+            --board-frame: #2c2c2c;
+            --font-main: 'Kalam', cursive;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: #121212;
+            color: var(--chalk-white);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            font-size: 1.2rem;
+        }
+
+        /* --- Custom Teacher Pointer --- */
+        #teacher-pointer {
+            position: fixed;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.5);
+            z-index: 9999;
+            transition: width 0.2s, height 0.2s;
+            mix-blend-mode: screen;
+        }
+        body:active #teacher-pointer {
+            width: 15px; height: 15px;
+        }
+
+        /* --- Layout --- */
+        header {
+            background: #1a1a1a;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+            z-index: 10;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            color: var(--chalk-yellow);
+            text-shadow: 0 0 5px var(--chalk-yellow);
+            font-weight: 700;
+        }
+
+        .controls button {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 5px 15px;
+            margin-left: 5px;
+            font-family: inherit;
+            border-radius: 5px;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .controls button:hover {
+            background: var(--chalk-yellow);
+            color: black;
+            box-shadow: 0 0 10px var(--chalk-yellow);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: #333;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: var(--chalk-green);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px var(--chalk-green);
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* --- Sidebar Navigation --- */
+        aside {
+            width: 350px;
+            background: #161616;
+            border-right: 2px solid #333;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .search-box {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            font-family: inherit;
+            border-radius: 5px;
+        }
+
+        .question-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .q-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #222;
+            border-radius: 5px;
+            border-left: 3px solid transparent;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .q-item:hover {
+            background: #2a2a2a;
+            border-left-color: var(--chalk-blue);
+        }
+
+        .q-item.active {
+            background: #333;
+            border-left-color: var(--chalk-yellow);
+            color: var(--chalk-yellow);
+        }
+
+        /* --- Smart Board Area --- */
+        main {
+            flex: 1;
+            padding: 20px;
+            background: var(--board-bg);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .board-surface {
+            width: 100%;
+            height: 100%;
+            max-width: 1000px;
+            background: radial-gradient(circle, #1a2421 0%, #0a0f0d 100%);
+            border: 8px solid var(--board-frame);
+            border-radius: 12px;
+            padding: 40px;
+            overflow-y: auto;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        /* Chalk effect & Handwriting */
+        .board-surface {
+            color: var(--chalk-white);
+            text-shadow: 0px 0px 2px rgba(255,255,255,0.4);
+            line-height: 1.8;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+        }
+
+        .question-heading {
+            font-size: 1.8rem;
+            color: var(--chalk-yellow);
+            text-shadow: 0 0 8px rgba(255, 235, 59, 0.6);
+            margin-bottom: 20px;
+            border-bottom: 2px dashed rgba(255, 255, 255, 0.2);
+            padding-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        /* --- Special Content Boxes --- */
+        .box {
+            padding: 15px 20px;
+            margin: 25px 0 15px 0;
+            border-radius: 8px;
+            border: 2px solid;
+            background: rgba(0,0,0,0.4);
+            position: relative;
+            animation: slideUp 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .box-title {
+            position: absolute;
+            top: -15px;
+            left: 15px;
+            background: var(--board-bg);
+            padding: 0 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 4px;
+        }
+
+        .vvi { border-color: var(--chalk-red); box-shadow: 0 0 10px rgba(255,82,82,0.2); }
+        .vvi .box-title { color: var(--chalk-red); text-shadow: 0 0 5px var(--chalk-red); }
+
+        .remember { border-color: var(--chalk-blue); }
+        .remember .box-title { color: var(--chalk-blue); }
+
+        .exam-point { border-color: var(--chalk-yellow); }
+        .exam-point .box-title { color: var(--chalk-yellow); text-shadow: 0 0 5px var(--chalk-yellow); }
+
+        .revision { border-color: var(--chalk-green); }
+        .revision .box-title { color: var(--chalk-green); }
+
+        .mistake { border-color: var(--chalk-orange); border-style: dashed; }
+        .mistake .box-title { color: var(--chalk-orange); }
+
+        .pyq { border-color: var(--chalk-purple); }
+        .pyq .box-title { color: var(--chalk-purple); }
+
+        /* Definitions and Formulas */
+        .def-highlight {
+            color: var(--chalk-blue);
+            font-weight: bold;
+            text-shadow: 0 0 4px rgba(79, 195, 247, 0.5);
+        }
+
+        .formula-highlight {
+            display: block;
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--chalk-yellow);
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid rgba(255, 235, 59, 0.3);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            letter-spacing: 2px;
+        }
+
+        /* --- Footer Navigation --- */
+        footer {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 2px solid #333;
+            z-index: 10;
+        }
+
+        .btn {
+            background: transparent;
+            border: 2px solid var(--chalk-white);
+            color: var(--chalk-white);
+            padding: 8px 25px;
+            font-family: inherit;
+            font-size: 1.2rem;
+            border-radius: 25px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--chalk-white);
+            color: #000;
+        }
+
+        .btn-primary {
+            border-color: var(--chalk-green);
+            color: var(--chalk-green);
+        }
+        .btn-primary:hover {
+            background: var(--chalk-green);
+            color: #000;
+            box-shadow: 0 0 15px var(--chalk-green);
+        }
+
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: var(--chalk-white);
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* --- Print / PDF Styles --- */
+        @media print {
+            body { background: white; color: black; font-family: Arial, sans-serif; height: auto; overflow: visible; }
+            * { text-shadow: none !important; box-shadow: none !important; }
+            header, aside, footer, #teacher-pointer, .controls { display: none !important; }
+            .main-container { display: block; }
+            main { padding: 0; background: white; }
+            .board-surface { border: none; background: white; color: black; padding: 0; max-width: 100%; box-shadow: none; }
+            .question-heading { color: black; border-bottom: 2px solid black; }
+            .box { background: #f9f9f9; border: 1px solid #ccc; page-break-inside: avoid; opacity: 1 !important; transform: none !important; }
+            .box-title { background: white; color: black !important; }
+            .formula-highlight { color: black; border-color: black; }
+            .def-highlight { color: black; font-weight: bold; }
+        }
+
+        @media (max-width: 768px) {
+            aside { position: absolute; height: 100%; z-index: 20; transform: translateX(-100%); }
+            aside.open { transform: translateX(0); }
+            .header-title { font-size: 1.1rem; }
+            .controls button { padding: 5px 8px; font-size: 0.8rem; margin-left: 2px; }
+            .board-surface { padding: 15px; font-size: 1.1rem; }
+            .question-heading { font-size: 1.3rem; }
+        }
+
+        body, button, input { cursor: none; }
+
+    </style>
+</head>
+<body>
+
+    <div id="teacher-pointer"></div>
+
+    <header>
+        <div class="header-title">👨‍🏫 SBTE Bihar - Chemistry Board (50 Qs)</div>
+        <div class="controls">
+            <button onclick="toggleSidebar()">☰ Menu</button>
+            <button onclick="zoomOut()">🔍-</button>
+            <button onclick="zoomIn()">🔍+</button>
+            <button onclick="toggleFullScreen()">📺 Full Screen</button>
+            <button onclick="downloadNotes()">📥 Download Notes PDF</button>
+        </div>
+    </header>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="main-container">
+        <aside id="sidebar">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search Question or Unit..." onkeyup="searchQuestions()">
+            </div>
+            <div class="question-list" id="qList"></div>
+        </aside>
+
+        <main id="board-area">
+            <div class="board-surface" id="board" style="transform: scale(1);">
+                <h1 class="question-heading" id="b-heading"></h1>
+                <div id="b-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <button class="btn" onclick="prevQuestion()">◄ Previous</button>
+        <span id="pageIndicator" style="color:var(--chalk-yellow);">Page 1/50</span>
+        <button class="btn btn-primary" onclick="nextQuestion()">Next Question ►</button>
+    </footer>
+
+    <script>
+        /* ====================================================================
+           📝 DATA CONFIGURATION AREA: 50 Questions (10 from Each Unit)
+        ==================================================================== */
+        const courseData = [
+            // --- UNIT 1: ATOMIC STRUCTURE & CHEMICAL BONDING (10 Questions) ---
+            { unit: "Unit-1", question: "Q1. What is Bohr's Atomic Model? (बोहर का परमाणु मॉडल)", content: [
+                { type: "text", text: "Rutherford के model की कमियों को दूर करने के लिए Neils Bohr ने 1913 में यह model दिया।" },
+                { type: "vvi", title: "VVI for 10 Marks", text: "1. Atom के केंद्र में Nucleus होता है।<br>2. Electrons fixed circular path में घूमते हैं (Orbits/Shells - K, L, M, N)।<br>3. Electron घूमते समय energy ना lose करता है ना gain।" },
+                { type: "formula", text: "Angular Momentum (mvr) = n(h / 2π)" },
+                { type: "mistake", title: "Common Mistake ❌", text: "Exam में Shells का Diagram बनाना मत भूलना!" }
+            ]},
+            { unit: "Unit-1", question: "Q2. Define Quantum Numbers. (क्वांटम संख्याएं क्या हैं?)", content: [
+                { type: "text", text: "ये वो 4 numbers हैं जो किसी Atom में Electron का <span class='def-highlight'>Exact Address (Position & Energy)</span> बताते हैं।" },
+                { type: "exam-point", title: "Types of Quantum Numbers", text: "1. Principal (n) - Shell बताता है<br>2. Azimuthal (l) - Subshell (s, p, d, f) बताता है<br>3. Magnetic (m) - Orbital बताता है<br>4. Spin (s) - Electron का spin (+1/2 या -1/2) बताता है।" },
+                { type: "pyq", title: "PYQ (4 Marks)", text: "Direct question: 'Write all four quantum numbers.'" }
+            ]},
+            { unit: "Unit-1", question: "Q3. Explain Aufbau Principle. (औफबाऊ सिद्धांत)", content: [
+                { type: "text", text: "Aufbau एक German शब्द है जिसका मतलब है 'Building up' (निर्माण करना)।" },
+                { type: "text", text: "इसके अनुसार: <span class='def-highlight'>Electrons सबसे पहले lowest energy level वाले orbitals में भरते हैं</span>, उसके बाद higher energy levels में जाते हैं।" },
+                { type: "formula", text: "Order: 1s < 2s < 2p < 3s < 3p < 4s < 3d..." },
+                { type: "remember", title: "Trick to Remember", text: "(n+l) rule का इस्तेमाल करें। जिसका (n+l) कम, उसकी energy कम।" }
+            ]},
+            { unit: "Unit-1", question: "Q4. State Pauli's Exclusion Principle. (पाउली का अपवर्जन नियम)", content: [
+                { type: "text", text: "किसी भी एक atom में, किन्हीं भी दो electrons के लिए <span class='def-highlight'>चारों Quantum Numbers की value समान (same) नहीं हो सकती</span>।" },
+                { type: "exam-point", title: "Simple Meaning", text: "एक orbital में अधिकतम 2 electrons रह सकते हैं, और उनका Spin हमेशा opposite (एक ऊपर ↑, एक नीचे ↓) होना चाहिए।" },
+                { type: "revision", title: "Quick Revision", text: "Pauli = No two electrons have same 4 quantum numbers." }
+            ]},
+            { unit: "Unit-1", question: "Q5. What is Hund's Rule of Maximum Multiplicity? (हुंड का नियम)", content: [
+                { type: "text", text: "जब degenerate orbitals (जैसे px, py, pz जिनकी energy same हो) में electrons भरते हैं, तो पहले सब में एक-एक (singly) electron भरता है।" },
+                { type: "text", text: "Pairing (जोड़ा बनना) तब तक शुरू नहीं होती जब तक सभी orbitals में एक-एक electron ना आ जाए।" },
+                { type: "mistake", title: "Common Mistake", text: "Carbon (6) के p-orbital में दोनों electron एक ही डब्बे में मत भर देना! (↑)(↑)( ) सही है।" }
+            ]},
+            { unit: "Unit-1", question: "Q6. What is Ionic or Electrovalent Bonding? (आयनिक बंधन)", content: [
+                { type: "text", text: "वह bond जो एक atom से दूसरे atom में <span class='def-highlight'>Electrons के पूरी तरह से Transfer</span> होने से बनता है।" },
+                { type: "text", text: "Example: NaCl का बनना। Na अपना 1 electron Cl को दे देता है।" },
+                { type: "formula", text: "Na → Na⁺ + e⁻ <br> Cl + e⁻ → Cl⁻ <br> Na⁺ + Cl⁻ → NaCl" },
+                { type: "remember", title: "Key Point", text: "Ionic bonds हमेशा Metal और Non-Metal के बीच बनते हैं।" }
+            ]},
+            { unit: "Unit-1", question: "Q7. Define Covalent Bond with example. (सहसंयोजक बंधन)", content: [
+                { type: "text", text: "वह bond जो दो atoms के बीच <span class='def-highlight'>Electrons की Mutual Sharing (बराबर साझेदारी)</span> से बनता है।" },
+                { type: "text", text: "Example: Cl₂ molecule. दोनों Cl atoms को 1 electron की जरुरत है, तो वो 1-1 electron share करते हैं।" },
+                { type: "vvi", title: "Characteristics", text: "इनका melting और boiling point Ionic bonds से कम होता है, और ये electricity के bad conductors होते हैं।" }
+            ]},
+            { unit: "Unit-1", question: "Q8. Explain Coordinate (Dative) Bond. (उपसहसंयोजक बंधन)", content: [
+                { type: "text", text: "यह एक special type का covalent bond है जिसमें sharing वाले <span class='def-highlight'>दोनों electrons सिर्फ एक ही atom द्वारा दिए जाते हैं</span>।" },
+                { type: "text", text: "जो atom electron pair देता है उसे Donor (दाता) कहते हैं, और जो लेता है उसे Acceptor (ग्राही)।" },
+                { type: "formula", text: "A : + B → A → B" },
+                { type: "exam-point", title: "Arrow Symbol", text: "इसे हमेशा एक Arrow (→) से दर्शाया जाता है जो Donor से Acceptor की तरफ होता है। Example: NH₄⁺ (Ammonium ion)" }
+            ]},
+            { unit: "Unit-1", question: "Q9. What is Hydrogen Bonding? (हाइड्रोजन बॉन्डिंग)", content: [
+                { type: "text", text: "जब Hydrogen atom किसी highly electronegative atom (जैसे F, O, N) से जुड़ा होता है, तो वह दूसरे molecule के F, O, N के साथ एक weak bond बनाता है।" },
+                { type: "remember", title: "Trick: FON", text: "Hydrogen bond सिर्फ Fluorine, Oxygen और Nitrogen के साथ बनता है। (Phone = FON)" },
+                { type: "vvi", title: "Result of H-Bond", text: "इसी bond के कारण पानी (H₂O) liquid है, जबकि H₂S gas है!" }
+            ]},
+            { unit: "Unit-1", question: "Q10. Differentiate Isotopes, Isobars & Isotones. (समस्थानिक, समभारिक)", content: [
+                { type: "text", text: "<b>1. Isotopes (समस्थानिक):</b> Same Atomic Number, Different Mass Number. (Ex: ¹H, ²H, ³H)" },
+                { type: "text", text: "<b>2. Isobars (समभारिक):</b> Same Mass Number, Different Atomic Number. (Ex: ⁴⁰Ar, ⁴⁰Ca)" },
+                { type: "text", text: "<b>3. Isotones (समन्यूट्रॉनिक):</b> Same number of Neutrons. (Ex: ¹⁴C, ¹⁶O - दोनों में 8 Neutrons हैं)" },
+                { type: "pyq", title: "PYQ Alert", text: "Exam में अंतर (Difference) के रूप में 4 Marks में आता है।" }
+            ]},
+
+            // --- UNIT 2: WATER (10 Questions) ---
+            { unit: "Unit-2", question: "Q11. What is Hardness of Water? (जल की कठोरता)", content: [
+                { type: "text", text: "वह पानी जो साबुन (Soap) के साथ आसानी से झाग (lather) नहीं बनाता, Hard Water कहलाता है।" },
+                { type: "text", text: "यह पानी में घुले <span class='def-highlight'>Calcium (Ca²⁺) और Magnesium (Mg²⁺)</span> के salts के कारण होता है।" },
+                { type: "mistake", title: "Student Mistake", text: "Sodium (Na) या Potassium (K) hardness नहीं करते! सिर्फ Ca और Mg करते हैं।" }
+            ]},
+            { unit: "Unit-2", question: "Q12. Temporary vs Permanent Hardness. (अस्थायी और स्थायी कठोरता)", content: [
+                { type: "text", text: "<b>Temporary Hardness:</b> यह Ca और Mg के Bicarbonates (HCO₃⁻) के कारण होती है। इसे सिर्फ पानी उबालकर (Boiling) दूर किया जा सकता है।" },
+                { type: "text", text: "<b>Permanent Hardness:</b> यह Ca और Mg के Chlorides (Cl⁻) और Sulphates (SO₄²⁻) के कारण होती है। इसे उबालकर दूर नहीं किया जा सकता।" },
+                { type: "vvi", title: "Exam Question", text: "Write the chemical formula of salts causing temporary and permanent hardness." }
+            ]},
+            { unit: "Unit-2", question: "Q13. Units of Hardness of Water. (कठोरता की इकाइयाँ)", content: [
+                { type: "text", text: "Hardness को हमेशा CaCO₃ (Calcium Carbonate) equivalent के रूप में नापा जाता है क्योंकि इसका molecular weight 100 है जो calculation आसान बनाता है।" },
+                { type: "formula", text: "1. ppm (Parts Per Million) <br> 2. mg/L (Milligrams per Litre) <br> 3. Degree Clark (°Cl) <br> 4. Degree French (°Fr)" },
+                { type: "remember", title: "Relation", text: "1 ppm = 1 mg/L = 0.07 °Cl = 0.1 °Fr" }
+            ]},
+            { unit: "Unit-2", question: "Q14. Disadvantages of Hard Water in Boilers. (बॉयलर में कठोर जल के नुकसान)", content: [
+                { type: "text", text: "Industries में जब Hard water को boiler में steam बनाने के लिए गर्म करते हैं, तो दो बड़ी समस्याएँ आती हैं:" },
+                { type: "text", text: "<b>1. Scale (पपड़ी):</b> Hard coating जो boiler की दीवार पर जम जाती है। इससे fuel ज़्यादा खर्च होता है और boiler फटने का डर रहता है।" },
+                { type: "text", text: "<b>2. Sludge (कीचड़):</b> Soft, loose precipitate जो पानी में तैरता रहता है।" },
+                { type: "pyq", title: "PYQ (5 Marks)", text: "Difference between Scale and Sludge in boiler." }
+            ]},
+            { unit: "Unit-2", question: "Q15. Zeolite Process for Water Softening. (जिओलाइट विधि)", content: [
+                { type: "text", text: "Zeolite एक chemical compound है (Hydrated Sodium Aluminosilicate)। यह Hard water से Ca²⁺ और Mg²⁺ ions को अपने Na⁺ ions के साथ Exchange कर लेता है।" },
+                { type: "formula", text: "Na₂Ze + Ca(HCO₃)₂ → CaZe (Exhausted) + 2NaHCO₃" },
+                { type: "exam-point", title: "Regeneration", text: "जब Zeolite काम करना बंद कर दे (exhaust हो जाए), तो उसमें 10% NaCl (Brine solution) डालकर उसे फिर से नया (regenerate) किया जाता है।" }
+            ]},
+            { unit: "Unit-2", question: "Q16. Ion Exchange (Demineralization) Process. (आयन विनिमय विधि)", content: [
+                { type: "text", text: "यह water softening का सबसे best method है। इससे पानी से सारे Minerals (Cations + Anions) निकल जाते हैं।" },
+                { type: "text", text: "इसमें दो tank होते हैं: <br>1. Cation Exchanger (RH₂): जो Ca²⁺, Mg²⁺ को H⁺ से बदलता है।<br>2. Anion Exchanger (R(OH)₂): जो Cl⁻, SO₄²⁻ को OH⁻ से बदलता है।" },
+                { type: "vvi", title: "Result", text: "H⁺ और OH⁻ मिलकर H₂O (Pure water) बना लेते हैं। इस पानी को Deionized water कहते हैं।" }
+            ]},
+            { unit: "Unit-2", question: "Q17. Lime-Soda Process for Water Softening. (चूना-सोडा विधि)", content: [
+                { type: "text", text: "इस method में पानी में Lime (Ca(OH)₂) और Soda ash (Na₂CO₃) मिलाया जाता है।" },
+                { type: "text", text: "Lime अस्थायी (Temporary) कठोरता दूर करता है और Soda स्थायी (Permanent) कठोरता दूर करता है।" },
+                { type: "mistake", title: "Careful", text: "यह process पानी को 100% soft नहीं कर पाता (15-30 ppm hardness रह जाती है), इसलिए इसे High-pressure boilers में use नहीं करते।" }
+            ]},
+            { unit: "Unit-2", question: "Q18. What is BOD (Biochemical Oxygen Demand)? (BOD क्या है?)", content: [
+                { type: "text", text: "पानी में मौजूद Organic waste (कचरा) को Bacteria द्वारा खत्म (decompose) करने के लिए जितनी Oxygen की जरुरत होती है, उसे BOD कहते हैं।" },
+                { type: "text", text: "इसे 5 दिनों तक 20°C temperature पर check किया जाता है (BOD₅)।" },
+                { type: "vvi", title: "Water Quality", text: "High BOD = गंदा पानी (High Pollution)। <br>Low BOD = साफ़ पानी।" }
+            ]},
+            { unit: "Unit-2", question: "Q19. What is COD (Chemical Oxygen Demand)? (COD क्या है?)", content: [
+                { type: "text", text: "पानी में मौजूद Organic और Inorganic दोनों तरह के waste को Chemical (Potassium dichromate - K₂Cr₂O₇) द्वारा oxidize करने के लिए आवश्यक Oxygen की मात्रा COD कहलाती है।" },
+                { type: "formula", text: "COD is always greater than BOD (COD > BOD)" },
+                { type: "revision", title: "Quick Difference", text: "BOD सिर्फ Bacteria वाला waste नापता है, COD सब कुछ नापता है (Fast process है)।" }
+            ]},
+            { unit: "Unit-2", question: "Q20. Drinking Water Standards (WHO). (पीने के पानी के मानक)", content: [
+                { type: "text", text: "WHO के अनुसार पीने लायक पानी (Potable water) की विशेषताएं:" },
+                { type: "exam-point", title: "Important Limits", text: "1. pH: 6.5 से 8.5 होना चाहिए।<br>2. Hardness: 300 mg/L से कम होनी चाहिए।<br>3. Chloride: 250 mg/L से कम।<br>4. यह रंगहीन (Colorless) और गंधहीन (Odorless) होना चाहिए।" }
+            ]},
+
+            // --- UNIT 3: ENGINEERING MATERIALS (10 Questions) ---
+            { unit: "Unit-3", question: "Q21. Define Metallurgy, Minerals & Ores. (धातुकर्म, खनिज और अयस्क)", content: [
+                { type: "text", text: "<b>Mineral (खनिज):</b> पृथ्वी के अंदर पाए जाने वाले वो compound जिनमें metal होता है।" },
+                { type: "text", text: "<b>Ore (अयस्क):</b> वो Minerals जिनसे Metal को आसानी से और कम खर्चे (profitably) में निकाला जा सके।" },
+                { type: "vvi", title: "Important Line", text: "All ores are minerals, but all minerals are not ores. (सभी अयस्क खनिज हैं, पर सभी खनिज अयस्क नहीं होते।)" }
+            ]},
+            { unit: "Unit-3", question: "Q22. Difference between Roasting & Calcination. (भर्जन और निस्तापन)", content: [
+                { type: "text", text: "<b>Roasting (भर्जन):</b> Ore को <span class='def-highlight'>हवा (Oxygen) की उपस्थिति में</span> गर्म करना। यह Sulphide ores के लिए होता है। (Ex: ZnS → ZnO + SO₂)" },
+                { type: "text", text: "<b>Calcination (निस्तापन):</b> Ore को <span class='def-highlight'>हवा की अनुपस्थिति (No Oxygen) में</span> गर्म करना। यह Carbonate ores के लिए होता है। (Ex: ZnCO₃ → ZnO + CO₂)" },
+                { type: "pyq", title: "PYQ Alert", text: "Very famous 4 Marks short notes question." }
+            ]},
+            { unit: "Unit-3", question: "Q23. What is Smelting? (प्रगलन)", content: [
+                { type: "text", text: "Roasting/Calcination के बाद मिले Metal Oxide को Carbon (Coke) के साथ गर्म करके Metal प्राप्त करने की प्रक्रिया को Smelting कहते हैं।" },
+                { type: "formula", text: "Metal Oxide + Carbon + Heat → Metal + CO" },
+                { type: "text", text: "यह काम Blast Furnace (वात्या भट्टी) में किया जाता है।" }
+            ]},
+            { unit: "Unit-3", question: "Q24. Alloys and their purposes. (मिश्र धातु और उनके उद्देश्य)", content: [
+                { type: "text", text: "<b>Alloy:</b> दो या दो से अधिक Metals (या metal+non-metal) का समांगी मिश्रण (Homogeneous mixture)।" },
+                { type: "exam-point", title: "Why make alloys?", text: "1. Hardness बढ़ाने के लिए (Gold में Copper मिलाना)<br>2. Corrosion (जंग) रोकने के लिए (Stainless Steel)<br>3. Melting point कम करने के लिए (Solder wire)।" }
+            ]},
+            { unit: "Unit-3", question: "Q25. Composition of Brass & Bronze. (पीतल और कांसा)", content: [
+                { type: "text", text: "ये दोनों Copper के बहुत famous alloys हैं।" },
+                { type: "formula", text: "Brass (पीतल) = Copper (Cu) + Zinc (Zn)" },
+                { type: "formula", text: "Bronze (कांसा) = Copper (Cu) + Tin (Sn)" },
+                { type: "remember", title: "Trick to Remember", text: "Bronze में 'Z' आता है पर इसके formula में Zn नहीं होता, Sn (Tin) होता है!" }
+            ]},
+            { unit: "Unit-3", question: "Q26. What are Polymers? (बहुलक क्या हैं?)", content: [
+                { type: "text", text: "Poly (बहुत) + Mer (part)। जब छोटे-छोटे molecules (जिन्हें Monomer कहते हैं) आपस में जुड़कर एक बहुत बड़ी chain बनाते हैं, तो उसे Polymer कहते हैं।" },
+                { type: "text", text: "उदाहरण: बहुत सारे Ethene मिलकर Poly-ethene (Polythene/प्लास्टिक) बनाते हैं।" },
+                { type: "revision", title: "Types of Polymerization", text: "1. Addition (बिना कुछ निकाले जुड़ना) <br> 2. Condensation (जुड़ते समय पानी/H2O बाहर निकलना)।" }
+            ]},
+            { unit: "Unit-3", question: "Q27. Thermoplastic vs Thermosetting Plastics.", content: [
+                { type: "text", text: "<b>Thermoplastic:</b> वो प्लास्टिक जो गर्म करने पर मुलायम (soft) हो जाते हैं और ठंडा करने पर कठोर। इन्हें बार-बार पिघलाकर नया आकार (recycle) दिया जा सकता है। (Ex: Polythene, PVC)" },
+                { type: "text", text: "<b>Thermosetting:</b> जो एक बार आकार लेने के बाद गर्म करने पर पिघलते नहीं, बल्कि जल जाते हैं। इन्हें Recycle नहीं कर सकते। (Ex: Bakelite - कुकर का हैंडल)" },
+                { type: "vvi", title: "Exam Tip", text: "Thermosetting में strong 3D Cross-linked bonds होते हैं इसलिए वो पिघलते नहीं।" }
+            ]},
+            { unit: "Unit-3", question: "Q28. Vulcanization of Rubber. (रबर का वल्कनीकरण)", content: [
+                { type: "text", text: "प्राकृतिक रबर (Natural rubber) बहुत मुलायम और चिपचिपा होता है। टायर बनाने के लिए यह बेकार है।" },
+                { type: "text", text: "Natural rubber में <span class='def-highlight'>Sulphur (S)</span> मिलाकर गर्म करने की प्रक्रिया को Vulcanization कहते हैं।" },
+                { type: "exam-point", title: "Benefit", text: "Sulphur रबर की chains के बीच Cross-links बना देता है जिससे रबर Strong, Elastic और non-sticky हो जाता है।" }
+            ]},
+            { unit: "Unit-3", question: "Q29. What are Lubricants? (स्नेहक क्या हैं?)", content: [
+                { type: "text", text: "वो पदार्थ (substance) जो दो रगड़ खाने वाली (rubbing) surfaces के बीच डालकर <span class='def-highlight'>Friction (घर्षण)</span> कम करने के लिए उपयोग किये जाते हैं।" },
+                { type: "text", text: "Types: 1. Solid (Graphite) 2. Semi-solid (Grease) 3. Liquid (Engine Oil)." },
+                { type: "remember", title: "Function", text: "यह मशीन को गर्म होने से बचाता है और मशीन की Life बढ़ाता है।" }
+            ]},
+            { unit: "Unit-3", question: "Q30. Properties of Good Lubricant (Viscosity & Flash Point).", content: [
+                { type: "text", text: "<b>1. Viscosity (श्यानता):</b> गाढ़ापन। Lubricant ना तो पानी की तरह पतला होना चाहिए (बह जाएगा), ना ही शहद की तरह बहुत गाढ़ा (मशीन जाम कर देगा)।" },
+                { type: "text", text: "<b>2. Flash Point:</b> वह न्यूनतम तापमान (lowest temp) जिस पर lubricant भाप बनकर एक पल के लिए आग (flash) पकड़ लेता है।" },
+                { type: "pyq", title: "PYQ Alert", text: "A good lubricant must have HIGH flash point (ताकि मशीन गर्म होने पर उसमें आग ना लगे)।" }
+            ]},
+
+            // --- UNIT 4: SOLID STATE (10 Questions) ---
+            { unit: "Unit-4", question: "Q31. Crystalline vs Amorphous Solids. (क्रिस्टलीय और अक्रिस्टलीय ठोस)", content: [
+                { type: "text", text: "<b>Crystalline:</b> इनमें atoms का एक regular/fixed pattern होता है। इनका Melting Point sharp होता है। (Ex: NaCl, Diamond, Quartz)" },
+                { type: "text", text: "<b>Amorphous:</b> इनमें atoms random तरीके से जुड़े होते हैं। इनका Melting point range में होता है (जैसे प्लास्टिक पहले मुलायम होता है फिर पिघलता है)। (Ex: Glass, Plastic, Rubber)" },
+                { type: "vvi", title: "Important terms", text: "Crystalline = True solids (Anisotropic). <br> Amorphous = Pseudo solids / Super cooled liquids (Isotropic)." }
+            ]},
+            { unit: "Unit-4", question: "Q32. What is Unit Cell & Space Lattice? (इकाई सेल और क्रिस्टल जालक)", content: [
+                { type: "text", text: "<b>Space Lattice:</b> 3D space में atoms का regular arrangement।" },
+                { type: "text", text: "<b>Unit Cell:</b> Crystal lattice का वह सबसे <span class='def-highlight'>छोटा हिस्सा (Smallest 3D repeating unit)</span>, जिसे बार-बार दोहराने (repeat) से पूरा crystal बन जाता है। (जैसे दीवार में ईंट/Brick)" }
+            ]},
+            { unit: "Unit-4", question: "Q33. Types of Cubic Unit Cells. (यूनिट सेल के प्रकार)", content: [
+                { type: "text", text: "1. <b>Simple Cubic (SC):</b> Atoms सिर्फ कोनों (Corners) पर होते हैं।" },
+                { type: "text", text: "2. <b>Body Centered Cubic (BCC):</b> Atoms 8 कोनों पर और 1 बिल्कुल बीचों-बीच (Center) होता है।" },
+                { type: "text", text: "3. <b>Face Centered Cubic (FCC):</b> Atoms 8 कोनों पर और कमरे की 6 दीवारों (Faces) के center पर होते हैं।" }
+            ]},
+            { unit: "Unit-4", question: "Q34. Calculate Z (No. of atoms per unit cell).", content: [
+                { type: "text", text: "Corner का atom 8 कमरों में share होता है (Contribution 1/8)। Face का 2 में (1/2)। Center का किसी से share नहीं होता (1)।" },
+                { type: "formula", text: "SC: Z = 8 × (1/8) = 1 atom" },
+                { type: "formula", text: "BCC: Z = 8 × (1/8) + 1 = 2 atoms" },
+                { type: "formula", text: "FCC: Z = 8 × (1/8) + 6 × (1/2) = 4 atoms" }
+            ]},
+            { unit: "Unit-4", question: "Q35. Packing Efficiency. (संकुलन क्षमता)", content: [
+                { type: "text", text: "किसी Unit Cell में Atoms ने कुल कितना % जगह (Volume) घेर रखा है।" },
+                { type: "exam-point", title: "Direct Values to Remember", text: "SC = 52.4% (सबसे ज्यादा खाली जगह) <br> BCC = 68% <br> FCC = 74% (सबसे Best packing)" },
+                { type: "mistake", title: "Don't Forget", text: "Exam में FCC/HCP की packing efficiency 74% होती है, यह Objective (MCQ) में पक्का आता है।" }
+            ]},
+            { unit: "Unit-4", question: "Q36. Crystal Defects (Point Defect). (क्रिस्टल दोष)", content: [
+                { type: "text", text: "जब Crystal बनाते समय atoms अपनी सही जगह पर ना बैठें, तो उसे Crystal Defect कहते हैं।" },
+                { type: "text", text: "Point Defect: जब गड़बड़ी सिर्फ एक Atom (Point) के आस-पास हो।" },
+                { type: "vvi", title: "Types", text: "इसके दो सबसे important type हैं: Schottky Defect और Frenkel Defect." }
+            ]},
+            { unit: "Unit-4", question: "Q37. Schottky Defect. (शॉट्की दोष)", content: [
+                { type: "text", text: "जब Crystal में से <b>बराबर संख्या में Positive (+) और Negative (-) ions</b> अपनी जगह छोड़कर बिल्कुल बाहर (Missing) हो जाते हैं।" },
+                { type: "text", text: "चूंकि mass बाहर चला गया, इसलिए Crystal की <span class='def-highlight'>Density (घनत्व) कम हो जाती है</span>।" },
+                { type: "remember", title: "Examples", text: "NaCl, KCl (जिनमें + और - ion का size लगभग बराबर होता है)।" }
+            ]},
+            { unit: "Unit-4", question: "Q38. Frenkel Defect. (फ्रेंकेल दोष)", content: [
+                { type: "text", text: "जब कोई ion (ज्यादातर छोटा Positive ion) अपनी जगह छोड़कर crystal के अंदर ही बीच की खाली जगह (Interstitial site) में छुप जाता है।" },
+                { type: "text", text: "इसमें कोई भी ion crystal से बाहर नहीं गया, इसलिए <span class='def-highlight'>Density (घनत्व) Same रहता है (No change)</span>।" },
+                { type: "remember", title: "Examples", text: "AgCl, AgBr (जिनमें + ion बहुत छोटा होता है)।" }
+            ]},
+            { unit: "Unit-4", question: "Q39. Band Theory (Conductors, Insulators, Semiconductors).", content: [
+                { type: "text", text: "Band theory के अनुसार दो band होते हैं: Valence Band (VB - नीचे) और Conduction Band (CB - ऊपर)।" },
+                { type: "exam-point", title: "Energy Gap (Eg)", text: "<b>Conductor:</b> VB और CB आपस में Overlap करते हैं (Eg=0)। Current बहता है।<br><b>Insulator:</b> VB और CB में बहुत बड़ा Gap होता है (Eg > 3eV)। Current नहीं बहता।<br><b>Semiconductor:</b> Gap बहुत छोटा होता है (Eg < 3eV)। गरम करने पर current बहता है (Silicon, Germanium)।" }
+            ]},
+            { unit: "Unit-4", question: "Q40. Magnetic Properties of Solids.", content: [
+                { type: "text", text: "<b>Paramagnetic (अनुचुंबकीय):</b> चुंबक की तरफ थोड़ा आकर्षित होते हैं। (Unpaired electrons होते हैं, Ex: O₂, Cu²⁺)" },
+                { type: "text", text: "<b>Diamagnetic (प्रतिचुंबकीय):</b> चुंबक से दूर भागते हैं (Repel)। (सारे electrons Paired होते हैं, Ex: NaCl, H₂O)" },
+                { type: "text", text: "<b>Ferromagnetic (लौहचुंबकीय):</b> चुंबक की तरफ बहुत तेज़ी से खींचते हैं और हमेशा के लिए चुंबक बन सकते हैं। (Ex: Fe, Co, Ni)" }
+            ]},
+
+            // --- UNIT 5: ELECTROCHEMISTRY (10 Questions) ---
+            { unit: "Unit-5", question: "Q41. Electrolytes vs Non-electrolytes. (विद्युत अपघट्य)", content: [
+                { type: "text", text: "<b>Electrolyte:</b> वो chemical जो पानी में डालने पर Ions (+ और -) में टूट जाते हैं और Electricity conduct करते हैं। (Ex: NaCl, HCl, NaOH)" },
+                { type: "text", text: "<b>Non-electrolyte:</b> जो पानी में Ions में नहीं टूटते और electricity conduct नहीं करते। (Ex: Sugar, Urea, Glucose)" },
+                { type: "vvi", title: "Strong vs Weak", text: "Strong electrolyte 100% टूट जाते हैं (HCl)। Weak electrolyte सिर्फ 5-10% टूटते हैं (Acetic acid - CH3COOH)।" }
+            ]},
+            { unit: "Unit-5", question: "Q42. Faraday's First Law of Electrolysis.", content: [
+                { type: "text", text: "Electroplating करते समय इलेक्ट्रोड पर जमा होने वाले पदार्थ का वज़न (W), उसमें पास की गई Electricity (Q) के directly proportional होता है।" },
+                { type: "formula", text: "W ∝ Q <br> W = Z × I × t" },
+                { type: "text", text: "जहाँ I = Current (Ampere), t = Time (sec), Z = Electrochemical Equivalent." }
+            ]},
+            { unit: "Unit-5", question: "Q43. Faraday's Second Law of Electrolysis.", content: [
+                { type: "text", text: "जब same amount की electricity अलग-अलग electrolytes में पास की जाती है, तो जमा होने वाले पदार्थों का वज़न (W) उनके Equivalent Weight (E) के proportional होता है।" },
+                { type: "formula", text: "W₁ / W₂ = E₁ / E₂" },
+                { type: "mistake", title: "Numerical Alert", text: "इन दोनों Laws पर 4 marks का numerical आ सकता है। W=ZIt formula रट लें!" }
+            ]},
+            { unit: "Unit-5", question: "Q44. What is a Galvanic Cell (Daniel Cell)?", content: [
+                { type: "text", text: "वह device जो <span class='def-highlight'>Chemical Energy को Electrical Energy</span> में बदलता है। (बैटरी)" },
+                { type: "text", text: "Daniel Cell में Zinc (Zn) का Anode और Copper (Cu) का Cathode होता है।" },
+                { type: "exam-point", title: "LOAN Trick", text: "Galvanic cell याद रखने की Trick: <b>LOAN</b><br><b>L</b>eft side, <b>O</b>xidation, <b>A</b>node, <b>N</b>egative pole." }
+            ]},
+            { unit: "Unit-5", question: "Q45. Salt Bridge and its Functions. (लवण सेतु)", content: [
+                { type: "text", text: "यह एक U-shape की कांच की नली (tube) है जिसमें KCl या KNO3 भरा होता है।" },
+                { type: "text", text: "यह Galvanic cell के दोनों half-cells को जोड़ता है।" },
+                { type: "vvi", title: "Functions", text: "1. Circuit को complete करता है।<br>2. दोनों sides की Electrical Neutrality (ions का balance) बनाए रखता है ताकि सेल काम करता रहे।" }
+            ]},
+            { unit: "Unit-5", question: "Q46. Standard Electrode Potential (SEP). (मानक इलेक्ट्रोड विभव)", content: [
+                { type: "text", text: "जब किसी Metal की छड़ (electrode) को उसी के 1 Molar concentration वाले solution में, 298K Temperature और 1 atm pressure पर डुबाया जाता है, तो जो Voltage पैदा होता है उसे E° कहते हैं।" },
+                { type: "formula", text: "E°(cell) = E°(cathode) - E°(anode)" },
+                { type: "remember", title: "Reference", text: "Standard Hydrogen Electrode (SHE) का potential हमेशा 0.00 Volts माना जाता है।" }
+            ]},
+            { unit: "Unit-5", question: "Q47. Nernst Equation. (नेर्न्स्ट समीकरण)", content: [
+                { type: "text", text: "अगर temperature 298K न हो, या concentration 1 Molar न हो, तब cell का Voltage निकालने के लिए Nernst Equation का इस्तेमाल होता है।" },
+                { type: "formula", text: "E = E° - (0.0591 / n) log₁₀ [Product] / [Reactant]" },
+                { type: "pyq", title: "PYQ Alert", text: "Write Nernst equation for single electrode and full cell. (4 Marks)" }
+            ]},
+            { unit: "Unit-5", question: "Q48. Electrochemical Series. (विद्युत रासायनिक श्रेणी)", content: [
+                { type: "text", text: "Metals को उनके Standard Reduction Potential (E°) के बढ़ते या घटते क्रम में सजाने पर जो series बनती है।" },
+                { type: "exam-point", title: "Applications", text: "1. जो Metal series में ऊपर है (जैसे Li, K, Na), वो ज़्यादा Reactive है।<br>2. ऊपर वाला Metal नीचे वाले Metal को उसके solution से बाहर (displace) कर सकता है (जैसे Zn, CuSO4 से Cu को निकाल देता है)।" }
+            ]},
+            { unit: "Unit-5", question: "Q49. Corrosion (Dry & Wet). (संक्षारण/जंग लगना)", content: [
+                { type: "text", text: "वातावरण (Environment) की गैसों या नमी के कारण Metal का धीरे-धीरे नष्ट होना Corrosion कहलाता है। (जैसे लोहे पर जंग - Rusting of Iron)।" },
+                { type: "text", text: "<b>Dry Corrosion:</b> बिना नमी के, सिर्फ oxygen या gases के हमले से (Chemical attack)।" },
+                { type: "text", text: "<b>Wet Corrosion:</b> पानी/नमी की उपस्थिति में (Electrochemical attack)। यह ज़्यादा खतरनाक होता है।" }
+            ]},
+            { unit: "Unit-5", question: "Q50. Prevention of Corrosion. (संक्षारण से बचाव)", content: [
+                { type: "text", text: "लोहे को जंग से बचाने के तरीके:" },
+                { type: "exam-point", title: "Methods", text: "1. <b>Galvanization:</b> लोहे पर Zinc (Zn) की परत चढ़ाना।<br>2. <b>Alloying:</b> लोहे में Chromium और Nickel मिलाकर Stainless Steel बनाना।<br>3. <b>Cathodic Protection:</b> लोहे को किसी ज़्यादा reactive metal (जैसे Mg) के तार से जोड़ देना, जिससे Mg ख़राब होगा पर लोहा बच जाएगा (Sacrificial anode)।" },
+                { type: "revision", title: "Congratulations! 🎉", text: "हमने पूरी Chemistry-B का Syllabus (50 VVI Questions) ख़त्म कर लिया है! All the best for your Exams! 👍" }
+            ]}
+        ];
+
+        /* ====================================================================
+           ⚙️ SYSTEM LOGIC
+        ==================================================================== */
+        
+        let currentIndex = 0;
+        let isTyping = false;
+        let currentZoom = 1;
+
+        const pointer = document.getElementById('teacher-pointer');
+        document.addEventListener('mousemove', (e) => {
+            pointer.style.left = e.clientX + 'px';
+            pointer.style.top = e.clientY + 'px';
+        });
+
+        function initApp() {
+            renderSidebar();
+            loadQuestion(0);
+        }
+
+        function renderSidebar(filterText = "") {
+            const list = document.getElementById('qList');
+            list.innerHTML = '';
+            
+            courseData.forEach((item, index) => {
+                if (item.question.toLowerCase().includes(filterText.toLowerCase()) || 
+                    item.unit.toLowerCase().includes(filterText.toLowerCase())) {
+                    
+                    const div = document.createElement('div');
+                    div.className = `q-item ${index === currentIndex ? 'active' : ''}`;
+                    div.innerHTML = `<span style="color:#ffeb3b; font-size:0.8rem;">${item.unit}</span><br>${item.question.substring(0, 45)}...`;
+                    div.onclick = () => loadQuestion(index);
+                    list.appendChild(div);
+                }
+            });
+        }
+
+        function searchQuestions() {
+            const val = document.getElementById('searchInput').value;
+            renderSidebar(val);
+        }
+
+        async function loadQuestion(index) {
+            if (isTyping) return; 
+            
+            currentIndex = index;
+            renderSidebar(); 
+            updateProgress();
+            
+            const data = courseData[index];
+            const heading = document.getElementById('b-heading');
+            const contentArea = document.getElementById('b-content');
+            
+            heading.innerHTML = '';
+            contentArea.innerHTML = '';
+
+            if(window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+
+            isTyping = true;
+            
+            await typeEffect(heading, data.unit + " | " + data.question, 15); // Fast typing for titles
+            
+            for (let block of data.content) {
+                await renderBlock(block, contentArea);
+                await sleep(300); // Shorter pause for smoother reading
+            }
+
+            isTyping = false;
+        }
+
+        async function renderBlock(block, container) {
+            const el = document.createElement('div');
+            
+            if (block.type === 'text') {
+                el.style.marginBottom = '15px';
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(10px)';
+                el.style.transition = 'all 0.5s';
+                container.appendChild(el);
+                
+                void el.offsetWidth;
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+                el.innerHTML = block.text;
+                
+            } else if (block.type === 'formula') {
+                el.className = 'formula-highlight';
+                container.appendChild(el);
+                await typeEffect(el, block.text, 20); // Fast typing for formula
+            } else {
+                el.className = `box ${block.type}`;
+                let titleHtml = '';
+                if(block.title) {
+                    titleHtml = `<div class="box-title">${block.title}</div>`;
+                }
+                el.innerHTML = titleHtml + `<div class="box-text"></div>`;
+                container.appendChild(el);
+                const textBox = el.querySelector('.box-text');
+                textBox.innerHTML = block.text; 
+            }
+        }
+
+        function typeEffect(element, text, speed) {
+            return new Promise(resolve => {
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                let i = 0;
+                
+                function type() {
+                    // Injecting HTML tags quickly
+                    if(text.charAt(i) === '<') {
+                        let tag = '';
+                        while(text.charAt(i) !== '>' && i < text.length) {
+                            tag += text.charAt(i);
+                            i++;
+                        }
+                        tag += '>';
+                        element.innerHTML += tag;
+                        i++;
+                        type();
+                    } else if (i < text.length) {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                        setTimeout(type, speed);
+                    } else {
+                        element.classList.remove('typing-cursor');
+                        resolve();
+                    }
+                }
+                type();
+            });
+        }
+
+        function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+        function nextQuestion() { if (currentIndex < courseData.length - 1 && !isTyping) loadQuestion(currentIndex + 1); }
+        function prevQuestion() { if (currentIndex > 0 && !isTyping) loadQuestion(currentIndex - 1); }
+
+        function updateProgress() {
+            const percent = ((currentIndex + 1) / courseData.length) * 100;
+            document.getElementById('progressBar').style.width = percent + '%';
+            document.getElementById('pageIndicator').innerText = `Page ${currentIndex + 1}/${courseData.length}`;
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function zoomIn() { if (currentZoom < 1.5) { currentZoom += 0.1; document.getElementById('board').style.transform = `scale(${currentZoom})`; } }
+        function zoomOut() { if (currentZoom > 0.5) { currentZoom -= 0.1; document.getElementById('board').style.transform = `scale(${currentZoom})`; } }
+        
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+            else if (document.exitFullscreen) document.exitFullscreen();
+        }
+
+        function downloadNotes() {
+            if(isTyping) {
+                alert("कृपया Teacher को लिखना पूरा करने दें! (Wait for typing to finish)");
+                return;
+            }
+            window.print();
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
