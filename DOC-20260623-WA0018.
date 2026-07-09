@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lalan Kumar - Chemistry Smart Classroom</title>
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root[data-theme="dark"] {
+            --board-bg: #112211;
+            --board-border: #5c4033;
+            --text-main: #f4f4f4;
+            --text-glow: rgba(255, 255, 255, 0.7);
+            --neon-green: #39ff14;
+            --yellow: #f1c40f;
+            --red: #e74c3c;
+            --chalk-dust: rgba(255, 255, 255, 0.03);
+            --option-bg: rgba(255, 255, 255, 0.05);
+            --option-hover: rgba(57, 255, 20, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.8);
+        }
+
+        :root[data-theme="light"] {
+            --board-bg: #ffffff;
+            --board-border: #bdc3c7;
+            --text-main: #2c3e50;
+            --text-glow: rgba(0, 0, 0, 0.2);
+            --neon-green: #27ae60;
+            --yellow: #f39c12;
+            --red: #c0392b;
+            --chalk-dust: rgba(0, 0, 0, 0.02);
+            --option-bg: rgba(0, 0, 0, 0.05);
+            --option-hover: rgba(39, 174, 96, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.2);
+        }
+
+        /* --- GLOBAL STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe Print', cursive;
+        }
+
+        body {
+            background-color: #050505;
+            color: var(--text-main);
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        /* --- BACKGROUND ANIMATIONS --- */
+        .bg-animations {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .atom {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(57, 255, 20, 0.2);
+            animation: float 10s infinite linear;
+        }
+
+        .atom::before, .atom::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            border: 1px dashed rgba(57, 255, 20, 0.3);
+            animation: spin 5s infinite linear;
+        }
+
+        .atom::before { width: 120%; height: 40%; }
+        .atom::after { width: 40%; height: 120%; }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* --- SMART BOARD --- */
+        .smart-board {
+            width: 95vw;
+            max-width: 1200px;
+            height: 90vh;
+            background: var(--board-bg);
+            background-image: radial-gradient(var(--chalk-dust) 1px, transparent 1px);
+            background-size: 10px 10px;
+            border: 15px solid var(--board-border);
+            border-radius: 10px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5), 0 15px 35px var(--shadow-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        /* Chalk Text Effect */
+        .chalk-text {
+            text-shadow: 0 0 2px var(--text-glow), 0 0 5px var(--text-glow);
+        }
+
+        /* --- SCREENS --- */
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 30px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .screen.active { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        /* --- TOP BAR CONTROLS --- */
+        .top-controls {
+            position: absolute;
+            top: 15px; right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .ctrl-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--text-main);
+            color: var(--text-main);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .ctrl-btn:hover { background: var(--neon-green); color: #000; }
+
+        /* --- WELCOME SCREEN --- */
+        .teacher-avatar {
+            font-size: 80px;
+            animation: bounce 2s infinite;
+            filter: drop-shadow(0 0 10px var(--neon-green));
+            margin-bottom: 20px;
+        }
+
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .welcome-title {
+            font-size: 3rem;
+            color: var(--neon-green);
+            text-align: center;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .welcome-subtitle { font-size: 1.5rem; margin-bottom: 40px; text-align: center; }
+
+        .btn-start {
+            background: transparent;
+            color: var(--neon-green);
+            border: 2px solid var(--neon-green);
+            padding: 15px 40px;
+            font-size: 1.8rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+        }
+
+        .btn-start:hover {
+            background: var(--neon-green);
+            color: var(--board-bg);
+            box-shadow: 0 0 30px var(--neon-green);
+            transform: scale(1.05);
+        }
+
+        /* --- QUIZ SCREEN --- */
+        .quiz-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed var(--text-glow);
+            padding-bottom: 10px;
+        }
+
+        .stats-box { font-size: 1.2rem; display: flex; gap: 20px; }
+        .correct-text { color: var(--neon-green); }
+        .wrong-text { color: var(--red); }
+
+        .timer-container {
+            position: relative;
+            width: 80px; height: 80px;
+        }
+
+        .timer-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+        .timer-circle-bg { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 6; }
+        .timer-circle {
+            fill: none; stroke: var(--neon-green); stroke-width: 6;
+            stroke-dasharray: 220; stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
+        }
+        .timer-text {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 1.5rem; font-weight: bold;
+        }
+
+        .progress-bar-container { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 20px; }
+        .progress-fill { height: 100%; background: var(--neon-green); width: 0%; transition: width 0.3s; border-radius: 4px; box-shadow: 0 0 10px var(--neon-green); }
+
+        .question-box { text-align: center; margin-bottom: 30px; width: 100%; }
+        .question-num { font-size: 1.2rem; color: var(--yellow); margin-bottom: 10px; }
+        .question-text { font-size: 2.2rem; line-height: 1.4; }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .option-btn {
+            background: var(--option-bg);
+            border: 1px solid var(--text-glow);
+            color: var(--text-main);
+            padding: 20px;
+            font-size: 1.3rem;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover { background: var(--option-hover); border-color: var(--neon-green); transform: translateY(-2px); }
+        .option-btn.correct { background: rgba(57, 255, 20, 0.3); border-color: var(--neon-green); box-shadow: 0 0 15px var(--neon-green); }
+        .option-btn.wrong { background: rgba(231, 76, 60, 0.3); border-color: var(--red); box-shadow: 0 0 15px var(--red); }
+
+        .controls-footer {
+            margin-top: auto; width: 100%; display: flex; justify-content: center; gap: 20px; padding-top: 20px;
+        }
+        
+        .mic-btn {
+            width: 70px; height: 70px; border-radius: 50%;
+            background: transparent; border: 2px solid var(--text-main); color: var(--text-main);
+            font-size: 30px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center;
+        }
+        .mic-btn.listening {
+            border-color: var(--red); color: var(--red); animation: pulseMic 1s infinite;
+        }
+        @keyframes pulseMic { 0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); } }
+
+        .ai-status { margin-top: 10px; font-size: 1.1rem; color: var(--yellow); min-height: 25px; text-align: center; }
+
+        /* --- RESULT SCREEN --- */
+        .result-title { font-size: 3.5rem; color: var(--neon-green); margin-bottom: 10px; }
+        .rank-badge { font-size: 60px; filter: drop-shadow(0 0 15px gold); margin: 10px 0; }
+        .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 800px; margin: 20px 0; }
+        .res-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; border: 1px dashed var(--text-glow); text-align: center; }
+        .res-val { font-size: 2rem; font-weight: bold; color: var(--neon-green); }
+        
+        .analytics-table { width: 100%; max-width: 800px; margin-top: 20px; border-collapse: collapse; font-size: 1rem; }
+        .analytics-table th, .analytics-table td { border: 1px solid var(--text-glow); padding: 8px; text-align: center; }
+        .analytics-table th { color: var(--yellow); }
+
+        .action-btns { display: flex; gap: 15px; margin-top: 30px; }
+
+        /* Canvas for Confetti */
+        #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 99; }
+
+        @media (max-width: 768px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .result-grid { grid-template-columns: 1fr 1fr; }
+            .question-text { font-size: 1.5rem; }
+            .welcome-title { font-size: 2rem; }
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: white; color: black; }
+            .smart-board { border: none; box-shadow: none; width: 100%; height: auto; }
+            .top-controls, .action-btns, .bg-animations { display: none; }
+            .chalk-text { text-shadow: none; }
+            * { color: black !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animations" id="bg-anims"></div>
+
+    <div class="smart-board">
+        <canvas id="confetti-canvas"></canvas>
+
+        <div class="top-controls">
+            <button class="ctrl-btn" onclick="toggleTheme()" title="Toggle Theme">🌗</button>
+            <button class="ctrl-btn" onclick="toggleFullScreen()" title="Full Screen">⛶</button>
+        </div>
+
+        <!-- WELCOME SCREEN -->
+        <div id="welcome-screen" class="screen active chalk-text">
+            <div class="teacher-avatar">👨‍🏫</div>
+            <h1 class="welcome-title">Chemistry Smart Classroom</h1>
+            <h2 class="welcome-subtitle">By Lalan Kumar (Applied Chemistry-B)</h2>
+            <div style="max-width: 600px; text-align: center; font-size: 1.2rem; margin-bottom: 30px; line-height: 1.6;">
+                🧪 50 महत्वपूर्ण प्रश्न (Unit 1 to 5)<br>
+                ⏱ 30 सेकंड प्रति प्रश्न<br>
+                🎤 वॉयस रिकग्निशन आधारित उत्तर (A, B, C, D)<br>
+                🎓 AI Teacher के साथ लाइव अनुभव
+            </div>
+            <button class="btn-start" onclick="initClassroom()">Enter Classroom</button>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div id="quiz-screen" class="screen chalk-text">
+            <div class="quiz-header">
+                <div class="stats-box">
+                    <span>Score: <span id="score-val" class="correct-text">0</span> XP</span>
+                    <span><span class="correct-text">✔</span> <span id="correct-count">0</span></span>
+                    <span><span class="wrong-text">✖</span> <span id="wrong-count">0</span></span>
+                </div>
+                <div class="timer-container">
+                    <svg class="timer-svg" viewBox="0 0 80 80">
+                        <circle class="timer-circle-bg" cx="40" cy="40" r="35"></circle>
+                        <circle class="timer-circle" id="timer-circle" cx="40" cy="40" r="35"></circle>
+                    </svg>
+                    <div class="timer-text" id="timer-text">30</div>
+                </div>
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-num" id="q-num">Question 1 of 50 | Unit: Atomic Structure</div>
+                <div class="question-text" id="q-text">प्रश्न यहाँ आएगा?</div>
+            </div>
+
+            <div class="options-grid" id="options-grid">
+                <!-- Options injected by JS -->
+            </div>
+
+            <div class="controls-footer">
+                <button class="ctrl-btn" style="font-size: 24px;" onclick="repeatQuestion()" title="Repeat Question">🔊</button>
+                <button class="mic-btn" id="mic-btn" onclick="toggleMic()" title="Tap & Speak (A,B,C,D)">🎤</button>
+                <button class="ctrl-btn" style="font-size: 24px;" id="pause-btn" onclick="togglePause()" title="Pause/Resume">⏸</button>
+            </div>
+            <div class="ai-status" id="ai-status">AI Teacher is ready...</div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="result-screen" class="screen chalk-text">
+            <h1 class="result-title">Ceremony Completed</h1>
+            <div class="rank-badge" id="rank-badge">🏆</div>
+            <h2 id="rank-title" style="color: var(--yellow); font-size: 2rem; margin-bottom: 10px;">Chemistry Genius</h2>
+            
+            <div class="result-grid">
+                <div class="res-box"><div class="res-val">50</div><div>Total Qs</div></div>
+                <div class="res-box"><div class="res-val correct-text" id="res-correct">0</div><div>Correct</div></div>
+                <div class="res-box"><div class="res-val wrong-text" id="res-wrong">0</div><div>Wrong</div></div>
+                <div class="res-box"><div class="res-val" id="res-percent">0%</div><div>Percentage</div></div>
+                <div class="res-box"><div class="res-val" id="res-xp" style="color: #9b59b6;">0</div><div>XP Earned</div></div>
+                <div class="res-box"><div class="res-val" id="res-time">0m 0s</div><div>Time Taken</div></div>
+            </div>
+
+            <!-- Unit Analytics -->
+            <table class="analytics-table" id="analytics-table">
+                <tr><th>Unit</th><th>Questions</th><th>Correct</th><th>Accuracy</th></tr>
+                <!-- Populated by JS -->
+            </table>
+
+            <div class="action-btns">
+                <button class="btn-start" style="padding: 10px 20px; font-size: 1.2rem;" onclick="location.reload()">Restart</button>
+                <button class="btn-start" style="padding: 10px 20px; font-size: 1.2rem;" onclick="window.print()">Print Certificate</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* =========================================
+           1. QUESTIONS DATABASE (50 Questions SBTE)
+        ========================================= */
+        const questions = [
+            // Unit 1: Atomic Structure (12)
+            { u: "Unit-1: Atomic Structure", q: "इलेक्ट्रॉन की खोज किसने की थी?", o: ["जे. जे. थॉमसन", "रदरफोर्ड", "चैडविक", "नील्स बोर"], a: 0 },
+            { u: "Unit-1: Atomic Structure", q: "प्रोटॉन पर कौन सा आवेश (Charge) होता है?", o: ["ऋणात्मक", "धनात्मक", "उदासीन", "इनमें से कोई नहीं"], a: 1 },
+            { u: "Unit-1: Atomic Structure", q: "न्यूट्रॉन की खोज किस वैज्ञानिक ने की?", o: ["रदरफोर्ड", "गोल्डस्टीन", "चैडविक", "थॉमसन"], a: 2 },
+            { u: "Unit-1: Atomic Structure", q: "परमाणु के नाभिक (Nucleus) में मुख्य रूप से क्या पाए जाते हैं?", o: ["इलेक्ट्रॉन और प्रोटॉन", "प्रोटॉन और न्यूट्रॉन", "केवल इलेक्ट्रॉन", "इलेक्ट्रॉन और न्यूट्रॉन"], a: 1 },
+            { u: "Unit-1: Atomic Structure", q: "समस्थानिक (Isotopes) में क्या समान होता है?", o: ["द्रव्यमान संख्या", "परमाणु क्रमांक", "न्यूट्रॉन की संख्या", "भौतिक गुण"], a: 1 },
+            { u: "Unit-1: Atomic Structure", q: "क्वांटम संख्याएँ (Quantum numbers) कितने प्रकार की होती हैं?", o: ["2", "3", "4", "5"], a: 2 },
+            { u: "Unit-1: Atomic Structure", q: "d-ऑर्बिटल (d-orbital) में अधिकतम कितने इलेक्ट्रॉन रह सकते हैं?", o: ["2", "6", "10", "14"], a: 2 },
+            { u: "Unit-1: Atomic Structure", q: "ऑफबाऊ सिद्धांत (Aufbau Principle) किससे संबंधित है?", o: ["नाभिक के आकार से", "इलेक्ट्रॉन भरने के क्रम से", "न्यूट्रॉन की खोज से", "समस्थानिक से"], a: 1 },
+            { u: "Unit-1: Atomic Structure", q: "पाऊली का अपवर्जन सिद्धांत क्या कहता है?", o: ["कक्षा गोलाकार होती है", "कोई भी 2 इलेक्ट्रॉन की 4 क्वांटम संख्याएँ समान नहीं हो सकतीं", "इलेक्ट्रॉन ऊर्जा का उत्सर्जन करते हैं", "नाभिक धनावेशित होता है"], a: 1 },
+            { u: "Unit-1: Atomic Structure", q: "हुंड का नियम (Hund's Rule) किससे संबंधित है?", o: ["अधिकतम बहुलता से", "न्यूनतम ऊर्जा से", "द्रव्यमान संरक्षण से", "ऊर्जा संरक्षण से"], a: 0 },
+            { u: "Unit-1: Atomic Structure", q: "बोर के परमाणु मॉडल के अनुसार इलेक्ट्रॉन कहाँ घूमते हैं?", o: ["नाभिक के अंदर", "निश्चित वृत्ताकार कक्षाओं में", "टेढ़े-मेढ़े रास्ते पर", "कहीं भी नहीं"], a: 1 },
+            { u: "Unit-1: Atomic Structure", q: "किसी तत्व का परमाणु क्रमांक किसके बराबर होता है?", o: ["न्यूट्रॉन की संख्या", "प्रोटॉन की संख्या", "द्रव्यमान संख्या", "परमाणु भार"], a: 1 },
+            
+            // Unit 2: Water (10)
+            { u: "Unit-2: Water", q: "जल की स्थायी कठोरता (Permanent Hardness) का मुख्य कारण क्या है?", o: ["कैल्शियम व मैग्नीशियम के बाइकार्बोनेट", "कैल्शियम व मैग्नीशियम के क्लोराइड और सल्फेट", "सोडियम क्लोराइड", "पोटेशियम सल्फेट"], a: 1 },
+            { u: "Unit-2: Water", q: "जल की अस्थायी कठोरता को कैसे दूर किया जा सकता है?", o: ["छानकर", "उबाल कर", "ठंडा करके", "फिटकरी डालकर"], a: 1 },
+            { u: "Unit-2: Water", q: "pH स्केल का परास (Range) क्या होता है?", o: ["1 से 10", "0 से 14", "1 से 100", "0 से 7"], a: 1 },
+            { u: "Unit-2: Water", q: "शुद्ध जल का pH मान कितना होता है?", o: ["5", "6", "7", "8"], a: 2 },
+            { u: "Unit-2: Water", q: "BOD का पूर्ण रूप (Full Form) क्या है?", o: ["Biological Oxygen Demand", "Biochemical Oxygen Demand", "Basic Oxygen Demand", "Biochemical Oxidation Demand"], a: 1 },
+            { u: "Unit-2: Water", q: "EDTA विधि का उपयोग किसके लिए किया जाता है?", o: ["जल का pH मापने", "जल की कठोरता मापने", "तापमान मापने", "BOD मापने"], a: 1 },
+            { u: "Unit-2: Water", q: "परम्यूटिट (Permutit) का रासायनिक नाम क्या है?", o: ["सोडियम क्लोराइड", "सोडियम एल्युमिनियम सिलिकेट", "कैल्शियम कार्बोनेट", "मैग्नीशियम सल्फेट"], a: 1 },
+            { u: "Unit-2: Water", q: "पीने योग्य जल (Potable water) में कॉलिफॉर्म (Coliform) बैक्टीरिया की मात्रा कितनी होनी चाहिए?", o: ["शून्य", "10 प्रति 100 ml", "50 प्रति 100 ml", "100 प्रति 100 ml"], a: 0 },
+            { u: "Unit-2: Water", q: "जल के रोगाणुनाशन (Disinfection) के लिए आमतौर पर किसका उपयोग किया जाता है?", o: ["सोडियम", "क्लोरीन", "कार्बन", "ऑक्सीजन"], a: 1 },
+            { u: "Unit-2: Water", q: "COD का अर्थ क्या है?", o: ["Chemical Oxygen Demand", "Carbon Oxygen Demand", "Calcium Oxide Demand", "Chemical Oxidation Demand"], a: 0 },
+
+            // Unit 3: Engineering Materials (10)
+            { u: "Unit-3: Engineering Materials", q: "बहुलक (Polymer) छोटे-छोटे अणुओं से बनते हैं, उन्हें क्या कहते हैं?", o: ["आइसोटोप", "एकलक (Monomer)", "आयन", "परमाणु"], a: 1 },
+            { u: "Unit-3: Engineering Materials", q: "प्राकृतिक रबर किसका बहुलक है?", o: ["इथाइलीन", "आइसोप्रीन", "विनाइल क्लोराइड", "स्टाइरीन"], a: 1 },
+            { u: "Unit-3: Engineering Materials", q: "इनमें से कौन थर्मोसेटिंग प्लास्टिक (Thermosetting plastic) का उदाहरण है?", o: ["पॉलीथिन", "पीवीसी (PVC)", "बैकेलाइट (Bakelite)", "टेफ्लॉन"], a: 2 },
+            { u: "Unit-3: Engineering Materials", q: "टेफ्लॉन (Teflon) का रासायनिक नाम क्या है?", o: ["पॉलीविनाइल क्लोराइड", "पॉलीटेट्राफ्लुओरोएथिलीन (PTFE)", "पॉलीस्टाइरीन", "पॉलीथीन"], a: 1 },
+            { u: "Unit-3: Engineering Materials", q: "वल्कनीकरण (Vulcanization) में रबर को मजबूत बनाने के लिए उसमें क्या मिलाया जाता है?", o: ["कार्बन", "सल्फर (Sulfur)", "फास्फोरस", "नाइट्रोजन"], a: 1 },
+            { u: "Unit-3: Engineering Materials", q: "लोहे का सबसे शुद्ध रूप कौन सा होता है?", o: ["कच्चा लोहा (Pig iron)", "ढलवा लोहा (Cast iron)", "पिटवा लोहा (Wrought iron)", "स्टील (Steel)"], a: 2 },
+            { u: "Unit-3: Engineering Materials", q: "पीतल (Brass) एक मिश्र धातु है, जो किनसे मिलकर बनी है?", o: ["तांबा और टिन", "तांबा और जस्ता (Zinc)", "लोहा और कार्बन", "एल्युमिनियम और तांबा"], a: 1 },
+            { u: "Unit-3: Engineering Materials", q: "पोर्टलैंड सीमेंट का मुख्य घटक क्या है?", o: ["सिलिका", "कैल्शियम ऑक्साइड (चूना)", "एल्युमिना", "आयरन ऑक्साइड"], a: 1 },
+            { u: "Unit-3: Engineering Materials", q: "कांच (Glass) को वैज्ञानिक दृष्टिकोण से क्या माना जाता है?", o: ["ठोस", "क्रिस्टल", "अतिशीतित द्रव (Supercooled liquid)", "गैस"], a: 2 },
+            { u: "Unit-3: Engineering Materials", q: "स्नेहक (Lubricant) का मुख्य कार्य क्या होता है?", o: ["तापमान बढ़ाना", "घर्षण (Friction) कम करना", "जंग लगाना", "रंग बदलना"], a: 1 },
+
+            // Unit 4: Solid State (8)
+            { u: "Unit-4: Solid State", q: "क्रिस्टलीय ठोस (Crystalline solid) का एक उदाहरण कौन सा है?", o: ["कांच", "रबर", "हीरा (Diamond)", "प्लास्टिक"], a: 2 },
+            { u: "Unit-4: Solid State", q: "अक्रिस्टलीय ठोस (Amorphous solid) में कणों की व्यवस्था कैसी होती है?", o: ["नियमित और दीर्घ परासी", "अनियमित (Irregular)", "गोलाकार", "वर्गाकार"], a: 1 },
+            { u: "Unit-4: Solid State", q: "ब्रेवे जालक (Bravais Lattices) कुल कितने प्रकार के होते हैं?", o: ["7", "10", "14", "21"], a: 2 },
+            { u: "Unit-4: Solid State", q: "NaCl (सोडियम क्लोराइड) क्रिस्टल की संरचना कैसी होती है?", o: ["BCC", "FCC", "SCC", "HCP"], a: 1 },
+            { u: "Unit-4: Solid State", q: "फ्रेंकेल दोष (Frenkel defect) में क्रिस्टल के अंदर क्या होता है?", o: ["आयन क्रिस्टल से बाहर चला जाता है", "आयन अंतराकाशी स्थान (Interstitial site) में चला जाता है", "इलेक्ट्रॉन बाहर निकलता है", "घनत्व बढ़ जाता है"], a: 1 },
+            { u: "Unit-4: Solid State", q: "शॉट्की दोष (Schottky defect) उत्पन्न होने पर क्रिस्टल के घनत्व (Density) पर क्या प्रभाव पड़ता है?", o: ["बढ़ता है", "कम होता है", "समान रहता है", "शून्य हो जाता है"], a: 1 },
+            { u: "Unit-4: Solid State", q: "तापमान बढ़ाने पर अर्धचालक (Semiconductor) की विद्युत चालकता...", o: ["घटती है", "बढ़ती है", "अपरिवर्तित रहती है", "शून्य हो जाती है"], a: 1 },
+            { u: "Unit-4: Solid State", q: "p-प्रकार (p-type) के अर्धचालक में मुख्य आवेश वाहक (Majority charge carriers) क्या होते हैं?", o: ["इलेक्ट्रॉन", "प्रोटॉन", "होल (Holes)", "न्यूट्रॉन"], a: 2 },
+
+            // Unit 5: Electrochemistry (10)
+            { u: "Unit-5: Electrochemistry", q: "गैल्वेनिक सेल (Galvanic cell) में ऊर्जा का रूपांतरण कैसे होता है?", o: ["विद्युत से रासायनिक", "रासायनिक से विद्युत", "ऊष्मीय से विद्युत", "यांत्रिक से रासायनिक"], a: 1 },
+            { u: "Unit-5: Electrochemistry", q: "फैराडे का प्रथम नियम किससे संबंधित है?", o: ["प्रकाश का परावर्तन", "विद्युत अपघटन (Electrolysis)", "ऊष्मागतिकी", "गुरुत्वाकर्षण"], a: 1 },
+            { u: "Unit-5: Electrochemistry", q: "मानक हाइड्रोजन इलेक्ट्रोड (SHE) का विभव (Potential) कितना माना जाता है?", o: ["1.0 V", "0.5 V", "0.0 V", "10.0 V"], a: 2 },
+            { u: "Unit-5: Electrochemistry", q: "नर्न्स्ट समीकरण (Nernst Equation) का उपयोग किसके लिए किया जाता है?", o: ["तापमान मापने", "इलेक्ट्रोड विभव की गणना करने", "दबाव मापने", "बहुलक बनाने"], a: 1 },
+            { u: "Unit-5: Electrochemistry", q: "लोहे पर जंग (Rust) लगना किस प्रक्रिया का उदाहरण है?", o: ["उदासीनीकरण", "बहुलीकरण", "संक्षारण (Corrosion)", "विद्युत अपघटन"], a: 2 },
+            { u: "Unit-5: Electrochemistry", q: "संक्षारण रोकने के लिए लोहे पर जिंक (Zinc) की परत चढ़ाने की प्रक्रिया को क्या कहते हैं?", o: ["इलेक्ट्रोप्लेटिंग", "गैल्वनाइजेशन", "वल्कनीकरण", "क्रिस्टलीकरण"], a: 1 },
+            { u: "Unit-5: Electrochemistry", q: "सीसा-संचायक बैटरी (Lead-acid battery) में किस अम्ल का उपयोग किया जाता है?", o: ["HCl", "HNO3", "H2SO4 (सल्फ्यूरिक अम्ल)", "CH3COOH"], a: 2 },
+            { u: "Unit-5: Electrochemistry", q: "प्राथमिक सेल (Primary cell) की क्या विशेषता है?", o: ["इन्हें बार-बार चार्ज किया जा सकता है", "इन्हें केवल एक बार उपयोग कर सकते हैं (Rechargeable नहीं होते)", "ये केवल सौर ऊर्जा से चलते हैं", "इनमें तरल पदार्थ नहीं होता"], a: 1 },
+            { u: "Unit-5: Electrochemistry", q: "विद्युत अपघट्य (Electrolyte) का एक अच्छा उदाहरण कौन सा है?", o: ["शुद्ध जल", "ठोस नमक", "NaCl का जलीय विलयन", "प्लास्टिक"], a: 2 },
+            { u: "Unit-5: Electrochemistry", q: "इलेक्ट्रोप्लेटिंग में जिस धातु की वस्तु पर परत चढ़ानी होती है, उसे क्या बनाते हैं?", o: ["एनोड", "कैथोड", "इलेक्ट्रोलाइट", "अर्धपारगम्य झिल्ली"], a: 1 }
+        ];
+
+        /* =========================================
+           2. APP STATE VARIABLES
+        ========================================= */
+        let currentQIndex = 0;
+        let scoreXP = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        
+        let timerInterval;
+        let timeLeft = 30;
+        let isPaused = false;
+        let isAnswering = false;
+        
+        let startTime = 0;
+        
+        // Analytics
+        const unitStats = {
+            "Unit-1: Atomic Structure": { total: 12, correct: 0 },
+            "Unit-2: Water": { total: 10, correct: 0 },
+            "Unit-3: Engineering Materials": { total: 10, correct: 0 },
+            "Unit-4: Solid State": { total: 8, correct: 0 },
+            "Unit-5: Electrochemistry": { total: 10, correct: 0 }
+        };
+
+        /* =========================================
+           3. BACKGROUND ANIMATIONS
+        ========================================= */
+        function createBackgroundAtoms() {
+            const container = document.getElementById('bg-anims');
+            for(let i=0; i<15; i++) {
+                let atom = document.createElement('div');
+                atom.className = 'atom';
+                let size = Math.random() * 50 + 20;
+                atom.style.width = size + 'px';
+                atom.style.height = size + 'px';
+                atom.style.left = Math.random() * 100 + 'vw';
+                atom.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                atom.style.animationDelay = (Math.random() * 5) + 's';
+                container.appendChild(atom);
+            }
+        }
+        createBackgroundAtoms();
+
+        /* =========================================
+           4. TEXT TO SPEECH (AI TEACHER)
+        ========================================= */
+        const synth = window.speechSynthesis;
+        let aiVoice = null;
+
+        function setVoice() {
+            const voices = synth.getVoices();
+            aiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('IN')) || voices[0];
+        }
+        synth.onvoiceschanged = setVoice;
+
+        function speakText(text, callback = null, rate = 0.95) {
+            synth.cancel();
+            if(!text) return;
+            const utterance = new SpeechSynthesisUtterance(text);
+            if(aiVoice) utterance.voice = aiVoice;
+            utterance.lang = 'hi-IN';
+            utterance.rate = rate;
+            utterance.pitch = 1.1; // Slightly higher pitch for teacher feel
+
+            if(callback) {
+                utterance.onend = callback;
+                setTimeout(() => { if(synth.speaking) return; callback(); }, 5000 + text.length * 100);
+            }
+            synth.speak(utterance);
+        }
+
+        /* =========================================
+           5. SPEECH RECOGNITION
+        ========================================= */
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isListening = false;
+        const elAiStatus = document.getElementById('ai-status');
+        const btnMic = document.getElementById('mic-btn');
+
+        if(SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'hi-IN';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                isListening = true;
+                btnMic.classList.add('listening');
+                elAiStatus.innerText = "Listening... Speak A, B, C, or D";
+            };
+
+            recognition.onresult = (e) => {
+                const transcript = e.results[0][0].transcript.trim().toLowerCase();
+                processVoice(transcript);
+            };
+
+            recognition.onerror = () => { stopMic(); elAiStatus.innerText = "Voice not clear. Try again."; };
+            recognition.onend = () => { stopMic(); };
+        } else {
+            console.warn("Speech API not supported.");
+        }
+
+        function toggleMic() {
+            if(!recognition) { alert("Your browser doesn't support Voice Answer."); return; }
+            if(isListening) recognition.stop();
+            else {
+                if(!isAnswering && !isPaused) {
+                    synth.cancel(); // stop teacher talking
+                    recognition.start();
+                }
+            }
+        }
+        function stopMic() { isListening = false; btnMic.classList.remove('listening'); }
+
+        function processVoice(text) {
+            if(isAnswering || isPaused) return;
+            let sel = -1;
+            const mapA = ["a", "ए", "वन", "1", "पहला", "option a", "विकल्प ए"];
+            const mapB = ["b", "बी", "टू", "2", "दूसरा", "option b", "विकल्प बी"];
+            const mapC = ["c", "सी", "थ्री", "3", "तीसरा", "option c", "विकल्प सी"];
+            const mapD = ["d", "डी", "फोर", "4", "चौथा", "option d", "विकल्प डी"];
+
+            if(mapA.some(v => text.includes(v))) sel = 0;
+            else if(mapB.some(v => text.includes(v))) sel = 1;
+            else if(mapC.some(v => text.includes(v))) sel = 2;
+            else if(mapD.some(v => text.includes(v))) sel = 3;
+
+            if(sel !== -1) checkAnswer(sel);
+            else {
+                elAiStatus.innerText = "Invalid option. Say Option A, B, C or D.";
+                speakText("क्षमा करें, मुझे समझ नहीं आया। कृपया विकल्प ए, बी, सी या डी बोलें।");
+            }
+        }
+
+        /* =========================================
+           6. CORE LOGIC & UI UPDATES
+        ========================================= */
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function initClassroom() {
+            startTime = Date.now();
+            setVoice();
+            // Opening Welcome Dialogue
+            const introText = "नमस्कार विद्यार्थी! स्वागत है आपका ललन कुमार द्वारा बनाए गए इस शानदार स्मार्ट केमिस्ट्री क्लासरूम में। आज हम एप्लाइड केमिस्ट्री बी का वॉइस क्विज़ खेलने वाले हैं। इस क्विज़ में कुल 50 प्रश्न होंगे। प्रत्येक प्रश्न के लिए 30 सेकंड का समय मिलेगा। आप माइक्रोफोन का उपयोग करके उत्तर दे सकते हैं। क्या आप तैयार हैं? चलिए शुरू करते हैं, शुभकामनाएँ।";
+            
+            speakText(introText, () => {
+                switchScreen('quiz-screen');
+                loadQuestion();
+            });
+        }
+
+        function loadQuestion() {
+            if(currentQIndex >= questions.length) { showResults(); return; }
+            
+            isAnswering = false;
+            isPaused = false;
+            elAiStatus.innerText = "AI Teacher is ready...";
+            
+            const q = questions[currentQIndex];
+            
+            // Update UI Counters
+            document.getElementById('q-num').innerText = `Question ${currentQIndex + 1} of 50 | ${q.u}`;
+            document.getElementById('q-text').innerText = q.q;
+            document.getElementById('score-val').innerText = scoreXP;
+            
+            const progress = (currentQIndex / 50) * 100;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+
+            // Options
+            const optGrid = document.getElementById('options-grid');
+            optGrid.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D'];
+            let readText = `${q.q}. `;
+
+            q.o.forEach((opt, idx) => {
+                let div = document.createElement('div');
+                div.className = 'option-btn chalk-text';
+                div.innerHTML = `<strong>Option ${labels[idx]}:</strong> ${opt}`;
+                div.onclick = () => checkAnswer(idx);
+                optGrid.appendChild(div);
+                readText += `विकल्प ${labels[idx]}... ${opt}... `;
+            });
+
+            startTimer();
+            speakText(readText);
+        }
+
+        function repeatQuestion() {
+            if(isAnswering || isPaused) return;
+            const q = questions[currentQIndex];
+            let readText = `${q.q}. विकल्प ए, ${q.o[0]}. विकल्प बी, ${q.o[1]}. विकल्प सी, ${q.o[2]}. विकल्प डी, ${q.o[3]}.`;
+            speakText(readText);
+        }
+
+        function togglePause() {
+            if(isAnswering) return;
+            const btn = document.getElementById('pause-btn');
+            if(isPaused) {
+                isPaused = false;
+                btn.innerText = "⏸";
+                elAiStatus.innerText = "Quiz Resumed";
+                timerInterval = setInterval(timerTick, 1000);
+            } else {
+                isPaused = true;
+                btn.innerText = "▶";
+                elAiStatus.innerText = "Quiz Paused";
+                clearInterval(timerInterval);
+                synth.cancel();
+            }
+        }
+
+        /* --- TIMER --- */
+        const elTimerText = document.getElementById('timer-text');
+        const elTimerCircle = document.getElementById('timer-circle');
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 30;
+            updateTimerUI();
+            timerInterval = setInterval(timerTick, 1000);
+        }
+
+        function timerTick() {
+            if(isPaused) return;
+            timeLeft--;
+            updateTimerUI();
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                handleTimeOut();
+            }
+        }
+
+        function updateTimerUI() {
+            elTimerText.innerText = timeLeft;
+            const dashoffset = 220 - (timeLeft / 30) * 220;
+            elTimerCircle.style.strokeDashoffset = dashoffset;
+
+            // Color Warning
+            if(timeLeft > 15) elTimerCircle.style.stroke = "var(--neon-green)";
+            else if(timeLeft > 5) elTimerCircle.style.stroke = "var(--yellow)";
+            else elTimerCircle.style.stroke = "var(--red)";
+        }
+
+        function handleTimeOut() {
+            if(isAnswering) return;
+            isAnswering = true;
+            synth.cancel();
+            if(isListening && recognition) recognition.stop();
+
+            const q = questions[currentQIndex];
+            document.getElementById('options-grid').children[q.a].classList.add('correct');
+            wrongCount++;
+            document.getElementById('wrong-count').innerText = wrongCount;
+            elAiStatus.innerText = "Time Out!";
+
+            speakText("समय समाप्त हो गया है। अब अगले प्रश्न पर चलते हैं।", nextQuestion);
+        }
+
+        /* --- ANSWER CHECK --- */
+        function checkAnswer(selIdx) {
+            if(isAnswering || isPaused) return;
+            isAnswering = true;
+            clearInterval(timerInterval);
+            synth.cancel();
+            if(isListening && recognition) recognition.stop();
+
+            const q = questions[currentQIndex];
+            const opts = document.getElementById('options-grid').children;
+            
+            if(selIdx === q.a) {
+                opts[selIdx].classList.add('correct');
+                scoreXP += (10 + Math.floor(timeLeft/2)); // XP bonus for time
+                correctCount++;
+                unitStats[q.u].correct++;
+                document.getElementById('correct-count').innerText = correctCount;
+                document.getElementById('score-val').innerText = scoreXP;
+                elAiStatus.innerText = "Correct Answer!";
+                
+                speakText("बहुत बढ़िया विद्यार्थी! आपका उत्तर बिल्कुल सही है। इसी प्रकार मेहनत करते रहिए।", nextQuestion);
+            } else {
+                opts[selIdx].classList.add('wrong');
+                opts[q.a].classList.add('correct');
+                wrongCount++;
+                document.getElementById('wrong-count').innerText = wrongCount;
+                elAiStatus.innerText = "Wrong Answer!";
+                
+                speakText("कोई बात नहीं विद्यार्थी। गलतियों से ही सीख मिलती है। अगले प्रश्न में बेहतर प्रयास करें।", nextQuestion);
+            }
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            setTimeout(loadQuestion, 500);
+        }
+
+        /* =========================================
+           7. RESULTS & CEREMONY
+        ========================================= */
+        function showResults() {
+            switchScreen('result-screen');
+            synth.cancel();
+            
+            const total = 50;
+            const percent = Math.round((correctCount / total) * 100);
+            const timeTakenStr = `${Math.floor((Date.now()-startTime)/60000)}m ${Math.floor(((Date.now()-startTime)%60000)/1000)}s`;
+
+            document.getElementById('res-correct').innerText = correctCount;
+            document.getElementById('res-wrong').innerText = wrongCount;
+            document.getElementById('res-percent').innerText = percent + "%";
+            document.getElementById('res-xp').innerText = scoreXP;
+            document.getElementById('res-time').innerText = timeTakenStr;
+
+            // Ranking Logic
+            let rank, badge, speech;
+            if(percent >= 90) {
+                rank = "Chemistry Genius"; badge = "👑";
+                speech = "वाह विद्यार्थी! आपने शानदार प्रदर्शन किया है। आप केमिस्ट्री जीनियस घोषित किए जाते हैं। आपकी मेहनत और लगन वास्तव में प्रेरणादायक है। ऐसे ही पढ़ाई करते रहिए और जीवन में बड़ी सफलता प्राप्त कीजिए। ललन कुमार स्मार्ट क्लासरूम की ओर से आपको हार्दिक शुभकामनाएँ।";
+            } else if(percent >= 70) {
+                rank = percent >= 80 ? "Top Performer" : "Excellent Student"; badge = "🥇";
+                speech = "बहुत बढ़िया विद्यार्थी। आपने उत्कृष्ट प्रदर्शन किया है। थोड़ी और मेहनत आपको शीर्ष स्थान तक पहुँचा सकती है। लगातार अभ्यास करते रहिए।";
+            } else if(percent >= 50) {
+                rank = percent >= 60 ? "Good Student" : "Average Student"; badge = "🥈";
+                speech = "विद्यार्थी, आपने अच्छा प्रयास किया है, लेकिन आपको और अभ्यास की आवश्यकता है। मेहनत करते रहिए।";
+            } else {
+                rank = "Need More Practice"; badge = "📚";
+                speech = "विद्यार्थी, निराश होने की आवश्यकता नहीं है। हर सफलता की शुरुआत अभ्यास से होती है। दोबारा प्रयास करें और अपने ज्ञान को और मजबूत बनाएं। आप निश्चित रूप से सफल होंगे।";
+            }
+
+            document.getElementById('rank-title').innerText = rank;
+            document.getElementById('rank-badge').innerText = badge;
+
+            // Analytics Table
+            const table = document.getElementById('analytics-table');
+            for(let key in unitStats) {
+                let u = unitStats[key];
+                let acc = Math.round((u.correct / u.total) * 100);
+                table.innerHTML += `<tr><td>${key.split(':')[1]}</td><td>${u.total}</td><td>${u.correct}</td><td>${acc}%</td></tr>`;
+            }
+
+            // Confetti if passing
+            if(percent >= 50) shootConfetti();
+
+            speakText(speech);
+        }
+
+        /* =========================================
+           8. EXTRA PREMIUM FEATURES
+        ========================================= */
+        
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+        }
+
+        // Fullscreen Toggle
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Lightweight Confetti Particle System
+        function shootConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            let particles = [];
+            for(let i=0; i<150; i++) {
+                particles.push({
+                    x: canvas.width / 2, y: canvas.height / 2,
+                    r: Math.random() * 6 + 2,
+                    dx: Math.random() * 20 - 10, dy: Math.random() * -20 - 5,
+                    color: `hsl(${Math.random()*360}, 100%, 50%)`,
+                    tilt: Math.random() * 10
+                });
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                particles.forEach(p => {
+                    p.dy += 0.5; // gravity
+                    p.x += p.dx; p.y += p.dy; p.tilt += 0.1;
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r; ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r);
+                    ctx.stroke();
+                });
+            }
+            animate();
+            setTimeout(() => { canvas.style.opacity = 0; }, 5000); // fade out
+        }
+
+        // Initialization trigger
+        window.onload = () => { setVoice(); };
+
+    </script>
+</body>
+</html>
