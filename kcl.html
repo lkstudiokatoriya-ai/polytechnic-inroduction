@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kirchhoff's Current Law (KCL) - Notebook Notes</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&display=swap');
+
+        :root {
+            --ink-blue: #094067;
+            --ink-red: #c0392b;
+            --highlight-yellow: rgba(255, 235, 59, 0.6);
+            --paper-bg: #fdfbf7;
+            --desk-bg: #808e9b;
+            --spiral-hole: #2f3640;
+            --box-border: #3498db;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--desk-bg);
+            background-image: radial-gradient(#636e72 1px, transparent 1px);
+            background-size: 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px 20px;
+            font-family: 'Kalam', cursive;
+            color: var(--ink-blue);
+            font-size: 1.25rem;
+            line-height: 1.6;
+        }
+
+        /* Notebook Page Style */
+        .page {
+            width: 210mm;
+            min-height: 297mm; /* Allow content to grow if needed but visually bounded */
+            background-color: var(--paper-bg);
+            background-image: linear-gradient(90deg, rgba(200,200,200,0.1) 0%, transparent 5%), 
+                              linear-gradient(0deg, rgba(200,200,200,0.05) 0%, transparent 100%);
+            box-shadow: 5px 10px 25px rgba(0, 0, 0, 0.3), inset 0 0 50px rgba(150,130,100,0.05);
+            position: relative;
+            padding: 25mm 20mm 25mm 35mm; /* Extra left padding for spirals */
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+            page-break-after: always;
+            border-radius: 2px 8px 8px 2px;
+        }
+
+        /* Spiral Binding Simulation */
+        .page::before {
+            content: '';
+            position: absolute;
+            left: 12px; top: 0; bottom: 0; width: 14px;
+            background-image: radial-gradient(circle at 7px 15px, var(--spiral-hole) 6px, transparent 7px);
+            background-size: 14px 30px;
+            z-index: 1;
+            border-right: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .page::after {
+            content: '';
+            position: absolute;
+            left: -2px; top: 0; bottom: 0; width: 20px;
+            background-image: linear-gradient(to bottom, 
+                transparent 13px, 
+                #a4b0be 13px, #ced6e0 14px, #a4b0be 15px, #747d8c 16px, 
+                transparent 16px);
+            background-size: 20px 30px;
+            z-index: 2;
+        }
+
+        /* Typography & Handwriting */
+        h1, h2, h3 {
+            color: var(--ink-red);
+            font-family: 'Patrick Hand', cursive;
+            margin-bottom: 12px;
+            margin-top: 20px;
+            break-after: avoid;
+            page-break-after: avoid;
+            transform: rotate(-1deg);
+        }
+
+        h1 { font-size: 2.2rem; text-align: center; border-bottom: 2px dashed rgba(192, 57, 43, 0.3); padding-bottom: 5px; margin-bottom: 20px;}
+        h2 { font-size: 1.8rem; margin-top: 25px;}
+        h3 { font-size: 1.4rem; }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            transform: rotate(0.5deg);
+        }
+
+        hr {
+            border: 0;
+            border-bottom: 1px solid rgba(9, 64, 103, 0.2);
+            margin: 20px 0;
+            transform: rotate(-0.5deg);
+        }
+
+        /* Highlighting */
+        .hl {
+            background-color: var(--highlight-yellow);
+            padding: 2px 6px;
+            border-radius: 4px;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .math-hl {
+            background-color: var(--highlight-yellow);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        /* Content Protection & Layout */
+        .protect {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        /* Handwritten Boxes (Sketchy Borders) */
+        .box {
+            border: 2px solid var(--box-border);
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; /* Sketchy shape */
+            padding: 20px;
+            margin: 20px 0;
+            background: rgba(52, 152, 219, 0.03);
+            box-shadow: 2px 3px 10px rgba(0,0,0,0.05);
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .box-red {
+            border-color: var(--ink-red);
+            background: rgba(192, 57, 43, 0.03);
+        }
+
+        .callout {
+            position: relative;
+            padding: 15px;
+            margin: 25px 0 15px 15px;
+            border-left: 4px solid var(--ink-red);
+            background: #fff9e6;
+            transform: rotate(-0.5deg);
+            border-radius: 0 10px 10px 0;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.08);
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .callout::before {
+            content: "📌";
+            position: absolute;
+            left: -16px;
+            top: -12px;
+            font-size: 1.5rem;
+        }
+
+        /* Mathematical Formulas */
+        .formula-block {
+            text-align: center;
+            font-size: 1.6rem;
+            margin: 20px 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        .math-expr {
+            font-family: 'Times New Roman', Times, serif; /* Mix standard math look with handwriting size */
+            font-style: italic;
+        }
+
+        /* SVG Containers */
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            margin: 25px 0;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        
+        .code-block-text {
+            white-space: pre;
+            font-family: 'Kalam', cursive;
+            color: var(--ink-blue);
+            text-align: center;
+            background: rgba(0,0,0,0.02);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px dashed #aaa;
+            margin: 15px 0;
+        }
+
+        /* Slight Variations */
+        .tilt-1 { transform: rotate(-1deg); display: block; }
+        .tilt-2 { transform: rotate(1deg); display: block; }
+
+        /* Print Specifics for PDF Export */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            body {
+                background: none;
+                padding: 0;
+                gap: 0;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+                border: none;
+                width: 210mm;
+                height: 297mm;
+                page-break-after: always;
+            }
+            /* Adjust spiral for print to ensure it aligns */
+            .page::before, .page::after {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SVG Filters for Handwritten effect -->
+    <svg width="0" height="0" style="position:absolute;">
+        <defs>
+            <filter id="sketchy" x="-10%" y="-10%" width="120%" height="120%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- PAGE 1 -->
+    <div class="page">
+        <h1>Electrical Circuit & Network</h1>
+        <h1 style="border-bottom:none; margin-bottom:5px;">Kirchhoff's Current Law (KCL)</h1>
+        <h3 style="text-align:center; margin-top:0; color:var(--ink-blue);"> Diploma in Electrical Engingering (SBTE Bihar)</h3>
+        
+        <hr>
+
+        <h2> Chapter Overview</h2>
+        <div class="box tilt-1">
+            <p>Kirchhoff's Current Law (KCL) is one of the most fundamental laws in Electrical Engineering. It is used to analyze electrical circuits by applying the principle of <span class="hl">conservation of electric charge</span>.</p>
+            <p>KCL states that <strong>no electric charge is created or destroyed at a junction (node)</strong>. Therefore, the total current entering a junction must always equal the total current leaving the junction.</p>
+        </div>
+
+        <hr>
+
+        <h2> Learning Objectives</h2>
+        <p class="tilt-2">After studying this chapter, you will be able to:</p>
+        <ul>
+            <li>Define Kirchhoff's Current Law (KCL).</li>
+            <li>Understand the concept of a Junction (Node).</li>
+            <li>Apply KCL to solve numerical problems.</li>
+            <li>Find unknown current values in electrical circuits.</li>
+            <li>Understand the physical significance of KCL.</li>
+        </ul>
+
+        <hr>
+
+        <h2> Kirchhoff's Current Law (KCL)</h2>
+        <h3> Definition</h3>
+        <div class="box box-red protect tilt-1">
+            <p><strong>Kirchhoff's Current Law states:</strong></p>
+            <blockquote style="font-size:1.35rem; font-weight:bold; margin-top:10px; margin-left:15px; border-left:3px solid var(--ink-red); padding-left:15px;">
+                "The algebraic sum of all currents meeting at a junction (node) is always zero."
+            </blockquote>
+            <p style="margin-top:15px;">Mathematically,</p>
+            <div class="formula-block">
+                <span class="math-hl">[ ∑ I = 0 ]</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page">
+        <h2 style="margin-top:0;"> Easy Shortcut</h2>
+        <div class="callout protect">
+            <p><strong>Shortcut</strong></p>
+            <p>Instead of remembering the long definition, remember:</p>
+            <blockquote style="font-size:1.35rem; font-weight:bold; text-align:center; margin:10px 0; color:var(--ink-red);">
+                Incoming Current = Outgoing Current
+            </blockquote>
+            <p style="text-align:center;">or</p>
+            <blockquote style="font-size:1.35rem; font-weight:bold; text-align:center; margin:10px 0; color:var(--ink-red);">
+                Current Entering a Junction = Current Leaving the Junction
+            </blockquote>
+            <p>This is the simplest and most useful form of KCL.</p>
+        </div>
+
+        <hr>
+
+        <h2> Why is KCL True?</h2>
+        <p class="tilt-1">Electric current cannot accumulate at a junction.</p>
+        <p class="tilt-2">Just as passengers entering a railway station must eventually leave the station, electric charge entering a node must also leave it.</p>
+        <p>Therefore,</p>
+        <p style="font-weight:bold; color:var(--ink-red); text-align:center;" class="tilt-1">Whatever current enters the junction must leave the junction.</p>
+
+        <hr>
+
+        <h2> Junction (Node)</h2>
+        <h3> Definition</h3>
+        <div class="box protect tilt-2">
+            <p>A <strong class="hl">Junction (Node)</strong> is a point where <strong>two or more branches of an electrical circuit meet</strong>.</p>
+            <p style="margin-top:10px;">At every junction, Kirchhoff's Current Law is applicable.</p>
+        </div>
+
+        <hr>
+
+        <h2> Visual Representation</h2>
+        <h3>Current Flow at a Junction</h3>
+        
+        <div class="svg-container protect">
+            <svg width="300" height="220" viewBox="0 0 300 220" style="filter: url(#sketchy);">
+                <!-- Node -->
+                <circle cx="150" cy="110" r="7" fill="var(--ink-blue)"/>
+                
+                <!-- Incoming I1 (Top) -->
+                <path d="M 150 20 Q 155 60 150 110" fill="none" stroke="var(--ink-blue)" stroke-width="3"/>
+                <path d="M 140 85 L 150 110 L 160 85" fill="none" stroke="var(--ink-blue)" stroke-width="3" stroke-linecap="round"/>
+                <text x="165" y="30" font-family="'Kalam'" font-size="22" font-weight="bold" fill="var(--ink-red)">I₁ (Incoming)</text>
+                
+                <!-- Incoming I4 (Bottom) -->
+                <path d="M 150 200 Q 145 160 150 110" fill="none" stroke="var(--ink-blue)" stroke-width="3"/>
+                <path d="M 140 135 L 150 110 L 160 135" fill="none" stroke="var(--ink-blue)" stroke-width="3" stroke-linecap="round"/>
+                <text x="165" y="195" font-family="'Kalam'" font-size="22" font-weight="bold" fill="var(--ink-red)">I₄ (Incoming)</text>
+                
+                <!-- Outgoing I2 (Bottom Left) -->
+                <path d="M 150 110 Q 100 140 50 170" fill="none" stroke="var(--ink-blue)" stroke-width="3"/>
+                <path d="M 65 145 L 50 170 L 80 165" fill="none" stroke="var(--ink-blue)" stroke-width="3" stroke-linecap="round"/>
+                <text x="20" y="195" font-family="'Kalam'" font-size="22" font-weight="bold" fill="var(--ink-red)">I₂</text>
+                
+                <!-- Outgoing I3 (Bottom Right) -->
+                <path d="M 150 110 Q 200 140 250 170" fill="none" stroke="var(--ink-blue)" stroke-width="3"/>
+                <path d="M 235 145 L 250 170 L 220 165" fill="none" stroke="var(--ink-blue)" stroke-width="3" stroke-linecap="round"/>
+                <text x="260" y="195" font-family="'Kalam'" font-size="22" font-weight="bold" fill="var(--ink-red)">I₃</text>
+                
+                <text x="165" y="100" font-family="'Kalam'" font-size="18" fill="#555">Node (●)</text>
+            </svg>
+        </div>
+
+        <div style="display:flex; justify-content:space-around;" class="protect tilt-1">
+            <div>
+                <strong>Incoming Currents:</strong>
+                <ul>
+                    <li>I₁</li>
+                    <li>I₄</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Outgoing Currents:</strong>
+                <ul>
+                    <li>I₂</li>
+                    <li>I₃</li>
+                </ul>
+            </div>
+        </div>
+
+        <p class="tilt-2" style="text-align:center; font-weight:bold;">Therefore,</p>
+        <div class="formula-block protect">
+            <span class="math-hl">[ I₁ + I₄ = I₂ + I₃ ]</span>
+        </div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page">
+        <h2 style="margin-top:0;">Mathematical Form</h2>
+        <div class="box protect tilt-1">
+            <p>If currents entering the node are positive and currents leaving are negative,</p>
+            <div class="formula-block">
+                <span class="math-hl">[ I₁ + I₂ - I₃ - I₄ = 0 ]</span>
+            </div>
+            <p style="text-align:center;">or</p>
+            <div class="formula-block">
+                <span class="math-hl">[ ∑ I = 0 ]</span>
+            </div>
+            <p>Both forms represent Kirchhoff's Current Law.</p>
+        </div>
+
+        <hr>
+
+        <h2>Numerical Example</h2>
+        <div class="box protect">
+            <h3> Given</h3>
+            <div style="display:flex; justify-content:space-around;">
+                <div>
+                    <strong>Incoming currents:</strong>
+                    <ul>
+                        <li>10 A</li>
+                        <li>20 A</li>
+                        <li>5 A</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Outgoing currents:</strong>
+                    <ul>
+                        <li>5 A</li>
+                        <li>I</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="protect">
+            <h3>Step 1</h3>
+            <p>Incoming Current</p>
+            <div class="formula-block tilt-1"><span class="hl">[ 10 + 20 + 5 = 35A ]</span></div>
+        </div>
+
+        <div class="protect" style="margin-top: 15px;">
+            <h3>Step 2</h3>
+            <p>Outgoing Current</p>
+            <div class="formula-block tilt-2"><span class="hl">[ 5 + I ]</span></div>
+        </div>
+        
+        <div class="protect" style="margin-top: 15px;">
+            <h3> Step 3</h3>
+            <p>Apply KCL<br>Incoming = Outgoing</p>
+            <div class="formula-block tilt-1"><span class="hl">[ 35 = 5 + I ]</span></div>
+        </div>
+
+        <div class="protect box box-red" style="margin-top: 15px; text-align:center;">
+            <h3>Step 4</h3>
+            <p class="math-expr">[ I = 35 - 5 ]</p>
+            <p class="math-expr">[ I = 30A ]</p>
+            <h3 style="margin-top:15px;"> Answer</h3>
+            <div class="formula-block tilt-2">
+                <span class="math-hl" style="border: 2px solid var(--ink-red); padding: 10px 20px;">[ I = 30A ]</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="page">
+        <h2 style="margin-top:0;">Solving Procedure</h2>
+        <div class="svg-container protect">
+            <svg width="250" height="400" viewBox="0 0 250 400" style="filter: url(#sketchy);">
+                <!-- Step 1 -->
+                <rect x="25" y="10" width="200" height="40" rx="10" fill="none" stroke="var(--ink-red)" stroke-width="2"/>
+                <text x="125" y="35" font-family="'Kalam'" font-size="18" font-weight="bold" fill="var(--ink-blue)" text-anchor="middle">Identify the junction</text>
+                
+                <!-- Arrow 1 -->
+                <line x1="125" y1="50" x2="125" y2="80" stroke="var(--ink-blue)" stroke-width="2"/>
+                <polygon points="120,70 130,70 125,80" fill="var(--ink-blue)"/>
+                
+                <!-- Step 2 -->
+                <rect x="15" y="80" width="220" height="40" rx="10" fill="none" stroke="var(--box-border)" stroke-width="2"/>
+                <text x="125" y="105" font-family="'Kalam'" font-size="16" font-weight="bold" fill="var(--ink-blue)" text-anchor="middle">Separate incoming currents</text>
+                
+                <!-- Arrow 2 -->
+                <line x1="125" y1="120" x2="125" y2="150" stroke="var(--ink-blue)" stroke-width="2"/>
+                <polygon points="120,140 130,140 125,150" fill="var(--ink-blue)"/>
+                
+                <!-- Step 3 -->
+                <rect x="15" y="150" width="220" height="40" rx="10" fill="none" stroke="var(--box-border)" stroke-width="2"/>
+                <text x="125" y="175" font-family="'Kalam'" font-size="16" font-weight="bold" fill="var(--ink-blue)" text-anchor="middle">Separate outgoing currents</text>
+                
+                <!-- Arrow 3 -->
+                <line x1="125" y1="190" x2="125" y2="220" stroke="var(--ink-blue)" stroke-width="2"/>
+                <polygon points="120,210 130,210 125,220" fill="var(--ink-blue)"/>
+
+                <!-- Step 4 -->
+                <rect x="25" y="220" width="200" height="60" rx="10" fill="none" stroke="var(--ink-red)" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="125" y="245" font-family="'Kalam'" font-size="18" font-weight="bold" fill="var(--ink-blue)" text-anchor="middle">Apply KCL</text>
+                <text x="125" y="265" font-family="'Kalam'" font-size="14" font-weight="bold" fill="var(--ink-red)" text-anchor="middle">(Incoming = Outgoing)</text>
+
+                <!-- Arrow 4 -->
+                <line x1="125" y1="280" x2="125" y2="310" stroke="var(--ink-blue)" stroke-width="2"/>
+                <polygon points="120,300 130,300 125,310" fill="var(--ink-blue)"/>
+
+                <!-- Step 5 -->
+                <rect x="25" y="310" width="200" height="40" rx="10" fill="var(--highlight-yellow)" stroke="var(--ink-blue)" stroke-width="2"/>
+                <text x="125" y="335" font-family="'Kalam'" font-size="18" font-weight="bold" fill="var(--ink-blue)" text-anchor="middle">Solve for Unknown</text>
+            </svg>
+        </div>
+
+        <hr>
+
+        <h2>Flowchart</h2>
+        <div class="code-block-text protect tilt-1">Find Junction
+      │
+      ▼
+Identify Incoming Current
+      │
+      ▼
+Identify Outgoing Current
+      │
+      ▼
+Apply KCL
+(Incoming = Outgoing)
+      │
+      ▼
+Find Unknown Current</div>
+
+        <hr>
+
+        <h2>Physical Meaning of KCL</h2>
+        <div class="box protect tilt-2">
+            <p>KCL is based on the <strong>Law of Conservation of Electric Charge</strong>.</p>
+            <p>Since electric charge cannot be created or destroyed,</p>
+            <ul>
+                <li>Charge entering a node</li>
+                <li>Charge leaving a node</li>
+            </ul>
+            <p>must always be equal.</p>
+            <p style="text-align:center; font-weight:bold; color:var(--ink-red); margin-top:10px;">Therefore, Current entering = Current leaving.</p>
+        </div>
+
+        <hr>
+
+        <h2>Important Formula</h2>
+        <div class="protect" style="display:flex; justify-content:space-around; align-items:center;">
+            <div style="text-align:center;">
+                <h3>Standard Form</h3>
+                <div class="formula-block">
+                    <span class="math-hl" style="border: 2px solid var(--ink-blue); padding:10px;">[ ∑ I = 0 ]</span>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <h3> Practical Form</h3>
+                <div class="formula-block">
+                    <span class="math-hl" style="border: 2px solid var(--ink-red); padding:10px; font-size:1.3rem;">[ Incoming Current = Outgoing Current ]</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div class="page">
+        <h2 style="margin-top:0;"> Important Points</h2>
+        <div class="box protect tilt-1">
+            <ul>
+                <li>KCL is applied only at <strong class="hl">junctions (nodes)</strong>.</li>
+                <li>Current never accumulates at a junction.</li>
+                <li>The total incoming current always equals the total outgoing current.</li>
+                <li>KCL is based on the conservation of electric charge.</li>
+                <li>It is widely used in circuit analysis.</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <h2> Memory Trick</h2>
+        <div class="callout protect">
+            <p><strong>Most Important Memory Trick</strong></p>
+            <p style="text-align:center; font-size:1.6rem; color:var(--ink-red); font-weight:bold; margin:10px 0;">KCL = "Come = Leave"</p>
+            <p style="text-align:center;">or</p>
+            <p style="text-align:center; font-size:1.6rem; color:var(--ink-red); font-weight:bold; margin:10px 0;">IN = OUT</p>
+            <p>Whenever current comes into a node, the same amount must leave the node.</p>
+        </div>
+
+        <hr>
+
+        <h2> Practical Applications</h2>
+        <p class="tilt-2">KCL is used in:</p>
+        <ul style="display:grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+            <li>Electrical circuit analysis</li>
+            <li>Network analysis</li>
+            <li>Current distribution</li>
+            <li>Electronic circuits</li>
+            <li>Power systems</li>
+            <li>PCB circuit design</li>
+            <li>Control systems</li>
+            <li>Electrical machines</li>
+        </ul>
+
+        <hr>
+
+        <h2> Common Mistakes</h2>
+        <div class="box box-red protect tilt-1">
+            <ul>
+                <li>Confusing incoming current with outgoing current.</li>
+                <li>Applying KCL to a closed loop instead of a junction.</li>
+                <li>Ignoring current direction.</li>
+                <li>Using wrong sign convention.</li>
+                <li>Forgetting that current is an algebraic quantity.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PAGE 6 -->
+    <div class="page">
+        <h2 style="margin-top:0;"># Frequently Asked Questions (FAQ)</h2>
+        
+        <div class="protect" style="margin-bottom: 20px;">
+            <h3> Q1. What is Kirchhoff's Current Law?</h3>
+            <p class="tilt-1" style="color:var(--ink-red); font-weight:bold;">Ans: <span style="color:var(--ink-blue); font-weight:normal;">It states that the algebraic sum of all currents at a junction is zero.</span></p>
+        </div>
+        
+        <hr style="margin:10px 0; border-bottom:1px dashed rgba(9,64,103,0.1);">
+
+        <div class="protect" style="margin-bottom: 20px;">
+            <h3>Q2. Where is KCL applied?</h3>
+            <p class="tilt-2" style="color:var(--ink-red); font-weight:bold;">Ans: <span style="color:var(--ink-blue); font-weight:normal;">At a junction (node) of an electrical circuit.</span></p>
+        </div>
+
+        <hr style="margin:10px 0; border-bottom:1px dashed rgba(9,64,103,0.1);">
+
+        <div class="protect" style="margin-bottom: 20px;">
+            <h3> Q3. What is the easiest way to remember KCL?</h3>
+            <p class="tilt-1" style="color:var(--ink-red); font-weight:bold;">Ans: <span class="hl" style="color:var(--ink-blue); font-weight:bold;">Incoming Current = Outgoing Current</span></p>
+        </div>
+
+        <hr style="margin:10px 0; border-bottom:1px dashed rgba(9,64,103,0.1);">
+
+        <div class="protect" style="margin-bottom: 20px;">
+            <h3>Q4. Which physical law is KCL based on?</h3>
+            <p class="tilt-2" style="color:var(--ink-red); font-weight:bold;">Ans: <span style="color:var(--ink-blue); font-weight:normal;">The <strong class="hl">Law of Conservation of Electric Charge</strong>.</span></p>
+        </div>
+
+        <hr style="margin:10px 0; border-bottom:1px dashed rgba(9,64,103,0.1);">
+
+        <div class="protect" style="margin-bottom: 20px;">
+            <h3> Q5. What is a junction?</h3>
+            <p class="tilt-1" style="color:var(--ink-red); font-weight:bold;">Ans: <span style="color:var(--ink-blue); font-weight:normal;">A point where two or more circuit branches meet.</span></p>
+        </div>
+
+        <hr>
+
+        <h2> Exam-Oriented Notes</h2>
+        <div class="box protect tilt-2" style="background-color:#f0f8ff; border-color:#2980b9;">
+            <p><strong> Very Important Definitions</strong></p>
+            <ul>
+                <li>Kirchhoff's Current Law</li>
+                <li>Junction (Node)</li>
+            </ul>
+            
+            <p><strong> Important Formula</strong></p>
+            <div class="formula-block" style="margin: 5px 0;"><span class="hl">[ ∑ I = 0 ]</span></div>
+            
+            <p><strong> One-Line Answer</strong></p>
+            <p style="text-align:center; font-weight:bold; color:var(--ink-red);">Incoming Current = Outgoing Current</p>
+            
+            <p style="margin-top:15px;"><strong>Frequently Asked Numerical</strong></p>
+            <p>Find the unknown current using:</p>
+            <div class="formula-block" style="margin: 5px 0;"><span class="math-hl">[ Incoming Current = Outgoing Current ]</span></div>
+        </div>
+
+        <hr>
+
+        <h2> Quick Revision</h2>
+        <div class="protect tilt-1">
+            <ul>
+                <li><strong>KCL →</strong> Kirchhoff's Current Law</li>
+                <li><strong>Applied at →</strong> Junction (Node)</li>
+                <li><strong>Formula →</strong> (∑ I = 0)</li>
+                <li><strong>Shortcut →</strong> Incoming = Outgoing</li>
+                <li><strong>Based on →</strong> Conservation of Electric Charge</li>
+                <li><strong>Current does not accumulate at a junction.</strong></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- PAGE 7 -->
+    <div class="page">
+        <h2 style="margin-top:0;">Related Concept Mentioned in the Lecture</h2>
+        <p class="tilt-2">The lecture also briefly mentions <strong>Kirchhoff's Voltage Law (KVL)</strong>.</p>
+        
+        <div class="box protect tilt-1">
+            <h3> Kirchhoff's Voltage Law (KVL)</h3>
+            <p>In a <strong class="hl">closed electrical loop</strong>, the algebraic sum of all voltages is zero.</p>
+            <div class="formula-block">
+                <span class="math-hl">[ ∑ V = 0 ]</span>
+            </div>
+            <p style="margin-top:10px;"><strong>Note:</strong> KVL is different from KCL.</p>
+            <ul>
+                <li><strong style="color:var(--ink-red);">KCL →</strong> Junction (Current)</li>
+                <li><strong style="color:var(--ink-red);">KVL →</strong> Closed Loop (Voltage)</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <h2> Mind Map</h2>
+        <div class="code-block-text protect tilt-2" style="font-size:0.9rem;">                 Kirchhoff's Laws
+                        │
+        ┌───────────────┴───────────────┐
+        │                               │
+       KCL                             KVL
+        │                               │
+   Junction (Node)                Closed Loop
+        │                               │
+Incoming = Outgoing              ΣV = 0
+        │
+    ΣI = 0
+        │
+Conservation of Charge</div>
+
+        <div class="svg-container protect">
+            <svg width="400" height="280" viewBox="0 0 400 280" style="filter: url(#sketchy);">
+                <!-- Root -->
+                <rect x="100" y="10" width="200" height="40" rx="20" fill="none" stroke="var(--ink-red)" stroke-width="2"/>
+                <text x="200" y="35" font-family="'Kalam'" font-size="20" font-weight="bold" fill="var(--ink-red)" text-anchor="middle">Kirchhoff's Laws</text>
+                
+                <line x1="200" y1="50" x2="200" y2="70" stroke="var(--ink-blue)" stroke-width="2"/>
+                <line x1="100" y1="70" x2="300" y2="70" stroke="var(--ink-blue)" stroke-width="2"/>
+                
+                <!-- KCL Branch (Left) -->
+                <line x1="100" y1="70" x2="100" y2="90" stroke="var(--ink-blue)" stroke-width="2"/>
+                <rect x="50" y="90" width="100" height="30" rx="5" fill="var(--highlight-yellow)" stroke="var(--box-border)" stroke-width="2"/>
+                <text x="100" y="112" font-family="'Kalam'" font-size="18" font-weight="bold" fill="var(--ink-blue)" text-anchor="middle">KCL</text>
+                
+                <line x1="100" y1="120" x2="100" y2="140" stroke="var(--ink-blue)" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <text x="100" y="155" font-family="'Kalam'" font-size="14" fill="var(--ink-blue)" text-anchor="middle">Junction (Node)</text>
+                
+                <line x1="100" y1="165" x2="100" y2="185" stroke="var(--ink-blue)" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <text x="100" y="200" font-family="'Kalam'" font-size="14" font-weight="bold" fill="var(--ink-red)" text-anchor="middle">Incoming = Outgoing</text>
+                
+                <line x1="100" y1="210" x2="100" y2="230" stroke="var(--ink-blue)" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <text x="100" y="245" font-family="'Kalam'" font-size="16" font-weight="bold" fill="var(--ink-blue)" text-anchor="middle">ΣI = 0</text>
+                
+                <text x="100" y="270" font-family="'Kalam'" font-size="12" fill="#666" text-anchor="middle">Conservation of Charge</text>
+
+                <!-- KVL Branch (Right) -->
+                <line x1="300" y1="70" x2="300" y2="90" stroke="var(--ink-blue)" stroke-width="2"/>
+                <rect x="250" y="90" width="100" height="30" rx="5" fill="none" stroke="var(--box-border)" stroke-width="2"/>
+                <text x="300" y="112" font-family="'Kalam'" font-size="18" font-weight="bold" fill="var(--ink-blue)" text-anchor="middle">KVL</text>
+                
+                <line x1="300" y1="120" x2="300" y2="140" stroke="var(--ink-blue)" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <text x="300" y="155" font-family="'Kalam'" font-size="14" fill="var(--ink-blue)" text-anchor="middle">Closed Loop</text>
+                
+                <line x1="300" y1="165" x2="300" y2="185" stroke="var(--ink-blue)" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <text x="300" y="200" font-family="'Kalam'" font-size="16" font-weight="bold" fill="var(--ink-blue)" text-anchor="middle">ΣV = 0</text>
+            </svg>
+        </div>
+
+        <hr>
+
+        <h2> Chapter Summary</h2>
+        <div class="box box-red protect tilt-1">
+            <p>Kirchhoff's Current Law (KCL) states that <strong>the algebraic sum of currents at a junction is zero</strong>, which simply means <strong>the total current entering a junction is equal to the total current leaving it</strong>. This law is based on the <strong>conservation of electric charge</strong> and forms the foundation of electrical circuit and network analysis. By correctly identifying incoming and outgoing currents and applying <strong>Incoming = Outgoing</strong>, unknown currents in electrical circuits can be calculated accurately and efficiently.</p>
+        </div>
+    </div>
+
+</body>
+</html>
