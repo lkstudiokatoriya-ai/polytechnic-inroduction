@@ -274,73 +274,55 @@
 
         /* --- Print & PDF Specifics --- */
         @media print {
-            @page {
-                size: A4;
-                margin: 0; 
-            }
-            body {
-                background-color: white;
-                padding: 0;
-                margin: 0;
-            }
-            .page {
-                margin: 0;
-                box-shadow: none;
-                border-radius: 0;
-                width: 210mm;
-                height: 297mm;
-                page-break-after: always;
-            }
+    html,
+    body {
+        display: none !important;
+    }
         }
         
         /* Utility */
         .center-text { text-align: center; }
-        /* Add this just before </style> */
-    /* --- सामान्य स्क्रीन (Web View) के लिए नियम --- */
-body {
-    margin: 0;
-    padding: 0;
-    background-color: var(--paper-bg);
+        
+    /* ===== Rotate Message ===== */
+
+#rotateMessage {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    color: #fff;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    z-index: 999999;
+    padding: 20px;
 }
 
-.page {
-    background: white;
-    box-sizing: border-box;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    margin: 20px auto;
-    padding: 20mm;
-    width: 210mm;
-    min-height: 297mm;
-}
+@media screen and (orientation: portrait) {
+    #rotateMessage {
+        display: flex;
+    }
 
-/* --- प्रिंट और PDF (Print View) के लिए नियम --- */
-@media print {
-    @page {
-        size: A4;
-        margin: 0;
-    }
-    body {
-        background-color: white;
-        padding: 0;
-        margin: 0;
-    }
     .page {
-        margin: 0;
-        box-shadow: none;
-        border-radius: 0;
-        width: 210mm;
-        height: 297mm;
-        page-break-after: always;
-        overflow: hidden;
+        display: none;
     }
 }
-    
+        /* Add this just before </style> */
     </style>
 </head>
 <body>
 
-    <!-- ================= PAGE 1 ================= -->
-    <div class="page">
+<div id="rotateMessage">
+    📱 Please Rotate Your Device to Landscape Mode
+</div>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page">
         <div class="spiral-binding"></div>
         
         <h1><mark>Differentiation (Derivative) – Complete Premium Notes</mark></h1>
@@ -982,6 +964,23 @@ Derivative of Inner Function
         </div>
 
     </div>
+<script>
+function checkOrientation() {
+    const rotate = document.getElementById("rotateMessage");
+    const pages = document.querySelectorAll(".page");
 
+    if (window.innerHeight > window.innerWidth) {
+        rotate.style.display = "flex";
+        pages.forEach(p => p.style.display = "none");
+    } else {
+        rotate.style.display = "none";
+        pages.forEach(p => p.style.display = "block");
+    }
+}
+
+window.addEventListener("load", checkOrientation);
+window.addEventListener("resize", checkOrientation);
+window.addEventListener("orientationchange", checkOrientation);
+</script>
 </body>
 </html>
