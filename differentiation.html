@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Differentiation Notes - Engineering Mathematics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- Base & Reset --- */
+        :root {
+            --red-ink: #c62828;
+            --blue-ink: #1565c0;
+            --highlight: rgba(255, 235, 59, 0.5);
+            --highlight-solid: #fff59d;
+            --paper-bg: #fdfbf7;
+            --shadow: rgba(0, 0, 0, 0.2);
+            --spiral-hole: #222;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #4a4a4a;
+            font-family: 'Patrick Hand', cursive;
+            font-size: 1.15rem;
+            color: var(--blue-ink);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        /* --- Realistic Notebook Page --- */
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background-color: var(--paper-bg);
+            /* Subtle paper noise texture */
+            background-image: url("data:image/svg+xml,%3Csvg width='150' height='150' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.04' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='150' height='150' fill='%23fdfbf7'/%3E%3Crect width='150' height='150' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+            box-shadow: 10px 10px 25px var(--shadow), inset 0 0 50px rgba(0,0,0,0.02);
+            border-radius: 4px 12px 12px 4px;
+            margin-bottom: 3rem;
+            position: relative;
+            padding: 25mm 20mm 25mm 35mm; /* Extra left padding for spiral */
+            overflow: visible;
+            page-break-after: always;
+        }
+
+        /* --- Spiral Binding --- */
+        .spiral-binding {
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            /* The holes */
+            background-image: radial-gradient(circle at 25px 15px, var(--spiral-hole) 7px, transparent 8px);
+            background-size: 40px 32px;
+            background-position: 0 16px;
+            border-right: 1px solid rgba(0,0,0,0.05);
+            z-index: 1;
+        }
+        
+        .spiral-binding::after {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 0;
+            bottom: 0;
+            width: 32px;
+            /* The metal rings */
+            background-image: linear-gradient(to bottom, #b0b0b0 0px, #e8e8e8 4px, #888 7px, transparent 7px);
+            background-size: 32px 32px;
+            background-position: 0 18px;
+            border-radius: 5px;
+            z-index: 2;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+        }
+
+        /* --- Typography & Handwriting --- */
+        h1, h2, h3, h4 {
+            font-family: 'Kalam', cursive;
+            color: var(--red-ink);
+            margin-bottom: 0.8rem;
+            margin-top: 1.5rem;
+            line-height: 1.3;
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+
+        h1 { font-size: 2.2rem; text-align: center; border-bottom: 2px dashed var(--red-ink); padding-bottom: 10px; margin-top: 0;}
+        h2 { font-size: 1.8rem; }
+        h3 { font-size: 1.5rem; }
+
+        p, li {
+            color: var(--blue-ink);
+            margin-bottom: 0.8rem;
+            transform: rotate(-0.2deg); /* Natural writing tilt */
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+        }
+
+        mark, .highlight {
+            background-color: var(--highlight);
+            padding: 2px 6px;
+            border-radius: 8px;
+            color: var(--blue-ink);
+            font-weight: bold;
+        }
+
+        strong, b {
+            font-family: 'Kalam', cursive;
+            font-weight: 700;
+            color: var(--red-ink);
+        }
+
+        hr {
+            border: 0;
+            border-bottom: 2px solid rgba(21, 101, 192, 0.2);
+            margin: 1.5rem 0;
+        }
+
+        /* --- Layout & Boxes --- */
+        .formula-box, .blockquote, table, svg, .callout {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        .formula-box {
+            border: 3px solid var(--blue-ink);
+            background-color: rgba(255, 235, 59, 0.15);
+            padding: 15px 20px;
+            border-radius: 12px 4px 12px 4px; /* Hand-drawn look */
+            margin: 15px 0;
+            display: inline-block;
+            min-width: 50%;
+            text-align: center;
+            font-size: 1.4rem;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.05);
+            transform: rotate(0.5deg);
+        }
+
+        .blockquote {
+            border-left: 4px solid var(--red-ink);
+            background-color: rgba(21, 101, 192, 0.05);
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+
+        /* --- Tables --- */
+        table {
+            width: 100%;
+            max-width: 90%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            transform: rotate(-0.3deg);
+        }
+
+        th, td {
+            border: 2px solid var(--blue-ink);
+            padding: 10px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: rgba(21, 101, 192, 0.1);
+            color: var(--red-ink);
+            font-family: 'Kalam', cursive;
+            font-size: 1.3rem;
+        }
+
+        td {
+            font-size: 1.2rem;
+        }
+
+        /* --- Callouts --- */
+        .callout {
+            position: relative;
+            background: #ffebee;
+            border: 2px dashed var(--red-ink);
+            padding: 15px 15px 15px 40px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .callout::before {
+            content: '📌';
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .callout.memory::before { content: '🧠'; }
+        .callout.important::before { content: '⭐'; }
+        .callout.shortcut::before { content: '⚡'; }
+
+        /* --- Mathematical Notation (Handwritten style) --- */
+        .math-block {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+        
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            margin: 0 6px;
+            line-height: 1.1;
+        }
+
+        .frac > span:first-child {
+            border-bottom: 2px solid var(--blue-ink);
+            padding: 0 4px;
+        }
+
+        .frac > span:last-child {
+            padding: 0 4px;
+        }
+        
+        .inline-math {
+            font-weight: bold;
+            font-size: 1.2rem;
+            white-space: nowrap;
+        }
+
+        /* --- SVGs --- */
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        svg text {
+            font-family: 'Patrick Hand', cursive;
+            font-size: 16px;
+        }
+
+        /* --- Code Block for ascii flowcharts --- */
+        pre {
+            background: rgba(0,0,0,0.03);
+            padding: 15px;
+            border: 1px dashed var(--blue-ink);
+            border-radius: 8px;
+            font-family: 'Patrick Hand', cursive;
+            font-size: 1.2rem;
+            margin: 15px 0;
+            white-space: pre-wrap;
+            transform: rotate(0.5deg);
+        }
+
+        /* --- Print & PDF Specifics --- */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0; 
+            }
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+                width: 210mm;
+                height: 297mm;
+                page-break-after: always;
+            }
+        }
+        
+        /* Utility */
+        .center-text { text-align: center; }
+    </style>
+</head>
+<body>
+
+    <!-- ================= PAGE 1 ================= -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+        
+        <h1><mark>Differentiation (Derivative) – Complete Premium Notes</mark></h1>
+        <h2>Subject: Engineering Mathematics / Calculus (Diploma Electrical Engineering)</h2>
+        
+        <hr>
+
+        <h1 style="border:none;">Differentiation (Derivative)</h1>
+        
+        <p>Differentiation (Derivative) is one of the most fundamental concepts of Calculus. It is widely used in <strong>Mathematics, Physics, Engineering, and Technical Subjects</strong>.</p>
+        <p>After learning <strong>Differentiation</strong> and <strong>Integration</strong>, students can understand many advanced concepts in Physics and Engineering.</p>
+
+        <hr>
+
+        <h2>Historical Background</h2>
+        <div class="blockquote">
+            <p>Two great mathematicians independently developed Calculus:</p>
+            <ul>
+                <li><strong>Sir Isaac Newton</strong></li>
+                <li><strong>Gottfried Wilhelm Leibniz</strong></li>
+            </ul>
+            <p>Both made significant contributions to the development of Differentiation and Integral Calculus.</p>
+        </div>
+
+        <hr>
+
+        <h2>Learning Objectives</h2>
+        <p>After studying this chapter, you should be able to:</p>
+        <ul>
+            <li>Understand the meaning of Derivative.</li>
+            <li>Understand the notation <span class="inline-math">(<span class="frac"><span>d</span><span>dx</span></span>)</span>.</li>
+            <li>Learn the Geometrical Meaning of Derivative.</li>
+            <li>Learn the Physical Meaning of Derivative.</li>
+            <li>Learn the Mathematical Meaning of Derivative.</li>
+            <li>Calculate derivatives using basic formulas.</li>
+            <li>Apply differentiation rules in problems.</li>
+        </ul>
+
+        <hr>
+
+        <h2>What is Differentiation?</h2>
+        <p>Differentiation is the process of finding the <strong>rate at which one quantity changes with respect to another quantity</strong>.</p>
+        
+        <p>If</p>
+        <div class="math-block">
+            <mark>y = f(x)</mark>
+        </div>
+        <p>then</p>
+        <div class="math-block">
+            <mark><span class="frac"><span>dy</span><span>dx</span></span></mark>
+        </div>
+        <p>is called the <strong>Derivative of y with respect to x</strong>.</p>
+
+        <hr>
+
+        <h2>Meaning of Different Symbols</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Meaning</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="inline-math"><span class="frac"><span>dy</span><span>dx</span></span></span></td>
+                    <td>Derivative of y with respect to x</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-math"><span class="frac"><span>dx</span><span>dy</span></span></span></td>
+                    <td>Derivative of x with respect to y</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-math"><span class="frac"><span>d</span><span>dx</span></span></span></td>
+                    <td>Differentiation operator</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-math">dy</span></td>
+                    <td>Very small change in y</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-math">dx</span></td>
+                    <td>Very small change in x</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-math">&Delta;y</span></td>
+                    <td>Finite (considerable) change in y</td>
+                </tr>
+                <tr>
+                    <td><span class="inline-math">&Delta;x</span></td>
+                    <td>Finite (considerable) change in x</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ================= PAGE 2 ================= -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+        
+        <h2>Important Relation</h2>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span> = 
+                <span class="frac"><span>1</span><span><span class="frac"><span>dx</span><span>dy</span></span></span></span>
+            </div>
+            <p>Similarly,</p>
+            <div class="formula-box">
+                <span class="frac"><span>dx</span><span>dy</span></span> = 
+                <span class="frac"><span>1</span><span><span class="frac"><span>dy</span><span>dx</span></span></span></span>
+            </div>
+            <p>These are reciprocal relationships (where applicable).</p>
+        </div>
+
+        <hr>
+
+        <h2>Very Small Change vs Finite Change</h2>
+        
+        <h3>Very Small Change</h3>
+        <ul>
+            <li><span class="inline-math">dx</span> &rarr; Infinitesimally small change in x</li>
+            <li><span class="inline-math">dy</span> &rarr; Infinitesimally small change in y</li>
+        </ul>
+
+        <h3>Finite Change</h3>
+        <ul>
+            <li><span class="inline-math">&Delta;x</span> &rarr; Noticeable change in x</li>
+            <li><span class="inline-math">&Delta;y</span> &rarr; Noticeable change in y</li>
+        </ul>
+
+        <hr>
+
+        <h1>Three Meanings of Derivative</h1>
+
+        <h2>1. Geometrical Meaning</h2>
+        
+        <h3>Definition</h3>
+        <p>The derivative represents the <strong>Slope of the Tangent</strong> to the curve at a particular point.</p>
+        <p>If</p>
+        <div class="math-block">y = f(x)</div>
+        <p>then</p>
+        <div class="math-block"><span class="frac"><span>dy</span><span>dx</span></span></div>
+        <p>is the slope of the tangent drawn at that point.</p>
+
+        <h3>Diagram Representation</h3>
+        <div class="svg-container">
+            <svg width="350" height="250" viewBox="0 0 350 250">
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                        <path d="M 0,0 L 10,5 L 0,10 Z" fill="#1565c0" />
+                    </marker>
+                    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                        <path d="M 0,0 L 10,5 L 0,10 Z" fill="#c62828" />
+                    </marker>
+                </defs>
+                <!-- Axes -->
+                <path d="M 40,220 L 320,220" stroke="#1565c0" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+                <path d="M 50,230 L 50,20" stroke="#1565c0" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+                <text x="310" y="240" fill="#1565c0" font-size="20">x</text>
+                <text x="25" y="30" fill="#1565c0" font-size="20">y</text>
+                
+                <!-- Curve -->
+                <path d="M 70,180 Q 150,170 280,60" stroke="#1565c0" stroke-width="3" fill="none"/>
+                
+                <!-- Tangent Line -->
+                <path d="M 120,200 L 290,30" stroke="#c62828" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arrow-red)"/>
+                
+                <!-- Point P -->
+                <circle cx="215" cy="105" r="5" fill="#c62828"/>
+                <text x="225" y="100" fill="#c62828" font-size="18" font-weight="bold">● P(x,y)</text>
+                
+                <!-- Labels -->
+                <text x="160" y="190" fill="#c62828" font-size="18">Tangent</text>
+                <text x="150" y="245" fill="#c62828" font-size="18">Slope of Tangent = dy/dx</text>
+            </svg>
+        </div>
+
+        <div class="callout important">
+            <h3>Important Point</h3>
+            <p><strong>Geometrical Meaning of Derivative = Slope of Tangent</strong></p>
+        </div>
+
+    </div>
+
+    <!-- ================= PAGE 3 ================= -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+        
+        <h2>2. Physical Meaning</h2>
+        <p>Derivative represents the <strong>Instantaneous Rate of Change</strong>.</p>
+        <p>Whenever Physics asks:</p>
+        <ul>
+            <li>Rate of change</li>
+            <li>Instantaneous rate</li>
+            <li>Change with respect to time</li>
+        </ul>
+        <p>Differentiation is used.</p>
+
+        <h3>Example</h3>
+        <p>Suppose a water tank is draining.</p>
+        
+        <div class="svg-container">
+            <svg width="400" height="200" viewBox="0 0 400 200">
+                <!-- Tank 1 (Initial) -->
+                <path d="M 50,30 L 50,160 L 130,160 L 130,30" stroke="#1565c0" stroke-width="3" fill="none"/>
+                <!-- Water full -->
+                <rect x="53" y="50" width="74" height="107" fill="rgba(21,101,192,0.3)"/>
+                <path d="M 52,50 L 128,50" stroke="#1565c0" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="70" y="180" fill="#1565c0" font-weight="bold">Initially</text>
+
+                <!-- Arrow -->
+                <path d="M 160,100 L 220,100" stroke="#c62828" stroke-width="3" marker-end="url(#arrow-red)"/>
+                <text x="165" y="90" fill="#c62828">Time passes</text>
+
+                <!-- Tank 2 (After) -->
+                <path d="M 250,30 L 250,160 L 330,160 L 330,30" stroke="#1565c0" stroke-width="3" fill="none"/>
+                <!-- Water draining -->
+                <rect x="253" y="110" width="74" height="47" fill="rgba(21,101,192,0.3)"/>
+                <path d="M 252,110 L 328,110" stroke="#1565c0" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="260" y="180" fill="#1565c0" font-weight="bold">After some time</text>
+                
+                <!-- Drain pipe -->
+                <path d="M 290,160 L 290,185" stroke="#1565c0" stroke-width="6"/>
+                <text x="305" y="175" fill="#c62828">Water Out</text>
+            </svg>
+        </div>
+
+        <p>The water level decreases continuously.</p>
+        <div class="blockquote">
+            <p>If the question asks:<br>
+            <em>At this instant, how fast is the water level decreasing?</em></p>
+        </div>
+        <p>Then <span class="inline-math"><span class="frac"><span>dh</span><span>dt</span></span></span> gives the <strong>Instantaneous Rate of Change of Height</strong>.</p>
+
+        <h3>Examples in Physics</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Quantity</th>
+                    <th>Derivative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Velocity</td><td><span class="inline-math">v = <span class="frac"><span>dx</span><span>dt</span></span></span></td></tr>
+                <tr><td>Acceleration</td><td><span class="inline-math">a = <span class="frac"><span>dv</span><span>dt</span></span></span></td></tr>
+                <tr><td>Current change</td><td><span class="inline-math"><span class="frac"><span>dI</span><span>dt</span></span></span></td></tr>
+                <tr><td>Temperature change</td><td><span class="inline-math"><span class="frac"><span>dT</span><span>dt</span></span></span></td></tr>
+            </tbody>
+        </table>
+
+        <div class="callout important">
+            <h3>Important Point</h3>
+            <p><strong>Physical Meaning = Instantaneous Rate of Change</strong></p>
+        </div>
+
+        <hr>
+
+        <h2>3. Mathematical Meaning</h2>
+        <p>Mathematically, derivative means:</p>
+        <p>Finding differentiation using standard formulas.</p>
+        <p>Example:<br>If <mark>y = x<sup>3</sup></mark> then <mark><span class="frac"><span>dy</span><span>dx</span></span> = 3x<sup>2</sup></mark></p>
+
+    </div>
+
+    <!-- ================= PAGE 4 ================= -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+        
+        <h1>Basic Differentiation Formulas</h1>
+        <p>These formulas must be memorized.</p>
+        
+        <hr>
+
+        <h2>A. Trigonometric Formulas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Function</th>
+                    <th>Derivative</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><span class="inline-math">sin x</span></td><td><span class="inline-math">cos x</span></td></tr>
+                <tr><td><span class="inline-math">cos x</span></td><td><span class="inline-math">-sin x</span></td></tr>
+                <tr><td><span class="inline-math">tan x</span></td><td><span class="inline-math">sec<sup>2</sup>x</span></td></tr>
+                <tr><td><span class="inline-math">cot x</span></td><td><span class="inline-math">-csc<sup>2</sup>x</span></td></tr>
+                <tr><td><span class="inline-math">sec x</span></td><td><span class="inline-math">sec x tan x</span></td></tr>
+                <tr><td><span class="inline-math">csc x</span></td><td><span class="inline-math">-csc x cot x</span></td></tr>
+            </tbody>
+        </table>
+
+        <h2>B. Exponential Formula</h2>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span>(e<sup>x</sup>) = e<sup>x</sup>
+            </div>
+            <p>General form:</p>
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span>(a<sup>x</sup>) = a<sup>x</sup> ln a
+            </div>
+        </div>
+
+        <h2>C. Power Rule</h2>
+        <div class="center-text">
+            <div class="formula-box" style="border-color: var(--red-ink);">
+                <span class="frac"><span>d</span><span>dx</span></span>(x<sup>n</sup>) = n x<sup>n-1</sup>
+            </div>
+        </div>
+
+        <h2>D. Constant Rule</h2>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span>(C) = 0
+            </div>
+        </div>
+
+        <h2>E. Reciprocal Function</h2>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span>(<span class="frac"><span>1</span><span>x</span></span>) 
+                = - <span class="frac"><span>1</span><span>x<sup>2</sup></span></span>
+            </div>
+        </div>
+
+        <h2>F. Logarithmic Functions</h2>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span>(ln x) = <span class="frac"><span>1</span><span>x</span></span>
+            </div>
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span>(log<sub>a</sub> x) = <span class="frac"><span>1</span><span>x ln a</span></span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= PAGE 5 ================= -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+        
+        <h2>G. Inverse Trigonometric Functions</h2>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span>(tan<sup>-1</sup>x) = <span class="frac"><span>1</span><span>1 + x<sup>2</sup></span></span>
+            </div>
+            <br>
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span>(cot<sup>-1</sup>x) = - <span class="frac"><span>1</span><span>1 + x<sup>2</sup></span></span>
+            </div>
+            <br>
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span>(ln(1/x)) = - <span class="frac"><span>1</span><span>x</span></span>
+            </div>
+        </div>
+
+        <hr>
+
+        <h1>Formula Selection</h1>
+        
+        <h3>Case 1</h3>
+        <p><span class="inline-math">10<sup>x</sup></span></p>
+        <p>Constant is raised to variable.</p>
+        <p>Use:</p>
+        <div class="math-block"><span class="frac"><span>d</span><span>dx</span></span>(a<sup>x</sup>) = a<sup>x</sup> ln a</div>
+        <p>Result:</p>
+        <div class="math-block"><mark>10<sup>x</sup> ln 10</mark></div>
+
+        <hr>
+
+        <h3>Case 2</h3>
+        <p><span class="inline-math">x<sup>10</sup></span></p>
+        <p>Variable raised to constant.</p>
+        <p>Use:</p>
+        <div class="math-block"><span class="frac"><span>d</span><span>dx</span></span>(x<sup>n</sup>) = n x<sup>n-1</sup></div>
+        <p>Result:</p>
+        <div class="math-block"><mark>10x<sup>9</sup></mark></div>
+
+        <hr>
+
+        <h1>Differentiation Rules (Properties)</h1>
+
+        <h2>1. Addition & Subtraction Rule</h2>
+        <p>If</p>
+        <div class="math-block">y = u &plusmn; v</div>
+        <p>then</p>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>dy</span><span>dx</span></span> = 
+                <span class="frac"><span>du</span><span>dx</span></span> &plusmn; 
+                <span class="frac"><span>dv</span><span>dx</span></span>
+            </div>
+        </div>
+
+        <h3>Example</h3>
+        <p><span class="inline-math">sin x + e<sup>x</sup></span></p>
+        <p>Derivative: <mark>cos x + e<sup>x</sup></mark></p>
+
+        <h3>Example</h3>
+        <p><span class="inline-math">sin x - e<sup>x</sup></span></p>
+        <p>Derivative: <mark>cos x - e<sup>x</sup></mark></p>
+
+        <hr>
+
+        <h2>2. Product Rule (Multiplication Rule)</h2>
+        <p>If</p>
+        <div class="math-block">y = u &middot; v</div>
+        <p>then</p>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>dy</span><span>dx</span></span> = 
+                u <span class="frac"><span>dv</span><span>dx</span></span> + 
+                v <span class="frac"><span>du</span><span>dx</span></span>
+            </div>
+        </div>
+        
+        <h3>Example</h3>
+        <p><span class="inline-math">x<sup>2</sup>e<sup>x</sup></span></p>
+        <p>Derivative: <mark>x<sup>2</sup>e<sup>x</sup> + 2xe<sup>x</sup></mark></p>
+        <p>Factorizing, <span class="inline-math">e<sup>x</sup>(x<sup>2</sup> + 2x)</span></p>
+        
+        <h3>Example</h3>
+        <p><span class="inline-math">sin x &middot; 2<sup>x</sup></span></p>
+        <p>Derivative: <mark>2<sup>x</sup>cos x + 2<sup>x</sup>(ln 2)sin x</mark></p>
+
+    </div>
+
+    <!-- ================= PAGE 6 ================= -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+        
+        <h2>3. Quotient Rule</h2>
+        <p>If</p>
+        <div class="math-block">y = <span class="frac"><span>u</span><span>v</span></span></div>
+        <p>then</p>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>dy</span><span>dx</span></span> = 
+                <span class="frac"><span>v <span class="frac"><span>du</span><span>dx</span></span> - u <span class="frac"><span>dv</span><span>dx</span></span></span><span>v<sup>2</sup></span></span>
+            </div>
+        </div>
+
+        <h3>Flowchart</h3>
+        <div class="svg-container">
+            <svg width="450" height="300" viewBox="0 0 450 300">
+                <rect x="75" y="10" width="300" height="40" rx="8" fill="#fff59d" stroke="#1565c0" stroke-width="2"/>
+                <text x="225" y="35" text-anchor="middle" fill="#c62828" font-size="18" font-weight="bold">Numerator × Derivative of Denominator</text>
+                
+                <path d="M 225,50 L 225,80" stroke="#1565c0" stroke-width="2" marker-end="url(#arrow)"/>
+                
+                <rect x="175" y="80" width="100" height="40" rx="8" fill="#ffebee" stroke="#c62828" stroke-width="2"/>
+                <text x="225" y="105" text-anchor="middle" fill="#c62828" font-size="18" font-weight="bold">Minus</text>
+                
+                <path d="M 225,120 L 225,150" stroke="#1565c0" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <rect x="75" y="150" width="300" height="40" rx="8" fill="#fff59d" stroke="#1565c0" stroke-width="2"/>
+                <text x="225" y="175" text-anchor="middle" fill="#c62828" font-size="18" font-weight="bold">Denominator × Derivative of Numerator</text>
+                
+                <path d="M 225,190 L 225,220" stroke="#1565c0" stroke-width="2" marker-end="url(#arrow)"/>
+
+                <rect x="75" y="220" width="300" height="60" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+                <text x="225" y="245" text-anchor="middle" fill="#c62828" font-size="18" font-weight="bold">Divide by</text>
+                <text x="225" y="270" text-anchor="middle" fill="#c62828" font-size="18" font-weight="bold">(Denominator)²</text>
+            </svg>
+        </div>
+
+        <hr>
+
+        <h2>4. Chain Rule</h2>
+        <p>Used when one function is inside another.</p>
+        <p>General formula:</p>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>d</span><span>dx</span></span> [f(g(x))] = f'(g(x)) &times; g'(x)
+            </div>
+        </div>
+
+        <h3>Example</h3>
+        <p><span class="inline-math">sin(x<sup>3</sup>)</span></p>
+        <ul>
+            <li><strong>Step 1:</strong> Differentiate outer function <span class="inline-math">&rarr; cos(x<sup>3</sup>)</span></li>
+            <li><strong>Step 2:</strong> Multiply by derivative of inner function <span class="inline-math">&rarr; 3x<sup>2</sup></span></li>
+        </ul>
+        <p>Answer: <mark>3x<sup>2</sup> cos(x<sup>3</sup>)</mark></p>
+
+        <h3>Example</h3>
+        <p><span class="inline-math">cos(x<sup>4</sup>)</span></p>
+        <p>Derivative: <mark>-4x<sup>3</sup> sin(x<sup>4</sup>)</mark></p>
+
+        <h3>Chain Rule Flowchart</h3>
+        <pre>
+Outer Function
+      &darr;
+Differentiate Outer
+      &darr;
+Keep Inner Same
+      &darr;
+Multiply by
+      &darr;
+Derivative of Inner Function
+        </pre>
+
+    </div>
+
+    <!-- ================= PAGE 7 ================= -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+        
+        <h2>Constant Multiplication Rule</h2>
+        <p>If</p>
+        <div class="math-block">y = 5f(x)</div>
+        <p>then</p>
+        <div class="center-text">
+            <div class="formula-box">
+                <span class="frac"><span>dy</span><span>dx</span></span> = 
+                5 <span class="frac"><span>df</span><span>dx</span></span>
+            </div>
+        </div>
+        <p>Constant remains unchanged.</p>
+
+        <hr>
+
+        <h1>Important Formula Classification (Mind Map)</h1>
+        
+        <div class="svg-container" style="background: rgba(255, 255, 255, 0.5); border-radius: 12px; padding: 10px; border: 1px dashed var(--blue-ink);">
+            <svg width="450" height="380" viewBox="0 0 450 380">
+                <text x="20" y="30" fill="#c62828" font-size="22" font-weight="bold">Differentiation</text>
+                
+                <!-- Main trunk -->
+                <path d="M 40,40 L 40,320" stroke="#1565c0" stroke-width="2" fill="none"/>
+                
+                <!-- Branch 1: Trigonometric -->
+                <path d="M 40,60 L 60,60" stroke="#1565c0" stroke-width="2" fill="none"/>
+                <text x="70" y="65" fill="#1565c0" font-weight="bold">Trigonometric</text>
+                <path d="M 80,70 L 80,140" stroke="#1565c0" stroke-width="1" fill="none"/>
+                <text x="100" y="85" fill="#1565c0">├ sin</text>
+                <text x="100" y="100" fill="#1565c0">├ cos</text>
+                <text x="100" y="115" fill="#1565c0">├ tan</text>
+                <text x="100" y="130" fill="#1565c0">├ cot, sec, csc</text>
+
+                <!-- Branch 2: Exponential -->
+                <path d="M 40,160 L 60,160" stroke="#1565c0" stroke-width="2" fill="none"/>
+                <text x="70" y="165" fill="#1565c0" font-weight="bold">Exponential</text>
+                <path d="M 80,170 L 80,200" stroke="#1565c0" stroke-width="1" fill="none"/>
+                <text x="100" y="185" fill="#1565c0">├ e^x</text>
+                <text x="100" y="200" fill="#1565c0">└ a^x</text>
+
+                <!-- Branch 3: Algebraic -->
+                <path d="M 40,220 L 60,220" stroke="#1565c0" stroke-width="2" fill="none"/>
+                <text x="70" y="225" fill="#1565c0" font-weight="bold">Algebraic</text>
+                <path d="M 80,230 L 80,260" stroke="#1565c0" stroke-width="1" fill="none"/>
+                <text x="100" y="245" fill="#1565c0">├ x^n, 1/x</text>
+                <text x="100" y="260" fill="#1565c0">└ Constant</text>
+
+                <!-- Branch 4: Logarithmic -->
+                <path d="M 40,280 L 60,280" stroke="#1565c0" stroke-width="2" fill="none"/>
+                <text x="70" y="285" fill="#1565c0" font-weight="bold">Logarithmic</text>
+                <text x="100" y="305" fill="#1565c0">├ ln x</text>
+                <text x="100" y="320" fill="#1565c0">└ log_a x</text>
+
+                <!-- Branch 5: Inv Trig -->
+                <path d="M 40,340 L 60,340" stroke="#1565c0" stroke-width="2" fill="none"/>
+                <text x="70" y="345" fill="#1565c0" font-weight="bold">Inverse Trigonometric</text>
+                <text x="100" y="365" fill="#1565c0">└ tan⁻¹x, cot⁻¹x</text>
+            </svg>
+        </div>
+
+        <hr>
+
+        <h1>Important Points</h1>
+        <ul>
+            <li><span class="inline-math">dy/dx</span> means derivative of y with respect to x.</li>
+            <li>Geometrically, derivative gives the slope of the tangent.</li>
+            <li>Physically, derivative gives the instantaneous rate of change.</li>
+            <li>Mathematically, derivative is calculated using differentiation formulas.</li>
+            <li>Learn all basic formulas before solving problems.</li>
+            <li>Understand which rule (Addition, Product, Quotient, Chain) applies to each expression.</li>
+        </ul>
+
+    </div>
+
+    <!-- ================= PAGE 8 ================= -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+        
+        <h1>Common Mistakes</h1>
+        <ul>
+            <li>Confusing <span class="inline-math">a<sup>x</sup></span> with <span class="inline-math">x<sup>a</sup></span>.</li>
+            <li>Forgetting the <span class="inline-math">ln a</span> term in <span class="inline-math">a<sup>x</sup></span>.</li>
+            <li>Forgetting to differentiate the inner function in the Chain Rule.</li>
+            <li>Missing the minus sign in derivatives of <span class="inline-math">cos x</span>, <span class="inline-math">cot x</span>, and <span class="inline-math">csc x</span>.</li>
+            <li>Applying Product Rule instead of Quotient Rule (or vice versa).</li>
+        </ul>
+
+        <div class="callout memory">
+            <h3>Memory Tricks</h3>
+            <ul>
+                <li><strong>SIN &rarr; COS</strong></li>
+                <li><strong>COS &rarr; &minus;SIN</strong></li>
+                <li><strong>TAN &rarr; SEC&sup2;</strong></li>
+                <li><strong>Constant &rarr; 0</strong></li>
+                <li><strong>Power Rule:</strong> Bring the power in front, then reduce it by 1.</li>
+                <li><strong>Chain Rule:</strong> <em>Outer derivative &times; Inner derivative.</em></li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <h1>Exam-Oriented Notes</h1>
+        <ul>
+            <li>Memorize all standard differentiation formulas.</li>
+            <li>Practice identifying the correct differentiation rule.</li>
+            <li>Always simplify expressions before differentiating, if possible.</li>
+            <li>In Physics, derivatives are frequently used to calculate velocity, acceleration, current change, temperature change, and other rates of change.</li>
+        </ul>
+
+        <hr>
+
+        <div class="callout shortcut" style="background-color: #e8f5e9; border-color: #2e7d32;">
+            <h3 style="color: #2e7d32;">Quick Revision</h3>
+            <ul>
+                <li><strong>Derivative = Rate of Change</strong></li>
+                <li><strong>Geometrical Meaning = Slope of Tangent</strong></li>
+                <li><strong>Physical Meaning = Instantaneous Rate</strong></li>
+                <li><strong>Mathematical Meaning = Differentiation Calculation</strong></li>
+                <li><strong>Power Rule:</strong> <span class="inline-math">x<sup>n</sup> &rarr; nx<sup>n-1</sup></span></li>
+                <li><strong>Product Rule:</strong> <span class="inline-math">u dv + v du</span></li>
+                <li><strong>Quotient Rule:</strong> <span class="inline-math">(v du - u dv) / v<sup>2</sup></span></li>
+                <li><strong>Chain Rule:</strong> Outer derivative &times; Inner derivative</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <h1>Chapter Summary</h1>
+        <div class="blockquote" style="background-color: #fff3e0; border-color: #e65100;">
+            <p style="color: #e65100; font-weight: bold;">
+                Differentiation is the foundation of Calculus. It explains how quantities change and is essential in Mathematics, Physics, and Engineering. By mastering the <strong>basic formulas</strong> and the <strong>four fundamental rules (Addition/Subtraction, Product, Quotient, and Chain Rule)</strong>, students can solve a wide variety of differentiation problems and apply them to real-world engineering and scientific situations.
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>
