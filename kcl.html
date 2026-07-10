@@ -216,35 +216,69 @@
         .tilt-1 { transform: rotate(-1deg); display: block; }
         .tilt-2 { transform: rotate(1deg); display: block; }
 
-        /* Print Specifics for PDF Export */
-        @media print {
-            @page {
-                size: A4;
-                margin: 0;
-            }
-            body {
-                background: none;
-                padding: 0;
-                gap: 0;
-            }
-            .page {
-                margin: 0;
-                box-shadow: none;
-                border: none;
-                width: 210mm;
-                height: 297mm;
-                page-break-after: always;
-            }
+/* ===== Disable Printing ===== */
+@media print {
+
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    html,
+    body,
+    .page {
+        display: none !important;
+    }
+
+    body {
+        background: #fff !important;
+    }
+
+}
             /* Adjust spiral for print to ensure it aligns */
             .page::before, .page::after {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
         }
+        /* ===== Full Screen Button ===== */
+
+#fullscreenBtn{
+    position:fixed;
+    right:15px;
+    bottom:15px;
+    width:60px;
+    height:60px;
+    border:none;
+    border-radius:50%;
+    background:#1565c0;
+    color:#fff;
+    font-size:28px;
+    font-weight:bold;
+    cursor:pointer;
+    z-index:999999;
+    box-shadow:0 5px 15px rgba(0,0,0,.35);
+}
+
+#rotateMessage{
+    position:fixed;
+    inset:0;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    background:#111;
+    color:#fff;
+    font-size:28px;
+    text-align:center;
+    z-index:999998;
+    padding:20px;
+}
     </style>
 </head>
 <body>
-
+<div id="rotateMessage">
+📱 Please Rotate Your Device to Landscape Mode
+</div>
     <!-- SVG Filters for Handwritten effect -->
     <svg width="0" height="0" style="position:absolute;">
         <defs>
@@ -756,6 +790,39 @@ Conservation of Charge</div>
             <p>Kirchhoff's Current Law (KCL) states that <strong>the algebraic sum of currents at a junction is zero</strong>, which simply means <strong>the total current entering a junction is equal to the total current leaving it</strong>. This law is based on the <strong>conservation of electric charge</strong> and forms the foundation of electrical circuit and network analysis. By correctly identifying incoming and outgoing currents and applying <strong>Incoming = Outgoing</strong>, unknown currents in electrical circuits can be calculated accurately and efficiently.</p>
         </div>
     </div>
+<button id="fullscreenBtn">⛶</button>
 
+<script>
+const btn = document.getElementById("fullscreenBtn");
+const rotate = document.getElementById("rotateMessage");
+
+function updateScreen(){
+
+    if(window.innerHeight > window.innerWidth){
+        rotate.style.display = "flex";
+    }else{
+        rotate.style.display = "none";
+    }
+}
+
+btn.onclick = async function(){
+
+    const el = document.documentElement;
+
+    if(!document.fullscreenElement){
+        if(el.requestFullscreen){
+            await el.requestFullscreen();
+        }else if(el.webkitRequestFullscreen){
+            await el.webkitRequestFullscreen();
+        }
+    }else{
+        document.exitFullscreen();
+    }
+};
+
+window.addEventListener("load",updateScreen);
+window.addEventListener("resize",updateScreen);
+window.addEventListener("orientationchange",updateScreen);
+</script>
 </body>
 </html>
