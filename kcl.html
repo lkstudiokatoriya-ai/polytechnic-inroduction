@@ -273,12 +273,75 @@
     z-index:999998;
     padding:20px;
 }
+        /* ===== Full Screen Overlay ===== */
+
+#fullscreenOverlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.80);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999999;
+}
+
+#fullscreenOverlay .box{
+    width:90%;
+    max-width:420px;
+    background:#1565c0;
+    color:#fff;
+    padding:35px 25px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+}
+
+#fullscreenOverlay .icon{
+    font-size:70px;
+    margin-bottom:15px;
+}
+
+#fullscreenOverlay h2{
+    color:#fff;
+    margin:10px 0;
+}
+
+#fullscreenOverlay p{
+    color:#fff;
+}
+
+#fullscreenOverlay button{
+    margin-top:20px;
+    padding:14px 28px;
+    font-size:20px;
+    font-weight:bold;
+    border:none;
+    border-radius:12px;
+    background:#fff;
+    color:#1565c0;
+    cursor:pointer;
+}
     </style>
 </head>
 <body>
 <div id="rotateMessage">
 📱 Please Rotate Your Device to Landscape Mode
 </div>
+    <div id="fullscreenOverlay">
+    <div class="box">
+        <div class="icon">📖</div>
+        <h2>Open in Full Screen</h2>
+        <p>Tap the button below to read notes in Full Screen.</p>
+
+        <button onclick="openFullscreen()">
+            Open Full Screen
+        </button>
+    </div>
+    </div>
+    
     <!-- SVG Filters for Handwritten effect -->
     <svg width="0" height="0" style="position:absolute;">
         <defs>
@@ -824,5 +887,38 @@ window.addEventListener("load",updateScreen);
 window.addEventListener("resize",updateScreen);
 window.addEventListener("orientationchange",updateScreen);
 </script>
+    <script>
+function openFullscreen(){
+
+    document.documentElement.requestFullscreen?.();
+
+    document.documentElement.webkitRequestFullscreen?.();
+
+    document.getElementById("fullscreenOverlay").style.display="none";
+
+}
+
+function checkOrientation(){
+
+    if(window.innerWidth>window.innerHeight){
+
+        document.getElementById("rotateMessage").style.display="none";
+
+        document.getElementById("fullscreenOverlay").style.display="flex";
+
+    }else{
+
+        document.getElementById("rotateMessage").style.display="flex";
+
+        document.getElementById("fullscreenOverlay").style.display="none";
+
+    }
+
+}
+
+window.addEventListener("load",checkOrientation);
+window.addEventListener("resize",checkOrientation);
+window.addEventListener("orientationchange",checkOrientation);
+    </script>
 </body>
 </html>
