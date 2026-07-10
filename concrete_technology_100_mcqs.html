@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SBTE Bihar - Concrete Technology (100 MCQs with Interactive Solutions)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap');
+  
+  body {
+    background-color: #111;
+    color: white;
+    font-family: 'Kalam', cursive;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .smart-board {
+    background-color: #000000;
+    border: 12px solid #333;
+    border-radius: 8px;
+    padding: 30px;
+    width: 100%;
+    max-width: 1000px;
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.9), inset 0px 0px 50px rgba(255,255,255,0.05);
+  }
+
+  .header-scene {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px dashed #555;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  h1 {
+    color: #ffffff;
+    text-align: center;
+    text-decoration: underline;
+    font-size: 2.2rem;
+    margin: 10px 20px;
+  }
+
+  h2 {
+    color: #ff9800;
+    border-bottom: 1px solid #444;
+    padding-bottom: 5px;
+    margin-top: 40px;
+  }
+
+  q {
+    display: block;
+    color: #ffff00; /* Yellow */
+    font-size: 1.3rem;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+    margin-left: 20px;
+    color: #ffffff;
+    font-size: 1.15rem;
+    margin-top: 5px;
+  }
+
+  @media (max-width: 600px) {
+    .options-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  a {
+    display: block;
+    color: #00ff00; /* Green */
+    font-size: 1.2rem;
+    margin: 10px 0 5px 20px;
+    font-weight: bold;
+  }
+
+  /* Chalk-style Solution Button and Box */
+  .sol-btn {
+    background: transparent;
+    border: 1px dashed #00ffff;
+    color: #00ffff;
+    padding: 5px 15px;
+    font-family: 'Kalam', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 5px 0 10px 20px;
+    display: inline-block;
+    transition: 0.2s;
+  }
+
+  .sol-btn:hover {
+    background: rgba(0, 255, 255, 0.15);
+  }
+
+  .sol-box {
+    display: none; /* Initially Hidden */
+    background: #111;
+    border: 1px dashed #ff9800;
+    border-left: 5px solid #ff9800;
+    padding: 10px 15px;
+    margin: 5px 0 20px 20px;
+    color: #ff9800; /* Orange color for handwritten chalk feel */
+    font-size: 1.1rem;
+    border-radius: 4px;
+    line-height: 1.5;
+  }
+
+  .ai-btn {
+    background: transparent;
+    border: 1px dashed #e040fb;
+    color: #e040fb;
+    padding: 5px 15px;
+    font-family: 'Kalam', cursive;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 5px 0 10px 10px;
+    display: inline-block;
+    transition: 0.2s;
+  }
+
+  .ai-btn:hover {
+    background: rgba(224, 64, 251, 0.15);
+  }
+
+  .ai-box {
+    display: none;
+    background: #1a001a;
+    border: 1px dashed #e040fb;
+    border-left: 5px solid #e040fb;
+    padding: 10px 15px;
+    margin: 5px 0 20px 20px;
+    color: #e040fb;
+    font-size: 1.1rem;
+    border-radius: 4px;
+    line-height: 1.5;
+  }
+
+  #ai-chat-fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #e040fb;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-family: 'Kalam', cursive;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(224, 64, 251, 0.4);
+    z-index: 1000;
+    transition: transform 0.2s;
+  }
+
+  #ai-chat-fab:hover {
+    transform: scale(1.05);
+  }
+
+  #ai-chat-widget {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 350px;
+    max-width: 90vw;
+    height: 450px;
+    background: #000;
+    border: 3px solid #333;
+    border-radius: 12px;
+    display: none;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    z-index: 1000;
+    font-family: 'Kalam', cursive;
+    overflow: hidden;
+  }
+
+  #ai-chat-header {
+    background: #222;
+    color: #e040fb;
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px dashed #444;
+  }
+
+  #ai-chat-header span.close-icon {
+    cursor: pointer;
+    color: #aaa;
+  }
+
+  #ai-chat-header span.close-icon:hover {
+    color: white;
+  }
+
+  #ai-chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .chat-msg {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .chat-msg.user {
+    align-self: flex-end;
+    background: #333;
+    color: white;
+    border: 1px solid #555;
+  }
+
+  .chat-msg.ai {
+    align-self: flex-start;
+    background: #1a001a;
+    color: #e040fb;
+    border: 1px dashed #e040fb;
+  }
+
+  #ai-chat-input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 2px dashed #444;
+    background: #111;
+  }
+
+  #ai-chat-input {
+    flex: 1;
+    background: transparent;
+    border: 1px solid #555;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: 'Kalam', cursive;
+    font-size: 1rem;
+    outline: none;
+  }
+
+  #ai-chat-input:focus {
+    border-color: #e040fb;
+  }
+
+  #ai-chat-send {
+    background: #e040fb;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin-left: 5px;
+    border-radius: 4px;
+    font-family: 'Kalam', cursive;
+    cursor: pointer;
+  }
+
+  svg {
+    display: block;
+    margin: 10px 0 10px 20px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="smart-board">
+  
+  <div class="header-scene">
+    <!-- Teacher & Students SVG -->
+    <svg width="120" height="100" viewBox="0 0 120 100" fill="none" stroke="white" stroke-width="2">
+      <!-- Teacher -->
+      <circle cx="30" cy="30" r="10"/>
+      <path d="M30,40 L30,70 M30,50 L55,40 M30,50 L15,60 M30,70 L20,95 M30,70 L40,95"/>
+      <!-- Stick pointer -->
+      <line x1="55" y1="40" x2="80" y2="25" stroke="yellow" stroke-width="3"/>
+      <!-- Students -->
+      <circle cx="80" cy="80" r="8"/> <path d="M72,100 C72,90 88,90 88,100"/>
+      <circle cx="105" cy="80" r="8"/> <path d="M97,100 C97,90 113,90 113,100"/>
+    </svg>
+    <h1>SBTE Concrete Technology - 100 MCQs</h1>
+  </div>
+
+  <q>1. Which Bogue's compound in cement is responsible for early strength development?</q>
+  <div class="options-grid"><span>A) Dicalcium Silicate (C2S)</span><span>B) Tricalcium Silicate (C3S)</span><span>C) Tricalcium Aluminate (C3A)</span><span>D) Tetracalcium Aluminoferrite (C4AF)</span></div>
+  <a>Ans: B) Tricalcium Silicate (C3S)</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Tricalcium Silicate (C3S) hydrates rapidly and contributes primarily to the early strength (within the first 7 days) of cement.</div>
+
+  <q>2. The resistance of an aggregate to wear and tear is determined by which test?</q>
+  <div class="options-grid"><span>A) Crushing Test</span><span>B) Impact Test</span><span>C) Abrasion Test</span><span>D) Soundness Test</span></div>
+  <a>Ans: C) Abrasion Test</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Abrasion tests (like the Los Angeles test) measure the hardness or resistance to wear and tear (attrition and abrasion) of aggregates.</div>
+
+  <q>3. Separation of water and cement paste from the freshly mixed concrete is known as:</q>
+  <div class="options-grid"><span>A) Segregation</span><span>B) Bleeding</span><span>C) Creep</span><span>D) Shrinkage</span></div>
+  <a>Ans: B) Bleeding</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Bleeding is a form of segregation where water, being the lightest ingredient, rises to the surface of freshly placed concrete.</div>
+
+  <q>4. According to IS 10262:2019, the target mean strength (fck') for concrete mix design is calculated as:</q>
+  <div class="options-grid"><span>A) fck + 1.65 × s</span><span>B) fck - 1.65 × s</span><span>C) fck + 1.15 × s</span><span>D) fck + 0.5 × s</span></div>
+  <a>Ans: A) fck + 1.65 × s</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The target mean compressive strength is given by fck' = fck + 1.65s, where fck is characteristic strength and 's' is the standard deviation.</div>
+
+  <q>5. Which admixture is added to concrete to delay its setting time, especially in hot weather?</q>
+  <div class="options-grid"><span>A) Accelerators</span><span>B) Retarders</span><span>C) Air-entraining agents</span><span>D) Superplasticizers</span></div>
+  <a>Ans: B) Retarders</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Retarders slow down the hydration process, extending the setting time of concrete. This is highly useful for hot weather concreting to prevent premature setting.</div>
+
+  <q>6. The standard consistency of cement is determined using which apparatus?</q>
+  <div class="options-grid"><span>A) Le-Chatelier Flask</span><span>B) Slump Cone</span><span>C) Vicat Apparatus</span><span>D) Blaine's Apparatus</span></div>
+  <a>Ans: C) Vicat Apparatus</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The Vicat apparatus is used to find the standard consistency, as well as the initial and final setting times of cement paste.</div>
+
+  <q>7. Bulking of sand is maximum when the moisture content is approximately:</q>
+  <div class="options-grid"><span>A) 1% to 2%</span><span>B) 4% to 5%</span><span>C) 10% to 12%</span><span>D) 15% to 20%</span></div>
+  <a>Ans: B) 4% to 5%</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Moisture forms a film around sand particles, pushing them apart. This volume increase (bulking) is maximum at around 4% to 5% moisture content.</div>
+
+  <q>8. As per IS 456:2000, what is the minimum grade of concrete recommended for reinforced concrete work?</q>
+  <div class="options-grid"><span>A) M10</span><span>B) M15</span><span>C) M20</span><span>D) M25</span></div>
+  <a>Ans: C) M20</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">IS 456 specifies that the minimum grade of concrete for Reinforced Cement Concrete (RCC) should not be less than M20.</div>
+
+  <q>9. The stripping time for formwork of vertical surfaces (like columns and walls) under normal circumstances is:</q>
+  <div class="options-grid"><span>A) 16 to 24 hours</span><span>B) 3 days</span><span>C) 7 days</span><span>D) 14 days</span></div>
+  <a>Ans: A) 16 to 24 hours</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">As per IS 456, formwork for vertical surfaces of columns, walls, and beams can generally be removed after 16 to 24 hours.</div>
+
+  <q>10. Self-Compacting Concrete (SCC) flows under its own weight and does not require:</q>
+  <div class="options-grid"><span>A) Cement</span><span>B) Water</span><span>C) Superplasticizers</span><span>D) Mechanical Vibration</span></div>
+  <a>Ans: D) Mechanical Vibration</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">SCC is a highly flowable, non-segregating concrete that spreads into place and fully fills the formwork without any mechanical vibration.</div>
+
+  <!-- SVG: Slump Cone -->
+  <svg width="150" height="120" viewBox="0 0 150 120" stroke="white" stroke-width="2" fill="none">
+    <path d="M50,20 L100,20 L120,100 L30,100 Z" stroke="cyan"/>
+    <ellipse cx="75" cy="20" rx="25" ry="5" stroke="cyan"/>
+    <ellipse cx="75" cy="100" rx="45" ry="8" stroke="cyan"/>
+    <text x="55" y="60" fill="yellow" font-size="12" stroke="none">Slump Cone</text>
+  </svg>
+
+  <q>11. The fineness of cement is determined by measuring its:</q>
+  <div class="options-grid"><span>A) Volume</span><span>B) Specific Gravity</span><span>C) Specific Surface Area</span><span>D) Compressive Strength</span></div>
+  <a>Ans: C) Specific Surface Area</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Fineness is a measure of the particle size of cement. It is usually tested using Blaine's air permeability apparatus, which measures the specific surface area (cm²/g).</div>
+
+  <q>12. An aggregate is said to be flaky if its least dimension is less than:</q>
+  <div class="options-grid"><span>A) 0.6 times the mean dimension</span><span>B) 1.8 times the mean dimension</span><span>C) 0.5 times the mean dimension</span><span>D) 0.8 times the mean dimension</span></div>
+  <a>Ans: A) 0.6 times the mean dimension</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">An aggregate particle is classified as flaky if its thickness (least dimension) is less than 0.6 (or 3/5) of its mean sieve dimension.</div>
+
+  <q>13. Which test is considered most suitable for assessing the workability of very stiff concrete?</q>
+  <div class="options-grid"><span>A) Slump Test</span><span>B) Compaction Factor Test</span><span>C) Vee-Bee Consistometer Test</span><span>D) Flow Table Test</span></div>
+  <a>Ans: C) Vee-Bee Consistometer Test</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The Vee-Bee test measures the time (in seconds) required for a concrete cone to slump into a cylinder under vibration. It is highly accurate for stiff and extremely dry mixes.</div>
+
+  <q>14. During mix design, the water-cement ratio is chosen based on:</q>
+  <div class="options-grid"><span>A) Target Mean Strength and Durability requirements</span><span>B) Size of aggregate only</span><span>C) Type of formwork</span><span>D) Mixing time</span></div>
+  <a>Ans: A) Target Mean Strength and Durability requirements</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The w/c ratio dictates both the strength (Abrams' law) and durability. The lower of the two values determined from strength graphs and durability tables (IS 456) is selected.</div>
+
+  <q>15. Fly ash, when used as a mineral admixture in concrete, primarily improves:</q>
+  <div class="options-grid"><span>A) Early strength</span><span>B) Workability and long-term strength</span><span>C) Rate of hydration</span><span>D) Aggregate hardness</span></div>
+  <a>Ans: B) Workability and long-term strength</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Fly ash acts as a pozzolan. Its spherical particles act like ball bearings (improving workability), and its delayed pozzolanic reaction significantly increases long-term strength and reduces permeability.</div>
+
+  <q>16. Which test evaluates the soundness of cement?</q>
+  <div class="options-grid"><span>A) Vicat's Test</span><span>B) Le-Chatelier Test</span><span>C) Blaine's Test</span><span>D) Briquette Test</span></div>
+  <a>Ans: B) Le-Chatelier Test</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The Le-Chatelier apparatus measures the expansion of cement paste upon hydration. Unsoundness is usually caused by excess free lime and magnesia.</div>
+
+  <q>17. Coarse aggregate generally refers to aggregate particles that are retained on which IS Sieve?</q>
+  <div class="options-grid"><span>A) 2.36 mm</span><span>B) 4.75 mm</span><span>C) 10 mm</span><span>D) 75 microns</span></div>
+  <a>Ans: B) 4.75 mm</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">According to IS 383, aggregates retaining on a 4.75 mm IS Sieve are classified as coarse aggregates, while those passing through it are fine aggregates.</div>
+
+  <q>18. Increasing the water-cement ratio in a concrete mix leads to:</q>
+  <div class="options-grid"><span>A) Higher strength, lower workability</span><span>B) Lower strength, higher workability</span><span>C) Higher strength, higher durability</span><span>D) No change in properties</span></div>
+  <a>Ans: B) Lower strength, higher workability</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Excess water pushes cement particles apart, leaving capillary voids after evaporation. This drastically lowers compressive strength but makes the fresh mix easier to flow (higher workability).</div>
+
+  <q>19. Construction joints in a simply supported beam should ideally be provided at:</q>
+  <div class="options-grid"><span>A) The supports</span><span>B) The mid-span</span><span>C) Points of minimum shear</span><span>D) Points of maximum bending moment</span></div>
+  <a>Ans: C) Points of minimum shear (near mid-span)</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">To minimize structural weakness, construction joints should be located where the shear force is minimum, which is typically near the middle of the span in a simply supported beam.</div>
+
+  <q>20. Concrete poured in freezing weather conditions is susceptible to damage due to:</q>
+  <div class="options-grid"><span>A) Rapid evaporation of water</span><span>B) Freezing of capillary water</span><span>C) Accelerated setting time</span><span>D) Excessive shrinkage</span></div>
+  <a>Ans: B) Freezing of capillary water</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">In cold weather, if the water inside fresh concrete freezes, it expands by about 9%. This internal pressure can disrupt the matrix and cause permanent loss of strength.</div>
+
+  <q>21. High Alumina Cement (HAC) is manufactured by fusing limestone with:</q>
+  <div class="options-grid"><span>A) Silica</span><span>B) Bauxite</span><span>C) Gypsum</span><span>D) Iron oxide</span></div>
+  <a>Ans: B) Bauxite</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">High Alumina Cement is produced by melting a mixture of limestone and bauxite (aluminum ore). It is highly resistant to chemical attacks and withstands high temperatures.</div>
+
+  <q>22. The aggregate impact value indicates its resistance to:</q>
+  <div class="options-grid"><span>A) Gradual crushing</span><span>B) Weathering</span><span>C) Sudden shock or impact</span><span>D) Chemical attack</span></div>
+  <a>Ans: C) Sudden shock or impact</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The impact test evaluates the toughness of an aggregate, which is its ability to resist sudden, dynamic loads or shocks.</div>
+
+  <q>23. For testing the compressive strength of concrete, the standard size of the cube mould used in India is:</q>
+  <div class="options-grid"><span>A) 100 mm x 100 mm x 100 mm</span><span>B) 150 mm x 150 mm x 150 mm</span><span>C) 200 mm x 200 mm x 200 mm</span><span>D) 70.6 mm x 70.6 mm x 70.6 mm</span></div>
+  <a>Ans: B) 150 mm x 150 mm x 150 mm</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">As per IS 516, the standard concrete specimen for compressive strength testing is a 150 mm cube. (70.6 mm cubes are used for cement mortar).</div>
+
+  <q>24. The main objective of curing concrete is to:</q>
+  <div class="options-grid"><span>A) Allow evaporation of excess water</span><span>B) Prevent the loss of moisture required for hydration</span><span>C) Increase the temperature of concrete</span><span>D) Make the surface smooth</span></div>
+  <a>Ans: B) Prevent the loss of moisture required for hydration</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Curing maintains a favorable moisture and temperature environment for concrete, ensuring continuous hydration of cement and maximizing final strength and durability.</div>
+
+  <q>25. Rebound hammer test is a method of Non-Destructive Testing primarily used to assess:</q>
+  <div class="options-grid"><span>A) Internal flaws</span><span>B) Surface hardness and probable compressive strength</span><span>C) Rebar corrosion</span><span>D) Moisture content</span></div>
+  <a>Ans: B) Surface hardness and probable compressive strength</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The Schmidt Rebound Hammer measures the elastic rebound of a spring-loaded mass impacting the surface, providing a correlation to the surface hardness and compressive strength.</div>
+
+  <q>26. The initial setting time of Ordinary Portland Cement (OPC) should not be less than:</q>
+  <div class="options-grid"><span>A) 10 minutes</span><span>B) 30 minutes</span><span>C) 60 minutes</span><span>D) 600 minutes</span></div>
+  <a>Ans: B) 30 minutes</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">According to IS specifications, the initial setting time of OPC should be at least 30 minutes to allow sufficient time for mixing, transporting, and placing the concrete.</div>
+
+  <q>27. Which IS Code provides guidelines for Concrete Mix Proportioning?</q>
+  <div class="options-grid"><span>A) IS 456</span><span>B) IS 383</span><span>C) IS 10262</span><span>D) IS 800</span></div>
+  <a>Ans: C) IS 10262</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">IS 10262:2019 is the Indian Standard for Concrete Mix Proportioning—Guidelines. IS 456 is for general reinforced concrete, and IS 383 is for aggregates.</div>
+
+  <q>28. Superplasticizers are chemical admixtures that:</q>
+  <div class="options-grid"><span>A) Entrain air bubbles</span><span>B) Accelerate setting time</span><span>C) Drastically reduce water requirement without loss of workability</span><span>D) Add color to concrete</span></div>
+  <a>Ans: C) Drastically reduce water requirement without loss of workability</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Superplasticizers (High Range Water Reducers) disperse cement particles effectively, allowing up to 30% reduction in water content while maintaining a flowing, workable mix.</div>
+
+  <q>29. Formwork made of plywood is often preferred over steel for:</q>
+  <div class="options-grid"><span>A) Infinite reusability</span><span>B) High initial cost</span><span>C) Creating smooth finishes and complex architectural shapes</span><span>D) Better heat conduction</span></div>
+  <a>Ans: C) Creating smooth finishes and complex architectural shapes</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Plywood is easy to cut into complex curves and provides a very smooth surface finish. However, it has fewer reuse cycles compared to steel shuttering.</div>
+
+  <q>30. What is the typical temperature range inside the rotary kiln during cement manufacturing?</q>
+  <div class="options-grid"><span>A) 500°C - 800°C</span><span>B) 900°C - 1100°C</span><span>C) 1400°C - 1500°C</span><span>D) 2000°C - 2500°C</span></div>
+  <a>Ans: C) 1400°C - 1500°C</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">In the burning zone of the rotary kiln, raw materials are heated to about 1400°C - 1500°C to form cement clinkers through a process called calcination and sintering.</div>
+
+  <!-- SVG: Concrete Mixer -->
+  <svg width="150" height="120" viewBox="0 0 150 120" stroke="white" stroke-width="2" fill="none">
+    <circle cx="75" cy="50" r="30" stroke="yellow" stroke-dasharray="4"/>
+    <path d="M55,30 L95,30 L105,70 L45,70 Z" stroke="cyan"/>
+    <line x1="75" y1="80" x2="75" y2="110" stroke="white"/>
+    <line x1="50" y1="110" x2="100" y2="110" stroke="white"/>
+    <text x="45" y="15" fill="white" font-size="10" stroke="none">Tilting Mixer</text>
+  </svg>
+
+  <q>31. Fineness Modulus of fine aggregate (sand) typically ranges between:</q>
+  <div class="options-grid"><span>A) 1.0 to 1.5</span><span>B) 2.2 to 3.2</span><span>C) 4.0 to 5.0</span><span>D) 6.0 to 8.0</span></div>
+  <a>Ans: B) 2.2 to 3.2</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Fineness modulus represents the average size of particles. Fine sand ranges from 2.2-2.6, medium from 2.6-2.9, and coarse sand from 2.9-3.2.</div>
+
+  <q>32. The process of keeping concrete moist for a certain period after placing is called:</q>
+  <div class="options-grid"><span>A) Batching</span><span>B) Compacting</span><span>C) Curing</span><span>D) Bleeding</span></div>
+  <a>Ans: C) Curing</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Curing ensures that the concrete retains enough moisture for the cement hydration reaction to complete, leading to optimal strength development.</div>
+
+  <q>33. The compressive strength of concrete is largely dependent on:</q>
+  <div class="options-grid"><span>A) Workability</span><span>B) Aggregate shape</span><span>C) Water-cement ratio</span><span>D) Mixing time</span></div>
+  <a>Ans: C) Water-cement ratio</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">According to Duff Abrams' Law, for fully compacted concrete, the compressive strength is inversely proportional to the water-cement ratio.</div>
+
+  <q>34. During concrete mix design, the volume of coarse aggregate is decided based on:</q>
+  <div class="options-grid"><span>A) Nominal maximum size of aggregate and grading zone of fine aggregate</span><span>B) Cement content</span><span>C) Water content only</span><span>D) Admixture dosage</span></div>
+  <a>Ans: A) Nominal maximum size of aggregate and grading zone of fine aggregate</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">IS 10262 provides tables that dictate the proportion of coarse aggregate based on the maximum size of the coarse aggregate (e.g., 20mm) and the specific grading zone of the sand (Zones I to IV).</div>
+
+  <q>35. Extreme hot weather concreting can lead to which major defect?</q>
+  <div class="options-grid"><span>A) Delayed setting time</span><span>B) Plastic shrinkage cracking</span><span>C) Frost damage</span><span>D) Increased long-term strength</span></div>
+  <a>Ans: B) Plastic shrinkage cracking</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">High temperatures, low humidity, and high winds cause rapid evaporation of surface moisture before the concrete has set, resulting in tensile stresses and plastic shrinkage cracks.</div>
+
+  <q>36. Gypsum is added to cement clinker during grinding to:</q>
+  <div class="options-grid"><span>A) Provide color</span><span>B) Increase early strength</span><span>C) Retard the initial setting time</span><span>D) Increase fineness</span></div>
+  <a>Ans: C) Retard the initial setting time</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Without gypsum, the C3A in cement reacts violently with water causing a "flash set" (immediate stiffening). Gypsum (3-5%) delays this reaction, giving time for placement.</div>
+
+  <q>37. The elongation index of an aggregate is the percentage by weight of particles whose greatest dimension is greater than:</q>
+  <div class="options-grid"><span>A) 0.6 times their mean dimension</span><span>B) 1.8 times their mean dimension</span><span>C) 1.5 times their mean dimension</span><span>D) 2.0 times their mean dimension</span></div>
+  <a>Ans: B) 1.8 times their mean dimension</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Elongated particles are those whose length is substantially greater than their width. Mathematically, it is defined as a length greater than 1.8 (or 9/5) times the mean dimension.</div>
+
+  <q>38. The slump value for concrete used in normal RCC work (like slabs and beams) generally lies between:</q>
+  <div class="options-grid"><span>A) 0 to 25 mm</span><span>B) 50 to 100 mm</span><span>C) 150 to 200 mm</span><span>D) > 200 mm</span></div>
+  <a>Ans: B) 50 to 100 mm</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">A medium workability (slump of 50-100 mm) is ideal for heavily reinforced sections like slabs, beams, and columns to ensure easy flow without segregation.</div>
+
+  <q>39. In Mix Design, M30 grade concrete denotes a characteristic compressive strength of 30 N/mm² at:</q>
+  <div class="options-grid"><span>A) 7 days</span><span>B) 14 days</span><span>C) 28 days</span><span>D) 90 days</span></div>
+  <a>Ans: C) 28 days</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The characteristic compressive strength (fck) of concrete is universally tested and specified at the age of 28 days of standard curing.</div>
+
+  <q>40. Geopolymer concrete replaces ordinary Portland cement entirely with:</q>
+  <div class="options-grid"><span>A) Silica fume</span><span>B) Lime and gypsum</span><span>C) Source materials rich in Silicon and Aluminum activated by alkaline liquids</span><span>D) Epoxy resins</span></div>
+  <a>Ans: C) Source materials rich in Silicon and Aluminum activated by alkaline liquids</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Geopolymer concrete is an eco-friendly alternative that uses industrial byproducts (like fly ash or slag) activated by alkaline solutions (like NaOH) instead of traditional OPC.</div>
+
+  <q>41. Which test evaluates the tensile strength of concrete indirectly?</q>
+  <div class="options-grid"><span>A) Cube test</span><span>B) Split cylinder test</span><span>C) Slump test</span><span>D) Rebound hammer test</span></div>
+  <a>Ans: B) Split cylinder test</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Concrete is very weak in tension. The Split Cylinder Test places a cylindrical specimen horizontally and applies compressive force, causing indirect tensile splitting along the diameter.</div>
+
+  <q>42. The water absorption of good quality coarse aggregate should generally not exceed:</q>
+  <div class="options-grid"><span>A) 0.5%</span><span>B) 5%</span><span>C) 10%</span><span>D) 20%</span></div>
+  <a>Ans: B) 5%</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Good quality aggregates should have a low water absorption value, typically restricted to a maximum of 5% by weight, to ensure durability and frost resistance.</div>
+
+  <q>43. Segregation in concrete can be caused by:</q>
+  <div class="options-grid"><span>A) Excessive vibration</span><span>B) Dropping concrete from a large height</span><span>C) Too much water in the mix</span><span>D) All of the above</span></div>
+  <a>Ans: D) All of the above</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Over-vibrating, dropping from heights > 1.5m, or using excessively wet mixes causes the heavy coarse aggregates to sink and separate from the cement paste.</div>
+
+  <q>44. For stripping formwork of a slab spanning 4 meters, the minimum time recommended is (assuming OPC and normal weather):</q>
+  <div class="options-grid"><span>A) 3 days</span><span>B) 7 days</span><span>C) 14 days</span><span>D) 21 days</span></div>
+  <a>Ans: B) 7 days</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">As per IS 456, props to slabs spanning up to 4.5m can be removed after 7 days, provided the concrete has gained sufficient strength to support its own weight.</div>
+
+  <q>45. Air-entraining admixtures are primarily used to:</q>
+  <div class="options-grid"><span>A) Increase compressive strength</span><span>B) Decrease setting time</span><span>C) Improve resistance to freezing and thawing</span><span>D) Add color</span></div>
+  <a>Ans: C) Improve resistance to freezing and thawing</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Air entrainment creates billions of microscopic air bubbles. In freezing weather, these bubbles provide "relief valves" for expanding ice, preventing internal frost damage.</div>
+
+  <q>46. The specific gravity of Ordinary Portland Cement is usually around:</q>
+  <div class="options-grid"><span>A) 2.65</span><span>B) 3.15</span><span>C) 1.44</span><span>D) 7.85</span></div>
+  <a>Ans: B) 3.15</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The specific gravity of OPC is generally tested using a Le Chatelier flask with kerosene, and the value is typically 3.15.</div>
+
+  <q>47. Aggregates are classified into fine and coarse zones. Sand belonging to which zone is the coarsest?</q>
+  <div class="options-grid"><span>A) Zone I</span><span>B) Zone II</span><span>C) Zone III</span><span>D) Zone IV</span></div>
+  <a>Ans: A) Zone I</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">IS 383 divides fine aggregates into four grading zones. Zone I represents the coarsest sand, while Zone IV represents the finest sand.</div>
+
+  <q>48. The compaction factor test is most suitable for concrete of:</q>
+  <div class="options-grid"><span>A) High workability</span><span>B) Medium workability</span><span>C) Low workability</span><span>D) Self-compacting nature</span></div>
+  <a>Ans: C) Low workability</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The compaction factor test is more precise than the slump test for mixes with very low workability (dry mixes) often used in mass concreting or road works.</div>
+
+  <q>49. A construction joint is intentionally provided where:</q>
+  <div class="options-grid"><span>A) Concrete pouring is temporarily stopped</span><span>B) Cracks are expected</span><span>C) Reinforcement ends</span><span>D) Water pressure is maximum</span></div>
+  <a>Ans: A) Concrete pouring is temporarily stopped</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Because continuous pouring of massive structures is impossible, construction joints are placed where concreting stops for the day and resumes later.</div>
+
+  <q>50. Calcium Chloride (CaCl2) is a common chemical used as an:</q>
+  <div class="options-grid"><span>A) Accelerator</span><span>B) Retarder</span><span>C) Air entrainer</span><span>D) Waterproofing agent</span></div>
+  <a>Ans: A) Accelerator</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Calcium chloride accelerates the setting and early strength gain of concrete. It is useful in cold weather but must be used carefully as chloride ions promote rebar corrosion.</div>
+
+  <!-- SVG: Bogue Compounds -->
+  <svg width="180" height="100" viewBox="0 0 180 100" stroke="white" stroke-width="2" fill="none">
+    <rect x="10" y="20" width="70" height="30" stroke="cyan"/>
+    <text x="25" y="40" fill="white" font-size="12" stroke="none">C3S</text>
+    <rect x="100" y="20" width="70" height="30" stroke="orange"/>
+    <text x="115" y="40" fill="white" font-size="12" stroke="none">C2S</text>
+    <rect x="10" y="60" width="70" height="30" stroke="yellow"/>
+    <text x="25" y="80" fill="white" font-size="12" stroke="none">C3A</text>
+    <rect x="100" y="60" width="70" height="30" stroke="magenta"/>
+    <text x="110" y="80" fill="white" font-size="12" stroke="none">C4AF</text>
+  </svg>
+
+  <q>51. Sulphate Resisting Cement is highly recommended for:</q>
+  <div class="options-grid"><span>A) Marine structures and foundations in sulphate-rich soils</span><span>B) Cold weather concreting</span><span>C) Plastering walls</span><span>D) Road pavements</span></div>
+  <a>Ans: A) Marine structures and foundations in sulphate-rich soils</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Sulphates in soil or seawater attack C3A in normal cement. Sulphate Resisting Cement has a very low C3A content (<5%), making it immune to this attack.</div>
+
+  <q>52. In aggregate grading, a "gap-graded" aggregate implies:</q>
+  <div class="options-grid"><span>A) All particles are of the same size</span><span>B) One or more intermediate sizes of particles are missing</span><span>C) Contains equal amounts of all sizes</span><span>D) Only fine dust is present</span></div>
+  <a>Ans: B) One or more intermediate sizes of particles are missing</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Gap grading intentionally omits certain intermediate sizes. This can be used for exposed aggregate finishes or specific architectural concretes.</div>
+
+  <q>53. Shrinkage of concrete can be minimized by:</q>
+  <div class="options-grid"><span>A) Increasing water content</span><span>B) Using high cement content</span><span>C) Proper curing and reducing water content</span><span>D) Removing formwork early</span></div>
+  <a>Ans: C) Proper curing and reducing water content</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Shrinkage is primarily caused by the evaporation of excess mixing water. Keeping water content low and providing prolonged curing minimizes shrinkage cracks.</div>
+
+  <q>54. Which concrete mix design method is traditionally followed in India?</q>
+  <div class="options-grid"><span>A) ACI Method</span><span>B) DOE Method</span><span>C) IS Code Method (IS 10262)</span><span>D) Road Note No. 4</span></div>
+  <a>Ans: C) IS Code Method (IS 10262)</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The Indian Standard IS 10262 (updated in 2019) outlines the standard guidelines for proportioning concrete mixes in India.</div>
+
+  <q>55. Ready Mix Concrete (RMC) is primarily advantageous because it:</q>
+  <div class="options-grid"><span>A) Is cheaper for very small jobs</span><span>B) Ensures precise quality control and batching in a factory environment</span><span>C) Sets instantly</span><span>D) Doesn't require curing</span></div>
+  <a>Ans: B) Ensures precise quality control and batching in a factory environment</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">RMC is manufactured in a computerized batching plant. This guarantees exact material proportions, higher consistency, and better quality control than site-mixed concrete.</div>
+
+  <q>56. The setting of cement is mainly an exothermic process resulting from:</q>
+  <div class="options-grid"><span>A) Evaporation of water</span><span>B) Hydration of cement compounds</span><span>C) Bleeding</span><span>D) Absorption of CO2</span></div>
+  <a>Ans: B) Hydration of cement compounds</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Cement sets and hardens due to a chemical reaction with water called Hydration. This reaction releases heat (exothermic process).</div>
+
+  <q>57. Which property of fresh concrete determines the ease with which it can be mixed, placed, and compacted?</q>
+  <div class="options-grid"><span>A) Durability</span><span>B) Impermeability</span><span>C) Workability</span><span>D) Segregation</span></div>
+  <a>Ans: C) Workability</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Workability is the broad term representing the internal work required to fully mix, transport, place, and compact fresh concrete without segregation.</div>
+
+  <q>58. The standard dimension of the cylinder used in the aggregate crushing value test is:</q>
+  <div class="options-grid"><span>A) 11.5 cm diameter, 18 cm height</span><span>B) 15 cm diameter, 30 cm height</span><span>C) 10 cm diameter, 10 cm height</span><span>D) 5 cm diameter, 5 cm height</span></div>
+  <a>Ans: A) 11.5 cm diameter, 18 cm height</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">As per IS 2386, the crushing value test uses a rigid cylindrical metal measure of 11.5 cm internal diameter and 18 cm depth.</div>
+
+  <q>59. For underwater concreting (like bridge piers), which method is generally adopted to prevent concrete from washing away?</q>
+  <div class="options-grid"><span>A) Hand mixing</span><span>B) Tremie pipe method</span><span>C) Pumping from surface</span><span>D) Throwing in bags</span></div>
+  <a>Ans: B) Tremie pipe method</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">A Tremie pipe is lowered to the bottom of the water. Concrete is gravity-fed through the pipe, displacing water upwards without allowing the concrete to wash out or segregate.</div>
+
+  <q>60. The purpose of using Silica Fume in High-Performance Concrete is to:</q>
+  <div class="options-grid"><span>A) Increase permeability</span><span>B) Fill microscopic voids and increase strength drastically</span><span>C) Retard setting time</span><span>D) Act as a coarse aggregate</span></div>
+  <a>Ans: B) Fill microscopic voids and increase strength drastically</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Silica fume particles are 100 times smaller than cement. They act as micro-fillers and highly reactive pozzolans, creating extremely dense, impermeable, and high-strength concrete.</div>
+
+  <q>61. Which chemical compound contributes to the ultimate (long-term) strength of cement?</q>
+  <div class="options-grid"><span>A) C3S</span><span>B) C2S (Dicalcium Silicate)</span><span>C) C3A</span><span>D) C4AF</span></div>
+  <a>Ans: B) C2S (Dicalcium Silicate)</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">C2S hydrates very slowly. While it doesn't contribute much to early strength, it provides excellent long-term strength (after 28 days to years) to the concrete.</div>
+
+  <q>62. While designing a mix, if the aggregate is saturated surface dry (SSD), the water absorption correction is:</q>
+  <div class="options-grid"><span>A) Positive</span><span>B) Negative</span><span>C) Zero</span><span>D) Multiplied by 2</span></div>
+  <a>Ans: C) Zero</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">SSD state means the aggregate pores are full of water, but the surface is dry. It will neither absorb water from the mix nor add free water to it, so no correction is needed.</div>
+
+  <q>63. The primary reason for rejecting aggregates containing high levels of silt/clay is that they:</q>
+  <div class="options-grid"><span>A) Increase concrete weight</span><span>B) Form a coating that prevents cement-aggregate bonding</span><span>C) Accelerate setting time</span><span>D) Make concrete too hard</span></div>
+  <a>Ans: B) Form a coating that prevents cement-aggregate bonding</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Silt and clay dust coat the surface of aggregates, breaking the chemical bond between the cement paste and the aggregate, resulting in weak concrete.</div>
+
+  <q>64. Rapid Hardening Cement is produced by:</q>
+  <div class="options-grid"><span>A) Adding more gypsum</span><span>B) Increasing C3S content and finer grinding</span><span>C) Mixing with fly ash</span><span>D) Burning at lower temperatures</span></div>
+  <a>Ans: B) Increasing C3S content and finer grinding</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Rapid hardening is achieved by increasing the proportion of C3S and grinding the clinker much finer, providing more surface area for rapid hydration.</div>
+
+  <q>65. Ultrasonic Pulse Velocity (UPV) test evaluates the quality of concrete by measuring the:</q>
+  <div class="options-grid"><span>A) Rebound number</span><span>B) Speed of an ultrasonic pulse passing through it</span><span>C) Depth of carbonation</span><span>D) Core compressive strength</span></div>
+  <a>Ans: B) Speed of an ultrasonic pulse passing through it</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">High velocity indicates dense, solid concrete. Low velocity indicates voids, cracks, or honeycombing because sound waves travel slower in air/voids than in solid concrete.</div>
+
+  <q>66. A nominal concrete mix of 1:2:4 refers to the ratio of:</q>
+  <div class="options-grid"><span>A) Cement : Sand : Water</span><span>B) Cement : Fine Aggregate : Coarse Aggregate</span><span>C) Sand : Coarse Aggregate : Cement</span><span>D) Cement : Water : Admixture</span></div>
+  <a>Ans: B) Cement : Fine Aggregate : Coarse Aggregate</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Nominal mix ratios follow the format Cement : Fine Aggregate (Sand) : Coarse Aggregate (Gravel) by weight or volume. 1:2:4 roughly corresponds to M15 grade.</div>
+
+  <q>67. Harshness in fresh concrete implies:</q>
+  <div class="options-grid"><span>A) High slump</span><span>B) Lack of cohesiveness and poor finishing properties</span><span>C) Excessive cement</span><span>D) Slow setting</span></div>
+  <a>Ans: B) Lack of cohesiveness and poor finishing properties</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">A harsh mix lacks plasticity, usually due to a lack of fine material (sand or cement) or excess coarse aggregate, making it extremely difficult to trowel to a smooth finish.</div>
+
+  <q>68. Stripping time of formwork for the soffits (bottom) of beams spanning over 6 meters is:</q>
+  <div class="options-grid"><span>A) 3 days</span><span>B) 7 days</span><span>C) 14 days</span><span>D) 21 days</span></div>
+  <a>Ans: D) 21 days</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">According to IS 456, props to beam soffits spanning more than 6m can be safely removed only after 21 days of curing.</div>
+
+  <q>69. What is the approximate bulk density of normal weight concrete?</q>
+  <div class="options-grid"><span>A) 1000 kg/m³</span><span>B) 1440 kg/m³</span><span>C) 2400 kg/m³</span><span>D) 7850 kg/m³</span></div>
+  <a>Ans: C) 2400 kg/m³</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Normal unreinforced concrete has a density of about 2400 kg/m³. RCC (Reinforced) is taken as 2500 kg/m³. (1440 kg/m³ is for cement, 7850 kg/m³ is for steel).</div>
+
+  <q>70. To transport concrete smoothly in a high-rise building, the most efficient method is:</q>
+  <div class="options-grid"><span>A) Wheelbarrows</span><span>B) Chutes</span><span>C) Concrete Pumps</span><span>D) Conveyor belts</span></div>
+  <a>Ans: C) Concrete Pumps</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Concrete pumps deliver a continuous flow of concrete vertically and horizontally through pipelines, making them the most efficient method for high-rise constructions.</div>
+
+  <!-- SVG: Rebound Hammer -->
+  <svg width="150" height="80" viewBox="0 0 150 80" stroke="white" stroke-width="2" fill="none">
+    <rect x="20" y="30" width="80" height="20" rx="3" stroke="cyan"/>
+    <line x1="100" y1="40" x2="130" y2="40" stroke="yellow" stroke-width="4"/>
+    <circle cx="10" cy="40" r="10" stroke="cyan"/>
+    <text x="35" y="45" fill="white" font-size="10" stroke="none">Rebound</text>
+  </svg>
+
+  <q>71. The phenomenon of continuous, gradual deformation of concrete under a constant sustained load over time is called:</q>
+  <div class="options-grid"><span>A) Shrinkage</span><span>B) Fatigue</span><span>C) Creep</span><span>D) Elasticity</span></div>
+  <a>Ans: C) Creep</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Creep is the time-dependent plastic deformation of concrete under constant sustained stress (like its own dead load), continuing over months or years.</div>
+
+  <q>72. Which type of cement is known for its bright, reflective aesthetic and is used in terrazzo flooring and architectural works?</q>
+  <div class="options-grid"><span>A) Slag cement</span><span>B) White Cement</span><span>C) Low heat cement</span><span>D) Pozzolana cement</span></div>
+  <a>Ans: B) White Cement</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">White Portland Cement is manufactured with raw materials containing practically zero iron and manganese oxides, giving it a pure white color ideal for aesthetics.</div>
+
+  <q>73. Which equipment is used to compact concrete inside deep, narrow formworks like columns?</q>
+  <div class="options-grid"><span>A) Surface vibrator</span><span>B) Plate compactor</span><span>C) Needle (Immersion) vibrator</span><span>D) Tamping rod</span></div>
+  <a>Ans: C) Needle (Immersion) vibrator</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Immersion or needle vibrators are inserted directly into the fresh concrete. They are essential for deep sections with congested reinforcement to release entrapped air.</div>
+
+  <q>74. Lightweight concrete is typically produced by using:</q>
+  <div class="options-grid"><span>A) High-density steel aggregates</span><span>B) Lightweight aggregates like pumice, perlite, or expanded clay</span><span>C) Extra water</span><span>D) Superplasticizers only</span></div>
+  <a>Ans: B) Lightweight aggregates like pumice, perlite, or expanded clay</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Lightweight concrete relies on highly porous, low-density aggregates to reduce the dead weight of the structure, improving thermal insulation.</div>
+
+  <q>75. What is the typical limit for water absorption of good quality bricks used in construction?</q>
+  <div class="options-grid"><span>A) < 5%</span><span>B) < 20%</span><span>C) < 40%</span><span>D) 50%</span></div>
+  <a>Ans: B) < 20%</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">For first-class bricks, water absorption after 24 hours of cold-water immersion should not exceed 20% of their dry weight.</div>
+
+  <q>76. The property of cement that indicates its volume expansion after setting is known as:</q>
+  <div class="options-grid"><span>A) Soundness</span><span>B) Fineness</span><span>C) Hydration</span><span>D) Consistency</span></div>
+  <a>Ans: A) Soundness</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">A sound cement will not undergo excessive volume expansion after setting. Unsound cement causes the concrete structure to crack and disintegrate.</div>
+
+  <q>77. In the Compaction Factor test, what does a ratio close to 0.95 indicate?</q>
+  <div class="options-grid"><span>A) Low workability</span><span>B) High workability</span><span>C) Complete failure of mix</span><span>D) Extreme harshness</span></div>
+  <a>Ans: B) High workability</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Compaction Factor is the ratio of partially compacted weight to fully compacted weight. A higher value (0.92 - 0.95) indicates highly workable, flowable concrete.</div>
+
+  <q>78. The primary chemical reaction in Portland Pozzolana Cement (PPC) is between pozzolanic materials and:</q>
+  <div class="options-grid"><span>A) Calcium Silicate Hydrate (C-S-H)</span><span>B) Calcium Hydroxide (Ca(OH)2)</span><span>C) Gypsum</span><span>D) Iron Oxide</span></div>
+  <a>Ans: B) Calcium Hydroxide (Ca(OH)2)</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Hydration of normal cement produces C-S-H gel and Calcium Hydroxide. Pozzolans (like fly ash) react with the weak Calcium Hydroxide to form secondary C-S-H gel, boosting strength.</div>
+
+  <q>79. Formwork should satisfy which of the following requirements?</q>
+  <div class="options-grid"><span>A) Rigid and watertight</span><span>B) Easy to remove without damaging concrete</span><span>C) Economical and reusable</span><span>D) All of the above</span></div>
+  <a>Ans: D) All of the above</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Good formwork must be strong enough to hold wet concrete, watertight to prevent slurry leakage, easy to strip, and durable for multiple reuses.</div>
+
+  <q>80. Which component of concrete occupies the maximum volume in a mix?</q>
+  <div class="options-grid"><span>A) Cement</span><span>B) Water</span><span>C) Aggregates</span><span>D) Admixtures</span></div>
+  <a>Ans: C) Aggregates</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Aggregates (fine and coarse combined) act as the inert filler skeleton and occupy 70% to 80% of the total volume of concrete.</div>
+
+  <q>81. The Los Angeles machine is used to determine which property of aggregates?</q>
+  <div class="options-grid"><span>A) Crushing strength</span><span>B) Specific gravity</span><span>C) Abrasion resistance</span><span>D) Impact value</span></div>
+  <a>Ans: C) Abrasion resistance</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">The Los Angeles drum rotates with the aggregate and steel balls inside, creating wearing and grinding action to test the aggregate's abrasion resistance (hardness).</div>
+
+  <q>82. The process of converting wet raw mix into clinkers in a rotary kiln is called:</q>
+  <div class="options-grid"><span>A) Hydration</span><span>B) Segregation</span><span>C) Calcination</span><span>D) Curing</span></div>
+  <a>Ans: C) Calcination</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Calcination is the thermal process where calcium carbonate (limestone) breaks down into calcium oxide and carbon dioxide at high temperatures to form clinkers.</div>
+
+  <q>83. Low Heat Portland Cement is highly suitable for:</q>
+  <div class="options-grid"><span>A) Cold weather concreting</span><span>B) Mass concrete works like dams</span><span>C) Quick repair works</span><span>D) Plastering</span></div>
+  <a>Ans: B) Mass concrete works like dams</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">In massive structures, the heat of hydration cannot escape, leading to thermal cracking. Low Heat Cement reduces C3S and C3A to lower the heat generation rate.</div>
+
+  <q>84. Under severe environmental exposure conditions (e.g., coastal areas), the minimum grade of concrete recommended by IS 456 is:</q>
+  <div class="options-grid"><span>A) M15</span><span>B) M20</span><span>C) M30</span><span>D) M40</span></div>
+  <a>Ans: C) M30</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">For 'Severe' exposure conditions to ensure durability against corrosion and chemical attack, IS 456 mandates a minimum grade of M30 for RCC.</div>
+
+  <q>85. A transit mixer is used for:</q>
+  <div class="options-grid"><span>A) Breaking rocks</span><span>B) Pumping concrete</span><span>C) Transporting Ready Mix Concrete (RMC) while rotating</span><span>D) Measuring water content</span></div>
+  <a>Ans: C) Transporting Ready Mix Concrete (RMC) while rotating</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Transit mixers are truck-mounted rotating drums that agitate or mix RMC during transit from the batching plant to the site, preventing it from setting.</div>
+
+  <q>86. The final setting time of Ordinary Portland Cement should not exceed:</q>
+  <div class="options-grid"><span>A) 60 minutes</span><span>B) 120 minutes</span><span>C) 600 minutes (10 hours)</span><span>D) 24 hours</span></div>
+  <a>Ans: C) 600 minutes (10 hours)</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">IS specifications state that OPC must reach its final setting time (become entirely hard and lose all plasticity) within 600 minutes.</div>
+
+  <q>87. What does the term "efflorescence" refer to in bricks or concrete?</q>
+  <div class="options-grid"><span>A) Increase in strength</span><span>B) White powdery patches of soluble salts on the surface</span><span>C) Sudden cracking</span><span>D) Water bleeding</span></div>
+  <a>Ans: B) White powdery patches of soluble salts on the surface</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Efflorescence is the crystallization of dissolved salts carried to the surface by moisture evaporation, leaving an unsightly white powdery deposit.</div>
+
+  <q>88. To create an exposed aggregate architectural finish, which chemical is applied to the formwork?</q>
+  <div class="options-grid"><span>A) Accelerator</span><span>B) Retarder</span><span>C) Water repellent</span><span>D) Curing compound</span></div>
+  <a>Ans: B) Retarder</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">A surface retarder is painted on the formwork to delay the setting of the outermost cement paste. Upon stripping, this un-set paste is washed away, exposing the decorative aggregate.</div>
+
+  <q>89. Fiber Reinforced Concrete (FRC) primarily improves which property of normal concrete?</q>
+  <div class="options-grid"><span>A) Tensile strength and crack control</span><span>B) Compressive strength only</span><span>C) Setting time</span><span>D) Workability</span></div>
+  <a>Ans: A) Tensile strength and crack control</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Adding steel, glass, or synthetic fibers bridges micro-cracks, significantly increasing the concrete's tensile strength, ductility, and impact resistance.</div>
+
+  <q>90. What is the standard temperature of the water bath used for curing concrete cubes in the laboratory?</q>
+  <div class="options-grid"><span>A) 15°C ± 2°C</span><span>B) 27°C ± 2°C</span><span>C) 40°C ± 2°C</span><span>D) 50°C</span></div>
+  <a>Ans: B) 27°C ± 2°C</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">According to Indian Standards, standard curing of test specimens is carried out in clean water maintained at a temperature of 27°C ± 2°C.</div>
+
+  <q>91. Which form of curing is best suited for concrete road pavements?</q>
+  <div class="options-grid"><span>A) Ponding</span><span>B) Steam curing</span><span>C) Leaving it dry</span><span>D) Heating</span></div>
+  <a>Ans: A) Ponding</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Ponding involves building small clay or sand dikes around the perimeter of the flat slab/pavement and filling them with water, ensuring continuous wet curing.</div>
+
+  <q>92. A core test on an existing structure is a type of:</q>
+  <div class="options-grid"><span>A) Non-Destructive Test</span><span>B) Semi-Destructive / Destructive Test</span><span>C) Chemical Test</span><span>D) Workability Test</span></div>
+  <a>Ans: B) Semi-Destructive / Destructive Test</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Core cutting physically removes a cylindrical chunk of concrete from the structure to test its compressive strength in a lab, making it a semi-destructive test.</div>
+
+  <q>93. Blast Furnace Slag is an industrial byproduct derived from the manufacturing of:</q>
+  <div class="options-grid"><span>A) Aluminum</span><span>B) Copper</span><span>C) Pig Iron (Steel)</span><span>D) Coal</span></div>
+  <a>Ans: C) Pig Iron (Steel)</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Ground Granulated Blast Furnace Slag (GGBS) is collected from steel plants. It is blended with cement to produce Portland Slag Cement (PSC), offering high durability.</div>
+
+  <q>94. The operation of accurately measuring concrete ingredients before mixing is known as:</q>
+  <div class="options-grid"><span>A) Curing</span><span>B) Batching</span><span>C) Placing</span><span>D) Finishing</span></div>
+  <a>Ans: B) Batching</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Batching is the process of measuring materials (by weight or volume) according to the mix design proportions before loading them into the mixer. Weigh batching is preferred.</div>
+
+  <q>95. In the fineness test using a 90-micron IS sieve, good OPC should not have a retained residue exceeding:</q>
+  <div class="options-grid"><span>A) 5%</span><span>B) 10%</span><span>C) 20%</span><span>D) 30%</span></div>
+  <a>Ans: B) 10%</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">For Ordinary Portland Cement, when 100g is sieved continuously on a 90-micron sieve for 15 minutes, the retained residue should not exceed 10% by weight.</div>
+
+  <q>96. The property of concrete that resists the penetration of water under pressure is:</q>
+  <div class="options-grid"><span>A) Permeability</span><span>B) Impermeability</span><span>C) Shrinkage</span><span>D) Capillarity</span></div>
+  <a>Ans: B) Impermeability</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Impermeability (or water-tightness) is crucial for durability, particularly in water tanks and basements, preventing water and aggressive chemicals from entering.</div>
+
+  <q>97. High-Performance Concrete (HPC) generally has a compressive strength greater than:</q>
+  <div class="options-grid"><span>A) 20 MPa</span><span>B) 30 MPa</span><span>C) 50 MPa</span><span>D) 10 MPa</span></div>
+  <a>Ans: C) 50 MPa (or 60 MPa in some standards)</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">HPC is engineered for specific superior performance requirements, typically exhibiting high compressive strength (usually > 50-60 MPa), extreme durability, and high workability.</div>
+
+  <q>98. According to IS 456, what is the maximum free fall height allowed for pouring concrete to prevent segregation?</q>
+  <div class="options-grid"><span>A) 0.5 meter</span><span>B) 1.5 meters</span><span>C) 3.0 meters</span><span>D) 5.0 meters</span></div>
+  <a>Ans: B) 1.5 meters</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">To prevent the heavy coarse aggregates from separating from the mortar (segregation), concrete should not be dropped from a height exceeding 1.5 meters.</div>
+
+  <q>99. Honeycombing in concrete is primarily a result of:</q>
+  <div class="options-grid"><span>A) High cement content</span><span>B) Improper or insufficient compaction</span><span>C) Excessive curing</span><span>D) Low temperature</span></div>
+  <a>Ans: B) Improper or insufficient compaction</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Honeycombing refers to rough, pitted surfaces with exposed aggregates and voids. It happens when concrete is not vibrated/compacted enough to eliminate entrapped air.</div>
+
+  <q>100. In mix design, "Target Mean Strength" is kept higher than the "Characteristic Strength" to account for:</q>
+  <div class="options-grid"><span>A) Evaporation of water</span><span>B) Statistical quality control variations on site</span><span>C) Shrinkage stresses</span><span>D) Aggregate expansion</span></div>
+  <a>Ans: B) Statistical quality control variations on site</a>
+  <button class="sol-btn">Show Solution</button>
+  <div class="sol-box">Because site conditions (mixing, materials, curing) vary, the mix is designed for a slightly higher target mean strength to ensure that 95% of field test results will still pass the required characteristic strength.</div>
+
+</div>
+
+<!-- Floating AI Chat Widget -->
+<button id="ai-chat-fab">💬 Ask AI Teacher</button>
+<div id="ai-chat-widget">
+  <div id="ai-chat-header">
+    <span>AI Teacher ✨</span>
+    <span class="close-icon" id="close-chat">✖</span>
+  </div>
+  <div id="ai-chat-messages">
+    <div class="chat-msg ai">Hello! I'm your AI Professor. Have a doubt about a Concrete Technology concept? Ask me!</div>
+  </div>
+  <div id="ai-chat-input-area">
+    <input type="text" id="ai-chat-input" placeholder="Type your question here...">
+    <button id="ai-chat-send">Send</button>
+  </div>
+</div>
+
+<!-- Interactive Show/Hide Toggle Logic script -->
+<script>
+  const apiKey = ""; // API key is handled automatically by the environment
+
+  // Helper to format AI response text (convert newlines to breaks, bolding)
+  function formatAIResponse(text) {
+    return text.replace(/\n/g, '<br>')
+               .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+               .replace(/\*(.*?)\*/g, '<i>$1</i>');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Standard Show/Hide Solution Logic
+    const buttons = document.querySelectorAll('.sol-btn');
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const solBox = button.nextElementSibling;
+        if (solBox.style.display === 'none' || solBox.style.display === '') {
+          solBox.style.display = 'block';
+          button.textContent = 'Hide Solution';
+          button.style.border = '1px solid #ff9800';
+          button.style.color = '#ff9800';
+        } else {
+          solBox.style.display = 'none';
+          button.textContent = 'Show Solution';
+          button.style.border = '1px dashed #00ffff';
+          button.style.color = '#00ffff';
+        }
+      });
+    });
+
+    const solBoxes = document.querySelectorAll('.sol-box');
+    solBoxes.forEach(solBox => {
+        // Create the deep dive button
+        const aiBtn = document.createElement('button');
+        aiBtn.className = 'ai-btn';
+        aiBtn.innerHTML = 'Explain Deeper with AI ✨';
+        
+        // Create the response container
+        const aiBox = document.createElement('div');
+        aiBox.className = 'ai-box';
+        
+        // Insert right after the standard solution box
+        solBox.after(aiBtn);
+        aiBtn.after(aiBox);
+
+        // API Calling Logic for specific question context
+        aiBtn.addEventListener('click', async () => {
+            if (aiBox.style.display === 'block') {
+                aiBox.style.display = 'none';
+                aiBtn.innerHTML = 'Explain Deeper with AI ✨';
+                return;
+            }
+            
+            aiBtn.innerHTML = 'Hide AI Explanation ✖';
+            aiBox.style.display = 'block';
+            
+            // Avoid re-fetching if content is already loaded
+            if(aiBox.innerHTML && !aiBox.innerHTML.includes('AI is thinking')) {
+                return; 
+            }
+
+            aiBox.innerHTML = '<em>AI is thinking... 🧠</em>';
+
+            // Gather context from the DOM (traverse backward from button)
+            let prevNode = aiBtn.previousElementSibling;
+            let qText, optText, ansText, basicSolText;
+            
+            while(prevNode) {
+                if (prevNode.classList.contains('sol-box') && !basicSolText) basicSolText = prevNode.innerText;
+                if (prevNode.tagName.toLowerCase() === 'a' && !ansText) ansText = prevNode.innerText;
+                if (prevNode.classList.contains('options-grid') && !optText) optText = prevNode.innerText;
+                if (prevNode.tagName.toLowerCase() === 'q' && !qText) {
+                    qText = prevNode.innerText;
+                    break; // Found the question, stop traversing
+                }
+                prevNode = prevNode.previousElementSibling;
+            }
+
+            const prompt = `Please explain the following civil engineering/concrete technology MCQ in more detail. Provide an easy-to-understand analogy suitable for a diploma engineering student.\n\nQuestion: ${qText}\nOptions: ${optText}\nCorrect Answer: ${ansText}\nBasic Solution: ${basicSolText}\n\nMake the explanation engaging, detailed, and directly address why the other options might be incorrect. Keep formatting simple (no markdown headings).`;
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        systemInstruction: { parts: [{ text: "You are an expert civil engineering professor helping a student on a digital smart board. Explain concepts clearly, concisely, and use analogies. Format text cleanly without markdown headings, use bolding for emphasis." }] }
+                    })
+                });
+                const result = await response.json();
+                if (result.candidates && result.candidates[0].content?.parts?.[0]?.text) {
+                     aiBox.innerHTML = formatAIResponse(result.candidates[0].content.parts[0].text);
+                } else {
+                     aiBox.innerHTML = "<em>Sorry, the AI teacher is busy right now.</em>";
+                }
+            } catch (e) {
+                aiBox.innerHTML = "<em>Error connecting to AI. Please try again.</em>";
+            }
+        });
+    });
+
+    const fab = document.getElementById('ai-chat-fab');
+    const widget = document.getElementById('ai-chat-widget');
+    const closeBtn = document.getElementById('close-chat');
+    const sendBtn = document.getElementById('ai-chat-send');
+    const inputField = document.getElementById('ai-chat-input');
+    const messagesArea = document.getElementById('ai-chat-messages');
+
+    let chatHistory = [];
+
+    fab.addEventListener('click', () => {
+        widget.style.display = 'flex';
+        fab.style.display = 'none';
+    });
+
+    closeBtn.addEventListener('click', () => {
+        widget.style.display = 'none';
+        fab.style.display = 'block';
+    });
+
+    async function handleChatSend() {
+        const text = inputField.value.trim();
+        if (!text) return;
+
+        // Display user message
+        inputField.value = '';
+        appendMessage(text, 'user');
+
+        // Add to multi-turn history
+        chatHistory.push({ role: 'user', parts: [{ text: text }] });
+
+        const typingId = 'typing-' + Date.now();
+        appendMessage('Typing...', 'ai', typingId);
+
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: chatHistory,
+                    systemInstruction: { parts: [{ text: "You are an expert civil engineering professor. Answer the student's doubts clearly, concisely, and accurately. Act as a chatbot. Do not use complex markdown formatting like headers, just simple bolding and line breaks." }] }
+                })
+            });
+            
+            const result = await response.json();
+            document.getElementById(typingId)?.remove();
+
+            if (result.candidates && result.candidates[0].content?.parts?.[0]?.text) {
+                const aiText = result.candidates[0].content.parts[0].text;
+                appendMessage(formatAIResponse(aiText), 'ai');
+                // Save model response to history
+                chatHistory.push({ role: 'model', parts: [{ text: aiText }] });
+            } else {
+                appendMessage("<em>Oops! Something went wrong.</em>", 'ai');
+            }
+        } catch (e) {
+            document.getElementById(typingId)?.remove();
+            appendMessage("<em>Error connecting to AI.</em>", 'ai');
+        }
+    }
+
+    function appendMessage(text, sender, id = null) {
+        const div = document.createElement('div');
+        div.className = `chat-msg ${sender}`;
+        if(id) div.id = id;
+        div.innerHTML = text;
+        messagesArea.appendChild(div);
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', handleChatSend);
+    inputField.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleChatSend();
+    });
+  });
+</script>
+
+</body>
+</html>
