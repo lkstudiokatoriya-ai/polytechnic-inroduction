@@ -295,6 +295,46 @@
         
         /* Utility */
         .center-text { text-align: center; }
+        /* Add this just before </style> */
+    /* --- सामान्य स्क्रीन (Web View) के लिए नियम --- */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--paper-bg);
+}
+
+.page {
+    background: white;
+    box-sizing: border-box;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    margin: 20px auto;
+    padding: 20mm;
+    width: 210mm;
+    min-height: 297mm;
+}
+
+/* --- प्रिंट और PDF (Print View) के लिए नियम --- */
+@media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    body {
+        background-color: white;
+        padding: 0;
+        margin: 0;
+    }
+    .page {
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+        width: 210mm;
+        height: 297mm;
+        page-break-after: always;
+        overflow: hidden;
+    }
+}
+    
     </style>
 </head>
 <body>
