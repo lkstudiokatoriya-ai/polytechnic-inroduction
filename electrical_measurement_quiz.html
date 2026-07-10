@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMI Smart Classroom - LK SMART STUDIES</title>
+    <style>
+        /* --- CSS VARIABLES & THEMES --- */
+        :root[data-theme="dark"] {
+            --bg-color: #050b14;
+            --glass-bg: rgba(10, 25, 47, 0.65);
+            --glass-border: rgba(0, 240, 255, 0.2);
+            --primary: #00f0ff;
+            --primary-glow: rgba(0, 240, 255, 0.6);
+            --secondary: #0055ff;
+            --text-main: #e6f1ff;
+            --text-muted: #8892b0;
+            --success: #00ff88;
+            --warning: #ffcc00;
+            --danger: #ff3366;
+            --panel-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --circuit-color: rgba(0, 240, 255, 0.1);
+        }
+
+        :root[data-theme="light"] {
+            --bg-color: #f0f4f8;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 85, 255, 0.2);
+            --primary: #0055ff;
+            --primary-glow: rgba(0, 85, 255, 0.4);
+            --secondary: #00f0ff;
+            --text-main: #0a192f;
+            --text-muted: #495670;
+            --success: #00c853;
+            --warning: #f57c00;
+            --danger: #d50000;
+            --panel-shadow: 0 8px 32px 0 rgba(10, 25, 47, 0.1);
+            --circuit-color: rgba(0, 85, 255, 0.1);
+        }
+
+        /* --- GLOBAL STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            user-select: none;
+        }
+
+        /* --- BACKGROUND ANIMATIONS (ELECTRICAL THEME) --- */
+        .bg-animations {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+            background: radial-gradient(circle at center, var(--bg-color) 0%, #000 100%);
+        }
+
+        .circuit-line {
+            position: absolute;
+            background: var(--circuit-color);
+            box-shadow: 0 0 10px var(--circuit-color);
+        }
+        .circuit-line.h { height: 2px; width: 100vw; animation: pulseH 4s infinite linear; }
+        .circuit-line.v { width: 2px; height: 100vh; animation: pulseV 4s infinite linear; }
+        
+        .electron {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px var(--primary);
+            animation: moveElectron 6s infinite linear;
+        }
+
+        @keyframes pulseH { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; } }
+        @keyframes pulseV { 0%, 100% { opacity: 0.8; } 50% { opacity: 0.2; } }
+        @keyframes moveElectron {
+            0% { transform: translate(0, 0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translate(100vw, 100vh); opacity: 0; }
+        }
+
+        /* --- MAIN GLASS CONTAINER --- */
+        .smart-dashboard {
+            width: 95vw;
+            max-width: 1200px;
+            height: 92vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: var(--panel-shadow), inset 0 0 20px var(--circuit-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- SCREENS --- */
+        .screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 40px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: screenIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .screen.active { display: flex; }
+
+        @keyframes screenIn { 
+            from { opacity: 0; transform: translateY(20px) scale(0.98); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+
+        /* --- TOP CONTROLS --- */
+        .top-controls {
+            position: absolute;
+            top: 20px; right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--primary);
+            width: 45px; height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .icon-btn:hover {
+            background: var(--primary);
+            color: var(--bg-color);
+            box-shadow: 0 0 20px var(--primary-glow);
+            transform: translateY(-2px);
+        }
+
+        /* --- WELCOME SCREEN --- */
+        .brand-logo {
+            font-size: 60px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 15px var(--primary-glow));
+            animation: floatLogo 3s infinite ease-in-out;
+        }
+        @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .welcome-title {
+            font-size: 2.8rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 5px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .welcome-subtitle { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 40px; font-weight: 500; }
+
+        .input-group {
+            display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 40px; width: 100%; max-width: 400px;
+        }
+
+        .name-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            outline: none;
+            text-align: center;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .name-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow), inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .btn-glow {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 15px 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 15px var(--primary-glow);
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-glow:disabled {
+            border-color: var(--text-muted); color: var(--text-muted); box-shadow: none; cursor: not-allowed;
+        }
+        .btn-glow:not(:disabled):hover {
+            background: var(--primary);
+            color: var(--bg-color);
+            box-shadow: 0 0 30px var(--primary), 0 0 60px var(--primary);
+            transform: scale(1.05);
+        }
+
+        /* --- QUIZ SCREEN --- */
+        .dashboard-header {
+            width: 100%; display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border);
+        }
+
+        .stats-panel {
+            display: flex; gap: 25px; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 12px;
+        }
+        .stat-item { font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        .text-success { color: var(--success); text-shadow: 0 0 10px rgba(0, 255, 136, 0.4); }
+        .text-danger { color: var(--danger); text-shadow: 0 0 10px rgba(255, 51, 102, 0.4); }
+        .text-primary { color: var(--primary); text-shadow: 0 0 10px var(--primary-glow); }
+
+        .timer-wrapper { position: relative; width: 90px; height: 90px; }
+        .timer-svg { transform: rotate(-90deg); width: 100%; height: 100%; filter: drop-shadow(0 0 5px currentColor); }
+        .timer-bg { fill: none; stroke: var(--glass-border); stroke-width: 6; }
+        .timer-path {
+            fill: none; stroke: var(--success); stroke-width: 6; stroke-linecap: round;
+            stroke-dasharray: 251; stroke-dashoffset: 0;
+            transition: stroke-dashoffset 1s linear, stroke 0.5s ease;
+        }
+        .timer-text {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 1.8rem; font-weight: 800; color: var(--text-main);
+        }
+
+        .progress-container { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; margin-bottom: 30px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; box-shadow: 0 0 10px var(--primary); }
+
+        .question-container { width: 100%; max-width: 1000px; text-align: center; margin-bottom: 40px; }
+        .q-meta { font-size: 1.1rem; color: var(--warning); margin-bottom: 15px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .q-text { font-size: 2.2rem; font-weight: 600; line-height: 1.4; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 1000px; }
+        
+        .option-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            font-size: 1.3rem;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            backdrop-filter: blur(5px);
+        }
+        .opt-label {
+            background: rgba(0, 240, 255, 0.1); color: var(--primary);
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.2rem;
+            border: 1px solid var(--primary);
+        }
+        .option-card:hover {
+            background: rgba(0, 240, 255, 0.08); border-color: var(--primary);
+            transform: translateY(-3px); box-shadow: 0 5px 15px var(--circuit-color);
+        }
+        .option-card.correct {
+            background: rgba(0, 255, 136, 0.15); border-color: var(--success); box-shadow: 0 0 20px rgba(0,255,136,0.3);
+        }
+        .option-card.correct .opt-label { background: var(--success); color: #000; border-color: var(--success); }
+        .option-card.wrong {
+            background: rgba(255, 51, 102, 0.15); border-color: var(--danger); box-shadow: 0 0 20px rgba(255,51,102,0.3);
+        }
+        .option-card.wrong .opt-label { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+        .controls-footer {
+            margin-top: auto; width: 100%; display: flex; justify-content: center; align-items: center; gap: 30px; padding-top: 20px;
+        }
+        
+        .mic-btn {
+            width: 80px; height: 80px; border-radius: 50%;
+            background: rgba(0,0,0,0.3); border: 2px solid var(--primary); color: var(--primary);
+            font-size: 35px; cursor: pointer; transition: 0.3s;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        .mic-btn.listening {
+            border-color: var(--danger); color: var(--danger); box-shadow: 0 0 20px var(--danger);
+            animation: radarPulse 1.5s infinite;
+        }
+        @keyframes radarPulse { 0% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0.7); } 70% { box-shadow: 0 0 0 20px rgba(255, 51, 102, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0); } }
+
+        .ai-status-bar { margin-top: 15px; font-size: 1.2rem; color: var(--secondary); text-align: center; height: 30px; font-weight: 500; }
+
+        /* --- RESULT SCREEN --- */
+        .result-header { text-align: center; margin-bottom: 20px; }
+        .rank-icon { font-size: 70px; filter: drop-shadow(0 0 20px gold); margin-bottom: 10px; animation: scaleIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .rank-title { font-size: 2.5rem; color: var(--warning); font-weight: 800; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255, 204, 0, 0.5); }
+        
+        @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+        .dashboard-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 900px; margin-bottom: 30px;
+        }
+        .dash-card {
+            background: rgba(255,255,255,0.05); padding: 20px; border-radius: 15px; border: 1px solid var(--glass-border);
+            text-align: center; backdrop-filter: blur(5px);
+        }
+        .dash-val { font-size: 2.2rem; font-weight: 800; margin-bottom: 5px; }
+        .dash-label { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        .action-btns { display: flex; gap: 20px; margin-top: 10px; }
+
+        /* --- CERTIFICATE (Print Only) --- */
+        #certificate-container { display: none; }
+        
+        @media print {
+            body { background: #fff !important; margin: 0; padding: 0; }
+            .bg-animations, .smart-dashboard { display: none !important; }
+            #certificate-container {
+                display: block; width: 100%; height: 100vh; background: #fff;
+                padding: 40px; box-sizing: border-box; text-align: center;
+                color: #0b1e36;
+            }
+            .cert-border {
+                border: 15px solid #002244; padding: 10px; height: 100%;
+                outline: 5px solid #d4af37; outline-offset: -25px;
+                position: relative;
+            }
+            .cert-header { font-size: 40px; color: #002244; font-weight: bold; margin-top: 30px; text-transform: uppercase; font-family: 'Times New Roman', serif; }
+            .cert-sub { font-size: 24px; color: #d4af37; margin-bottom: 40px; font-family: 'Times New Roman', serif; }
+            .cert-body { font-size: 22px; line-height: 1.8; margin-bottom: 50px; font-family: 'Arial', sans-serif;}
+            .cert-name { font-size: 45px; color: #0055ff; font-weight: bold; text-decoration: underline; margin: 20px 0; font-family: 'Times New Roman', serif;}
+            .cert-details { font-size: 20px; font-weight: bold; margin: 30px 0; }
+            .cert-footer {
+                position: absolute; bottom: 50px; width: 90%; left: 5%;
+                display: flex; justify-content: space-between; font-size: 18px; font-weight: bold;
+            }
+            .sig-line { border-top: 2px solid #000; width: 200px; padding-top: 5px; text-align: center; margin-top: 60px; }
+            .cert-logo { font-size: 50px; color: #d4af37; margin-top: 20px;}
+        }
+
+        @media (max-width: 768px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .dashboard-grid { grid-template-columns: 1fr 1fr; }
+            .welcome-title { font-size: 2rem; }
+            .q-text { font-size: 1.5rem; }
+            .smart-dashboard { width: 100vw; height: 100vh; border-radius: 0; border: none; }
+            .dashboard-header { flex-direction: column; gap: 15px; }
+            .stats-panel { width: 100%; justify-content: space-around; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Electrical Theme -->
+    <div class="bg-animations" id="bg-anims">
+        <!-- Generated by JS -->
+    </div>
+
+    <!-- Main App Container -->
+    <div class="smart-dashboard">
+        
+        <div class="top-controls">
+            <button class="icon-btn" onclick="toggleTheme()" title="Toggle Theme">🌗</button>
+            <button class="icon-btn" onclick="toggleFullScreen()" title="Full Screen">⛶</button>
+        </div>
+
+        <!-- WELCOME SCREEN -->
+        <div id="screen-welcome" class="screen active">
+            <div class="brand-logo">⚡</div>
+            <h1 class="welcome-title">Electrical Measurement &<br>Instrumentation Smart Classroom</h1>
+            <h2 class="welcome-subtitle">By LK SMART STUDIES</h2>
+            
+            <div class="input-group">
+                <label for="student-name" style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">👤 Enter Your Name</label>
+                <input type="text" id="student-name" class="name-input" placeholder="e.g. Lalan Kumar" autocomplete="off" onkeyup="checkNameInput()">
+            </div>
+            
+            <button class="btn-glow" id="start-btn" onclick="initClassroom()" disabled>Start Engine</button>
+        </div>
+
+        <!-- QUIZ SCREEN -->
+        <div id="screen-quiz" class="screen">
+            <div class="dashboard-header">
+                <div class="stats-panel">
+                    <div class="stat-item text-primary"><span id="score-val">0</span> XP</div>
+                    <div class="stat-item text-success">✔ <span id="correct-count">0</span></div>
+                    <div class="stat-item text-danger">✖ <span id="wrong-count">0</span></div>
+                </div>
+                <div class="timer-wrapper">
+                    <svg class="timer-svg" viewBox="0 0 90 90">
+                        <circle class="timer-bg" cx="45" cy="45" r="40"></circle>
+                        <circle class="timer-path" id="timer-path" cx="45" cy="45" r="40"></circle>
+                    </svg>
+                    <div class="timer-text" id="timer-text">30</div>
+                </div>
+            </div>
+
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+
+            <div class="question-container">
+                <div class="q-meta" id="q-meta">Question 1 of 50 | Unit 1: Basics of EMI</div>
+                <div class="q-text" id="q-text">Loading question...</div>
+            </div>
+
+            <div class="options-grid" id="options-grid">
+                <!-- Options injected by JS -->
+            </div>
+
+            <div class="controls-footer">
+                <button class="icon-btn" style="width:60px; height:60px;" onclick="repeatQuestion()" title="Repeat Question">🔊</button>
+                <button class="mic-btn" id="mic-btn" onclick="toggleMic()" title="Tap & Speak (A,B,C,D)">🎤</button>
+                <button class="icon-btn" style="width:60px; height:60px;" id="pause-btn" onclick="togglePause()" title="Pause/Resume">⏸</button>
+            </div>
+            <div class="ai-status-bar" id="ai-status">AI Teacher is connecting...</div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div id="screen-result" class="screen">
+            <div class="result-header">
+                <div class="rank-icon" id="rank-icon">🏆</div>
+                <h1 class="rank-title" id="rank-title">EMI Genius</h1>
+                <p style="font-size:1.2rem; color:var(--text-muted);">Ceremony Completed for <span id="res-name-display" style="color:var(--primary); font-weight:bold;">Student</span></p>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="dash-card"><div class="dash-val" id="res-total">50</div><div class="dash-label">Total Qs</div></div>
+                <div class="dash-card"><div class="dash-val text-success" id="res-correct">0</div><div class="dash-label">Correct</div></div>
+                <div class="dash-card"><div class="dash-val text-danger" id="res-wrong">0</div><div class="dash-label">Wrong</div></div>
+                <div class="dash-card"><div class="dash-val text-primary" id="res-percent">0%</div><div class="dash-label">Accuracy</div></div>
+                <div class="dash-card"><div class="dash-val" id="res-xp" style="color: #b388ff;">0</div><div class="dash-label">XP Earned</div></div>
+                <div class="dash-card"><div class="dash-val" id="res-time">0m 0s</div><div class="dash-label">Time Taken</div></div>
+            </div>
+
+            <div class="action-btns">
+                <button class="btn-glow" style="padding: 12px 30px; font-size: 1.2rem;" onclick="location.reload()">Restart Engine</button>
+                <button class="btn-glow" style="padding: 12px 30px; font-size: 1.2rem; background: var(--primary); color: var(--bg-color);" onclick="window.print()">Print Certificate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CERTIFICATE TEMPLATE (Visible only on print) -->
+    <div id="certificate-container">
+        <div class="cert-border">
+            <div class="cert-logo">⚡ LK SMART STUDIES ⚡</div>
+            <div class="cert-header">Certificate of Achievement</div>
+            <div class="cert-sub">Electrical Measurement & Instrumentation - Unit 1</div>
+            
+            <div class="cert-body">
+                This is to proudly certify that<br>
+                <div class="cert-name" id="cert-name">Student Name</div>
+                has successfully completed the Premium AI Smart Classroom Assessment.<br>
+            </div>
+            
+            <div class="cert-details">
+                Score: <span id="cert-score">0</span>% &nbsp; | &nbsp; Rank: <span id="cert-rank">Rank</span>
+            </div>
+            
+            <div class="cert-footer">
+                <div>
+                    <div id="cert-id" style="font-size:14px; font-weight:normal; margin-bottom:10px;">ID: LK-EMI-XXXXXX</div>
+                    <div id="cert-date">Date: XX/XX/XXXX</div>
+                </div>
+                <div>
+                    <div style="font-family: 'Brush Script MT', cursive; font-size: 30px; color: #002244;">AI Teacher</div>
+                    <div class="sig-line">AI Teacher Signature</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* =========================================
+           1. DATABASE: EMI Unit 1 (Extracted from PDF)
+        ========================================= */
+        const questions = [
+            { q: "Measurement is the process of comparison between an unknown quantity and a:", o: ["Known Variable", "Predefined Standard", "Random Value", "Calculated Error"], a: 1, exp: "Measurement is comparing unknown quantity against a predefined standard." },
+            { q: "Which of the following is done to improve the accuracy of an instrument?", o: ["Calibration", "Modification", "Attenuation", "Integration"], a: 0, exp: "Calibration is comparison of a known set of quantity to improve accuracy." },
+            { q: "In the Generalized Block Diagram of Measurement, PSE stands for:", o: ["Pre Standard Error", "Process Sensing Element", "Primary Sensing Element", "Power Source Element"], a: 2, exp: "PSE is Primary Sensing Element, which senses the input signal." },
+            { q: "Which element is responsible for converting the nature of the signal (e.g., ADC, DAC)?", o: ["Primary Sensing Element", "Data Manipulating Element", "Data Conversing Element", "Data Transfer Element"], a: 2, exp: "Data Conversing Element (DCE) converts the signal nature." },
+            { q: "Amplifier and Attenuator are examples of which element?", o: ["Data Conversing Element", "Data Manipulating Element", "Data Presenting Element", "Data Transfer Element"], a: 1, exp: "DME is responsible for changing the strength of the signal." },
+            { q: "A 7-segment display is generally used as a:", o: ["Data Presenting Element", "Primary Sensing Element", "Data Manipulating Element", "Data Transfer Element"], a: 0, exp: "DPE displays the output data for the user." },
+            { q: "Which type of measurement directly compares the unknown against a predefined standard and may have human errors?", o: ["Indirect Measurement", "Direct Measurement", "Absolute Measurement", "Secondary Measurement"], a: 1, exp: "Direct measurement compares directly and has a possibility of inaccurate results due to human errors." },
+            { q: "Calculating resistance using V/I formula (Ammeter-Voltmeter method) is an example of:", o: ["Direct Measurement", "Absolute Measurement", "Indirect Measurement", "Null Measurement"], a: 2, exp: "Indirect measurement compares indirectly against predefined standards." },
+            { q: "Which instruments do not give direct readings but give values in terms of instrument constants?", o: ["Secondary Instruments", "Primary/Absolute Instruments", "Indicating Instruments", "Recording Instruments"], a: 1, exp: "Absolute instruments like Tangent Galvanometer give reading in terms of instrument constant." },
+            { q: "Rayleigh's current balance and Absolute Electrometer are examples of:", o: ["Secondary Instruments", "Indicating Instruments", "Null type Instruments", "Absolute Instruments"], a: 3, exp: "They are primary/absolute instruments used for calibration." },
+            { q: "Secondary instruments are calibrated with the help of:", o: ["Primary Instruments", "Other Secondary Instruments", "Null Instruments", "Deflecting Instruments"], a: 0, exp: "Due to high accuracy, Primary instruments are used for calibration." },
+            { q: "Which of the following is NOT a type of Deflecting Instrument?", o: ["Indicating", "Recording", "Integrating", "Potentiometer"], a: 3, exp: "Potentiometer is a Null type instrument." },
+            { q: "Potentiometers and AC/DC bridges fall under which category?", o: ["Deflecting type", "Null type", "Integrating type", "Recording type"], a: 1, exp: "Null type instruments use a zero/null indication." },
+            { q: "Null type instruments compared to deflecting types are generally:", o: ["Less accurate and faster", "Highly accurate and faster", "Highly accurate but slow response", "Less accurate and slow response"], a: 2, exp: "Null type are highly accurate and sensitive but have slow response." },
+            { q: "Ammeter, Voltmeter, and Wattmeter are examples of:", o: ["Recording Instruments", "Indicating Instruments", "Integrating Instruments", "Absolute Instruments"], a: 1, exp: "Indicating instruments use a dial and pointer to indicate quantity." },
+            { q: "Indicating instruments are considered as:", o: ["First order system", "Second order system", "Zero order system", "Third order system"], a: 1, exp: "Indicating instruments are second order and use an underdamped system." },
+            { q: "Instruments which give a continuous record of the quantity over a specific time period (e.g., ECG, X-Y plotter) are:", o: ["Indicating", "Recording", "Integrating", "Absolute"], a: 1, exp: "Recording instruments record the variation of quantity over time." },
+            { q: "An Energy meter (AC) works on the principle of:", o: ["Chemical effect", "Thermal effect", "Induction effect", "Electrostatic effect"], a: 2, exp: "Energy meter works on induction effects and is an integrating instrument." },
+            { q: "An Ampere-hour meter (DC energy) works on the principle of:", o: ["Magnetic effect", "Thermal effect", "Chemical effect", "Electrostatic effect"], a: 2, exp: "It works on the chemical effect of current." },
+            { q: "The torque required to move the pointer from the initial zero position to full scale deflection is called:", o: ["Damping Torque", "Controlling Torque", "Restraining Torque", "Deflecting Torque"], a: 3, exp: "Deflecting torque depends on the measurable quantity." },
+            { q: "Which effect is used to produce deflecting torque in PMMC and MI instruments?", o: ["Thermal effect", "Electrostatic effect", "Magnetic field effect", "Induction effect"], a: 2, exp: "Magnetic field effect produces Lorentz force (F=BIL sinθ)." },
+            { q: "Thermocouple and RTD work on which principle for producing deflection?", o: ["Magnetic effect", "Thermal effect", "Chemical effect", "Electrostatic effect"], a: 1, exp: "Thermal effect: heat causes temperature rise changing length/resistance." },
+            { q: "The electrostatic effect is primarily used in which instrument?", o: ["Ammeter", "Wattmeter", "Voltmeter", "Energy meter"], a: 2, exp: "Electrostatic effect between charged plates is used in Electrostatic Voltmeters." },
+            { q: "Which torque brings the pointer back to zero position when the deflecting torque is removed?", o: ["Deflecting Torque", "Damping Torque", "Controlling Torque", "Friction Torque"], a: 2, exp: "Controlling (Restraining) torque opposes deflection and brings pointer to zero." },
+            { q: "At steady state (equilibrium) position of the pointer, which condition is satisfied?", o: ["Tc > Td", "Tc < Td", "Tc = Td", "Tc = 0"], a: 2, exp: "At steady state, Controlling torque equals Deflecting torque." },
+            { q: "In the Spring Control Method, controlling torque (Tc) is proportional to:", o: ["sin(theta)", "cos(theta)", "theta (Angular deflection)", "tan(theta)"], a: 2, exp: "Tc = K * theta. It provides a uniform/linear scale." },
+            { q: "Which control method provides a cramped (non-uniform) scale?", o: ["Spring Control", "Gravity Control", "Eddy Current Control", "Fluid Friction Control"], a: 1, exp: "Gravity control is proportional to sin(theta), making scale cramped." },
+            { q: "To reduce temperature effect, the control spring is usually made of:", o: ["Copper", "Aluminium", "Phosphor Bronze", "Steel"], a: 2, exp: "Phosphor Bronze is used to minimize temperature error and fatigue." },
+            { q: "Gravity control method is only applicable for instruments mounted in:", o: ["Horizontal position", "Vertical position", "Any position", "Inclined position"], a: 1, exp: "Gravity acts downwards, so instrument must be vertically mounted." },
+            { q: "If the lower spring of a PMMC instrument breaks during operation, the pointer moves to:", o: ["Full scale", "Zero position", "Mid scale", "Random position"], a: 1, exp: "Breaking lower spring breaks circuit; pointer returns to zero." },
+            { q: "Which torque is required to damp out the oscillations of the pointer about its steady state?", o: ["Deflecting Torque", "Controlling Torque", "Damping Torque", "Friction Torque"], a: 2, exp: "Damping torque prevents oscillation and decides the instrument's response speed." },
+            { q: "Air friction damping is mostly used in instruments where:", o: ["High magnetic field is required", "Low operating force is required", "Low magnetic field is present", "Vertical mounting is used"], a: 2, exp: "Used in MI instruments where operating magnetic field is low." },
+            { q: "Eddy current damping is used in instruments with:", o: ["Low magnetic field", "High magnetic field", "No magnetic field", "Chemical effect"], a: 1, exp: "Used in PMMC where a strong permanent magnet is present." },
+            { q: "Which damping method is typically used in Electrostatic Voltmeters?", o: ["Air friction", "Fluid friction", "Eddy current", "Electromagnetic"], a: 1, exp: "Fluid friction damping is used where low operating forces are required (vertical mount)." },
+            { q: "For a second order indicating instrument, the most preferred damping condition is:", o: ["Undamped", "Overdamped", "Underdamped", "Critically damped"], a: 2, exp: "Indicating instruments usually use an Underdamped system." },
+            { q: "The closeness of the instrument reading to the true value is called:", o: ["Precision", "Resolution", "Accuracy", "Sensitivity"], a: 2, exp: "Accuracy is how close the measured value is to the actual (true) value." },
+            { q: "Precision in measurement primarily depends on:", o: ["Difference from true value", "Number of significant digits", "Input voltage", "Type of damping"], a: 1, exp: "More significant digits mean higher precision, but it doesn't guarantee accuracy." },
+            { q: "The smallest change in input signal that can be detected by an instrument is called:", o: ["Accuracy", "Sensitivity", "Resolution", "Precision"], a: 2, exp: "Resolution (Discrimination) is the smallest detectable input change." },
+            { q: "Sensitivity of an instrument is defined as the ratio of:", o: ["Change in input to change in output", "Change in output to change in input", "True value to measured value", "Measured value to true value"], a: 1, exp: "Sensitivity = Δ Output / Δ Input." },
+            { q: "Deflection factor is the reciprocal of:", o: ["Accuracy", "Precision", "Resolution", "Sensitivity"], a: 3, exp: "Deflection factor = 1 / Sensitivity = Δ Input / Δ Output." },
+            { q: "Gross errors are mainly introduced due to:", o: ["Environmental changes", "Instrument wear and tear", "Human mistakes", "Random variations"], a: 2, exp: "Gross errors are human errors in taking reading or recording data." },
+            { q: "Errors caused due to temperature, pressure, or external magnetic fields are known as:", o: ["Instrumental errors", "Environmental errors", "Gross errors", "Observational errors"], a: 1, exp: "These fall under Systematic Errors due to the environment." },
+            { q: "Loading effect of an instrument causes which type of error?", o: ["Gross Error", "Instrumental Error", "Environmental Error", "Random Error"], a: 1, exp: "Loading effect is a systematic error belonging to the instrument itself." },
+            { q: "Absolute Error is calculated as:", o: ["True Value - Measured Value", "Measured Value - True Value", "(Measured - True)/True", "(True - Measured)/Measured"], a: 1, exp: "Absolute Error = Measured Value (Am) - True Value (At)." },
+            { q: "Relative Error is defined as:", o: ["Absolute error / Measured value", "Absolute error / True value", "True value / Absolute error", "Measured value / Absolute error"], a: 1, exp: "Relative Error = (Am - At) / At." },
+            { q: "Guaranteed Accuracy Error (GAE) is specified by the manufacturer with respect to the:", o: ["True value", "Measured value", "Full scale reading (Span)", "Zero reading"], a: 2, exp: "GAE is percentage of full scale deflection." },
+            { q: "If two quantities X1 and X2 are multiplied or divided, their total limiting error is found by:", o: ["Adding absolute errors", "Adding relative percentage errors", "Subtracting relative errors", "Multiplying relative errors"], a: 1, exp: "In multiplication/division, relative/percentage errors are added." },
+            { q: "If R1 = 10Ω ± 2% and R2 = 20Ω ± 4% are in series, the total resistance is:", o: ["30Ω ± 6%", "30Ω ± 2%", "30Ω", "30Ω ± 3.33%"], a: 3, exp: "For addition: dR = dR1 + dR2 = (0.2) + (0.8) = 1.0. %Error = (1/30)*100 = 3.33%." },
+            { q: "Which statement is TRUE?", o: ["Precision is necessary for accuracy", "Accuracy is necessary for precision", "High precision guarantees high accuracy", "None of the above"], a: 0, exp: "Precision is necessary for accuracy, but does not guarantee it." },
+            { q: "An instrument's ability to give the same value for repeated measurements of the same input is:", o: ["Accuracy", "Sensitivity", "Repeatability / Consistency", "Resolution"], a: 2, exp: "Repeatability describes the closeness of output readings repeatedly applied." }
+        ];
+
+        /* =========================================
+           2. APP STATE VARIABLES
+        ========================================= */
+        let studentName = "";
+        let currentQIndex = 0;
+        let scoreXP = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        
+        let timerInterval;
+        let timeLeft = 30;
+        let isPaused = false;
+        let isAnswering = false;
+        let startTime = 0;
+        
+        /* =========================================
+           3. BACKGROUND ANIMATIONS
+        ========================================= */
+        function createCircuitBackground() {
+            const container = document.getElementById('bg-anims');
+            for(let i=0; i<10; i++) {
+                let hLine = document.createElement('div');
+                hLine.className = 'circuit-line h';
+                hLine.style.top = Math.random() * 100 + 'vh';
+                hLine.style.animationDelay = Math.random() * 2 + 's';
+                
+                let vLine = document.createElement('div');
+                vLine.className = 'circuit-line v';
+                vLine.style.left = Math.random() * 100 + 'vw';
+                vLine.style.animationDelay = Math.random() * 2 + 's';
+                
+                let electron = document.createElement('div');
+                electron.className = 'electron';
+                electron.style.top = Math.random() * 100 + 'vh';
+                electron.style.animationDelay = Math.random() * 5 + 's';
+
+                container.appendChild(hLine);
+                container.appendChild(vLine);
+                container.appendChild(electron);
+            }
+        }
+        createCircuitBackground();
+
+        /* =========================================
+           4. THEME & FULLSCREEN CONTROLS
+        ========================================= */
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        /* =========================================
+           5. START QUIZ & AI TEACHER INIT
+        ========================================= */
+        const btnStart = document.getElementById('start-btn');
+        const inputName = document.getElementById('student-name');
+        const synth = window.speechSynthesis;
+        let aiVoice = null;
+
+        function checkNameInput() {
+            studentName = inputName.value.trim();
+            btnStart.disabled = studentName.length < 2;
+        }
+
+        function setVoice() {
+            const voices = synth.getVoices();
+            // Prefer Hindi or Indian English voice
+            aiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('IN')) || voices[0];
+        }
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = setVoice;
+        }
+
+        function speakText(text, callback = null, rate = 1.0) {
+            synth.cancel();
+            if(!text) return;
+            const utterance = new SpeechSynthesisUtterance(text);
+            if(aiVoice) utterance.voice = aiVoice;
+            utterance.lang = 'hi-IN';
+            utterance.rate = rate;
+            utterance.pitch = 1.0;
+
+            if(callback) {
+                utterance.onend = callback;
+                // Fallback in case onend doesn't fire
+                setTimeout(() => { if(synth.speaking) return; callback(); }, 8000 + text.length * 80);
+            }
+            synth.speak(utterance);
+        }
+
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function initClassroom() {
+            studentName = inputName.value.trim();
+            startTime = Date.now();
+            setVoice();
+            btnStart.innerText = "Connecting...";
+            
+            const introText = `नमस्कार ${studentName} जी। इलेक्ट्रिकल मेजरमेंट एंड इंस्ट्रूमेंटेशन स्मार्ट क्लासरूम में आपका हार्दिक स्वागत है। आज हम यूनिट 1 का प्रीमियम टेस्ट देने जा रहे हैं। इस टेस्ट में 50 महत्वपूर्ण प्रश्न होंगे। प्रत्येक प्रश्न के लिए 30 सेकंड का समय मिलेगा। आप ऑप्शन ए, बी, सी या डी बोलकर भी उत्तर दे सकते हैं। मैं पूरे टेस्ट के दौरान आपका एआई टीचर रहूँगा। तो आइए शुरू करते हैं। आपको शुभकामनाएँ।`;
+            
+            speakText(introText, () => {
+                switchScreen('screen-quiz');
+                loadQuestion();
+            });
+        }
+
+        /* =========================================
+           6. QUIZ LOGIC
+        ========================================= */
+        function loadQuestion() {
+            if(currentQIndex >= questions.length) { showResults(); return; }
+            
+            isAnswering = false;
+            isPaused = false;
+            document.getElementById('ai-status').innerText = "AI Teacher is ready... Speak Answer.";
+            
+            const q = questions[currentQIndex];
+            
+            // Update UI
+            document.getElementById('q-meta').innerText = `Question ${currentQIndex + 1} of ${questions.length} | Unit 1: Basics of EMI`;
+            document.getElementById('q-text').innerText = q.q;
+            document.getElementById('score-val').innerText = scoreXP;
+            
+            const progress = (currentQIndex / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            // Options
+            const optGrid = document.getElementById('options-grid');
+            optGrid.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D'];
+            let readText = `${q.q}... `;
+
+            q.o.forEach((opt, idx) => {
+                let div = document.createElement('div');
+                div.className = 'option-card';
+                div.innerHTML = `<div class="opt-label">${labels[idx]}</div> <div>${opt}</div>`;
+                div.onclick = () => checkAnswer(idx);
+                optGrid.appendChild(div);
+                readText += `ऑप्शन ${labels[idx]}, ${opt}... `;
+            });
+
+            startTimer();
+            speakText(readText);
+        }
+
+        function repeatQuestion() {
+            if(isAnswering || isPaused) return;
+            const q = questions[currentQIndex];
+            let readText = `${q.q}... ऑप्शन ए, ${q.o[0]}... ऑप्शन बी, ${q.o[1]}... ऑप्शन सी, ${q.o[2]}... ऑप्शन डी, ${q.o[3]}...`;
+            speakText(readText);
+        }
+
+        function togglePause() {
+            if(isAnswering) return;
+            const btn = document.getElementById('pause-btn');
+            if(isPaused) {
+                isPaused = false;
+                btn.innerText = "⏸";
+                document.getElementById('ai-status').innerText = "Quiz Resumed";
+                timerInterval = setInterval(timerTick, 1000);
+            } else {
+                isPaused = true;
+                btn.innerText = "▶";
+                document.getElementById('ai-status').innerText = "Quiz Paused";
+                clearInterval(timerInterval);
+                synth.cancel();
+            }
+        }
+
+        /* --- TIMER --- */
+        const elTimerText = document.getElementById('timer-text');
+        const elTimerPath = document.getElementById('timer-path');
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeLeft = 30;
+            updateTimerUI();
+            timerInterval = setInterval(timerTick, 1000);
+        }
+
+        function timerTick() {
+            if(isPaused) return;
+            timeLeft--;
+            updateTimerUI();
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval);
+                handleTimeOut();
+            }
+        }
+
+        function updateTimerUI() {
+            elTimerText.innerText = timeLeft;
+            const dashoffset = 251 - (timeLeft / 30) * 251;
+            elTimerPath.style.strokeDashoffset = dashoffset;
+
+            if(timeLeft > 15) elTimerPath.style.stroke = "var(--success)";
+            else if(timeLeft > 5) elTimerPath.style.stroke = "var(--warning)";
+            else elTimerPath.style.stroke = "var(--danger)";
+        }
+
+        function handleTimeOut() {
+            if(isAnswering) return;
+            isAnswering = true;
+            synth.cancel();
+            if(isListening && recognition) recognition.stop();
+
+            const q = questions[currentQIndex];
+            document.getElementById('options-grid').children[q.a].classList.add('correct');
+            wrongCount++;
+            document.getElementById('wrong-count').innerText = wrongCount;
+            document.getElementById('ai-status').innerText = "Time Out!";
+
+            speakText("समय समाप्त हो गया है। सही उत्तर था ऑप्शन " + ['A','B','C','D'][q.a] + "। अब अगले प्रश्न पर चलते हैं।", nextQuestion);
+        }
+
+        /* --- ANSWER CHECK --- */
+        function checkAnswer(selIdx) {
+            if(isAnswering || isPaused) return;
+            isAnswering = true;
+            clearInterval(timerInterval);
+            synth.cancel();
+            if(isListening && recognition) recognition.stop();
+
+            const q = questions[currentQIndex];
+            const opts = document.getElementById('options-grid').children;
+            
+            let feedbackSpeech = "";
+
+            if(selIdx === q.a) {
+                opts[selIdx].classList.add('correct');
+                scoreXP += (10 + Math.floor(timeLeft)); 
+                correctCount++;
+                document.getElementById('correct-count').innerText = correctCount;
+                document.getElementById('score-val').innerText = scoreXP;
+                document.getElementById('ai-status').innerText = "Correct! " + q.exp;
+                
+                feedbackSpeech = `बहुत बढ़िया ${studentName} जी। आपका उत्तर बिल्कुल सही है। ${q.exp} ऐसे ही आगे बढ़ते रहिए।`;
+            } else {
+                opts[selIdx].classList.add('wrong');
+                opts[q.a].classList.add('correct');
+                wrongCount++;
+                document.getElementById('wrong-count').innerText = wrongCount;
+                document.getElementById('ai-status').innerText = "Wrong! " + q.exp;
+                
+                feedbackSpeech = `कोई बात नहीं ${studentName} जी। गलतियों से ही सीख मिलती है। सही उत्तर है ऑप्शन ${['A','B','C','D'][q.a]}। ${q.exp} अब अगले प्रश्न पर चलते हैं।`;
+            }
+            speakText(feedbackSpeech, nextQuestion);
+        }
+
+        function nextQuestion() {
+            currentQIndex++;
+            setTimeout(loadQuestion, 500);
+        }
+
+        /* =========================================
+           7. SPEECH RECOGNITION
+        ========================================= */
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition = null;
+        let isListening = false;
+        const btnMic = document.getElementById('mic-btn');
+
+        if(SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'hi-IN';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                isListening = true;
+                btnMic.classList.add('listening');
+                document.getElementById('ai-status').innerText = "Listening... Speak A, B, C, or D";
+            };
+
+            recognition.onresult = (e) => {
+                const transcript = e.results[0][0].transcript.trim().toLowerCase();
+                processVoice(transcript);
+            };
+
+            recognition.onerror = () => { stopMic(); document.getElementById('ai-status').innerText = "Voice not clear. Try again."; };
+            recognition.onend = () => { stopMic(); };
+        }
+
+        function toggleMic() {
+            if(!recognition) { alert("Voice Recognition is not supported in your browser."); return; }
+            if(isListening) recognition.stop();
+            else {
+                if(!isAnswering && !isPaused) {
+                    synth.cancel();
+                    recognition.start();
+                }
+            }
+        }
+        function stopMic() { isListening = false; btnMic.classList.remove('listening'); }
+
+        function processVoice(text) {
+            if(isAnswering || isPaused) return;
+            let sel = -1;
+            const mapA = ["a", "ए", "वन", "1", "one", "पहला", "option a", "विकल्प ए"];
+            const mapB = ["b", "बी", "टू", "2", "two", "दूसरा", "option b", "विकल्प बी"];
+            const mapC = ["c", "सी", "थ्री", "3", "three", "तीसरा", "option c", "विकल्प सी"];
+            const mapD = ["d", "डी", "फोर", "4", "four", "चौथा", "option d", "विकल्प डी"];
+
+            if(mapA.some(v => text.includes(v))) sel = 0;
+            else if(mapB.some(v => text.includes(v))) sel = 1;
+            else if(mapC.some(v => text.includes(v))) sel = 2;
+            else if(mapD.some(v => text.includes(v))) sel = 3;
+
+            if(sel !== -1) checkAnswer(sel);
+            else {
+                document.getElementById('ai-status').innerText = "Invalid option. Say Option A, B, C or D.";
+                speakText("क्षमा करें, मुझे समझ नहीं आया। कृपया ऑप्शन ए, बी, सी या डी बोलें।");
+            }
+        }
+
+        /* =========================================
+           8. RESULT & CERTIFICATE
+        ========================================= */
+        function showResults() {
+            switchScreen('screen-result');
+            synth.cancel();
+            
+            const total = questions.length;
+            const percent = Math.round((correctCount / total) * 100);
+            const timeTakenSecs = Math.floor((Date.now() - startTime) / 1000);
+            const timeTakenStr = `${Math.floor(timeTakenSecs / 60)}m ${timeTakenSecs % 60}s`;
+
+            document.getElementById('res-name-display').innerText = studentName;
+            document.getElementById('res-total').innerText = total;
+            document.getElementById('res-correct').innerText = correctCount;
+            document.getElementById('res-wrong').innerText = wrongCount;
+            document.getElementById('res-percent').innerText = percent + "%";
+            document.getElementById('res-xp').innerText = scoreXP;
+            document.getElementById('res-time').innerText = timeTakenStr;
+
+            let rank, icon, speech;
+            if(percent >= 95) {
+                rank = "EMI Genius"; icon = "👑";
+                speech = `बधाई हो ${studentName} जी। आपने शानदार प्रदर्शन किया है। आप EMI Genius घोषित किए जाते हैं। एल के स्मार्ट स्टडीज की ओर से आपको हार्दिक शुभकामनाएँ।`;
+            } else if(percent >= 90) {
+                rank = "Master"; icon = "🥇";
+                speech = `बहुत बढ़िया ${studentName} जी। आपने मास्टर रैंक हासिल की है। आपका प्रदर्शन उत्कृष्ट रहा।`;
+            } else if(percent >= 80) {
+                rank = "Excellent"; icon = "🥈";
+                speech = `बहुत अच्छा ${studentName} जी। आपने एक्सीलेंट प्रदर्शन किया है। थोड़ी और मेहनत से आप जीनियस बन सकते हैं।`;
+            } else if(percent >= 70) {
+                rank = "Good"; icon = "🥉";
+                speech = `${studentName} जी, आपका प्रदर्शन अच्छा है। लेकिन आपको और अभ्यास की आवश्यकता है।`;
+            } else {
+                rank = "Keep Practicing"; icon = "📘";
+                speech = `${studentName} जी, निराश न हों। सफलता के लिए निरंतर अभ्यास आवश्यक है। कृपया दोबारा प्रयास करें।`;
+            }
+
+            document.getElementById('rank-title').innerText = rank;
+            document.getElementById('rank-icon').innerText = icon;
+
+            // Generate Certificate Info
+            document.getElementById('cert-name').innerText = studentName;
+            document.getElementById('cert-score').innerText = percent;
+            document.getElementById('cert-rank').innerText = rank;
+            document.getElementById('cert-date').innerText = "Date: " + new Date().toLocaleDateString();
+            document.getElementById('cert-id').innerText = "ID: LK-EMI-" + Math.random().toString(36).substr(2, 6).toUpperCase();
+
+            // Fire Confetti if pass
+            if(percent >= 70) createParticles(true);
+            else createParticles(false);
+
+            speakText(speech);
+        }
+
+        /* --- SPARK/CONFETTI ANIMATION --- */
+        function createParticles(isPass) {
+            const container = document.getElementById('bg-anims');
+            const colors = isPass ? ['#00f0ff', '#00ff88', '#ffcc00'] : ['#ff3366', '#ffcc00'];
+            
+            for(let i=0; i<80; i++) {
+                let p = document.createElement('div');
+                p.style.position = 'absolute';
+                p.style.left = '50%';
+                p.style.top = '50%';
+                p.style.width = (Math.random() * 8 + 4) + 'px';
+                p.style.height = p.style.width;
+                p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                p.style.boxShadow = `0 0 10px ${p.style.backgroundColor}`;
+                p.style.zIndex = '100';
+                
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 200 + 50;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity + 200; // adding gravity bias
+
+                p.animate([
+                    { transform: 'translate(0,0) scale(1)', opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+                ], {
+                    duration: Math.random() * 2000 + 1000,
+                    easing: 'cubic-bezier(0, .9, .57, 1)'
+                });
+
+                container.appendChild(p);
+                setTimeout(() => p.remove(), 3000);
+            }
+        }
+    </script>
+</body>
+</html>
