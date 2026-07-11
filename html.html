@@ -30,7 +30,53 @@
             flex-direction: column;
             align-items: center;
         }
+#rotateOverlay{
 
+position:fixed;
+
+top:0;
+
+left:0;
+
+width:100%;
+
+height:100%;
+
+background:white;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+z-index:999999;
+
+}
+
+#rotateOverlay .box{
+
+text-align:center;
+
+padding:25px;
+
+}
+
+#rotateOverlay button{
+
+padding:14px 25px;
+
+font-size:18px;
+
+border:none;
+
+border-radius:10px;
+
+background:#1565c0;
+
+color:white;
+
+}
         /* Notebook Page Setup */
         .page {
             width: 100%;
@@ -264,9 +310,58 @@
             }
         }
     </style>
+    <script>
+async function startStudyMode() {
+    try {
+        await document.documentElement.requestFullscreen();
+
+        if (screen.orientation && screen.orientation.lock) {
+            await screen.orientation.lock("landscape");
+        }
+
+    } catch (e) {
+        console.log(e);
+    }
+
+    checkOrientation();
+}
+
+function checkOrientation() {
+    const overlay = document.getElementById("rotateOverlay");
+
+    if (window.innerWidth > window.innerHeight) {
+        overlay.style.display = "none";
+    } else {
+        overlay.style.display = "flex";
+    }
+}
+
+window.addEventListener("resize", checkOrientation);
+window.addEventListener("load", checkOrientation);
+    </script>
 </head>
 <body>
+<div id="rotateOverlay">
 
+<div class="box">
+
+<h2>📱 Landscape Mode Required</h2>
+
+<p>
+
+बेहतर अनुभव के लिए Landscape Mode में पढ़ें।
+
+</p>
+
+<button onclick="startStudyMode()">
+
+📖 Start Study Mode
+
+</button>
+
+</div>
+
+</div>
     <!-- PAGE 1 -->
     <div class="page">
         <div class="spiral-binding"></div>
