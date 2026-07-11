@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Complete Study Notes (Part-1)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap');
+
+        :root {
+            --red-ink: #d32f2f;
+            --blue-ink: #1565c0;
+            --hl-yellow: rgba(255, 235, 59, 0.55);
+            --paper-bg: #fdfbf7;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Kalam', cursive;
+            background-color: #e0e0e0;
+            color: var(--blue-ink);
+            font-size: 19px;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Notebook Page Setup */
+        .page {
+            width: 100%;
+            max-width: 210mm;
+            min-height: 297mm;
+            background-color: var(--paper-bg);
+            margin-bottom: 40px;
+            position: relative;
+            box-shadow: 4px 8px 25px rgba(0, 0, 0, 0.15);
+            padding: 25mm 20mm 25mm 38mm; /* Left padding space for spiral */
+            border-radius: 2px 8px 8px 2px;
+            overflow: visible;
+            
+            /* Clean paper texture */
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(0,0,0,0.02) 1px, transparent 1.5px),
+                linear-gradient(to right, rgba(0,0,0,0.01) 0%, transparent 100%);
+            background-size: 20px 20px, 100% 100%;
+            page-break-after: always;
+            break-after: page;
+        }
+
+        /* Spiral Binding Simulation */
+        .spiral-binding {
+            position: absolute;
+            left: 8px;
+            top: 20mm;
+            bottom: 20mm;
+            width: 32px;
+            /* Holes */
+            background-image: radial-gradient(circle at 14px 20px, #333 5px, rgba(0,0,0,0.8) 6px, transparent 7px);
+            background-size: 100% 40px;
+            background-repeat: repeat-y;
+            z-index: 5;
+        }
+        
+        .spiral-binding::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            /* Metal rings */
+            background-image: 
+                linear-gradient(-15deg, transparent 38%, #888 39%, #ddd 44%, #888 49%, transparent 50%);
+            background-size: 100% 40px;
+            background-repeat: repeat-y;
+            border-radius: 4px;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            color: var(--red-ink);
+            font-weight: 700;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            page-break-after: avoid;
+            break-after: avoid;
+            line-height: 1.3;
+        }
+
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            border-bottom: 2px dashed var(--red-ink);
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+
+        h2 { font-size: 24px; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(211, 47, 47, 0.4); }
+        h3 { font-size: 21px; }
+        h4 { font-size: 19px; }
+
+        p { margin: 10px 0; }
+
+        /* Highlights & Styling */
+        .highlight {
+            background-color: var(--hl-yellow);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .keyword {
+            color: var(--red-ink);
+            font-weight: bold;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 10px 0;
+            padding-left: 30px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        li {
+            margin-bottom: 6px;
+            position: relative;
+        }
+
+        .custom-ul { list-style: none; padding-left: 20px; }
+        .custom-ul > li::before {
+            content: '➤';
+            color: var(--red-ink);
+            position: absolute;
+            left: -20px;
+            font-size: 14px;
+            top: 4px;
+        }
+
+        /* Code Blocks */
+        .code-block {
+            border: 2px solid rgba(21, 101, 192, 0.4);
+            background: rgba(253, 251, 247, 0.8);
+            border-radius: 8px 15px 8px 15px / 15px 8px 15px 8px;
+            padding: 12px 20px;
+            margin: 15px 0;
+            font-family: 'Kalam', cursive;
+            color: #000;
+            white-space: pre-wrap;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            box-shadow: 2px 3px 6px rgba(0,0,0,0.05);
+        }
+
+        /* Callouts / Boxes */
+        .callout {
+            border: 2px solid var(--red-ink);
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            padding: 18px 20px 12px;
+            margin: 25px 0;
+            position: relative;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            background: rgba(255, 235, 59, 0.05);
+        }
+
+        .callout-title {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--paper-bg);
+            color: var(--red-ink);
+            font-weight: 700;
+            padding: 0 10px;
+            border: 2px solid var(--red-ink);
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            transform: rotate(-2deg);
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            border: 2px solid var(--blue-ink);
+            border-radius: 4px;
+        }
+
+        th, td {
+            border: 1px solid var(--blue-ink);
+            padding: 10px 15px;
+            text-align: left;
+        }
+
+        th {
+            color: var(--red-ink);
+            font-weight: bold;
+            background: rgba(21, 101, 192, 0.05);
+        }
+
+        /* Diagrams / Flowcharts */
+        .svg-diagram {
+            display: block;
+            margin: 25px auto;
+            max-width: 100%;
+            height: auto;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            overflow: visible;
+        }
+        
+        .svg-diagram path, .svg-diagram line {
+            fill: none;
+            stroke: var(--blue-ink);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .svg-diagram text {
+            font-family: 'Kalam', cursive;
+            fill: var(--blue-ink);
+            font-size: 18px;
+        }
+
+        .svg-diagram .svg-heading {
+            fill: var(--red-ink);
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* Print Specifics */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            body {
+                background: none;
+                padding: 0;
+                align-items: flex-start;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+                border: none;
+                border-radius: 0;
+                background-color: white;
+                background-image: none;
+                padding-left: 20mm; /* Reduce padding since no physical spiral */
+                padding-right: 20mm;
+            }
+            .spiral-binding {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1 -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+        
+        <h1>HTML (HyperText Markup Language) — Complete Study Notes (Part–1)</h1>
+        
+        <h2>1. परिचय (Introduction)</h2>
+        <h3>HTML क्या है?</h3>
+        <p>HTML (<span class="highlight">HyperText Markup Language</span>) एक Markup Language है जिसका उपयोग Web Pages (वेब पेज) बनाने और डिज़ाइन करने के लिए किया जाता है।</p>
+        
+        <div class="callout">
+            <div class="callout-title">Important Note</div>
+            <p><span class="keyword">&gt;</span> HTML कोई Programming Language नहीं है, बल्कि एक <span class="highlight">Markup Language</span> है।</p>
+        </div>
+
+        <h3>अन्य Markup Languages</h3>
+        <ul class="custom-ul">
+            <li>XML</li>
+            <li>SGML आदि</li>
+        </ul>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>2. HTML का उपयोग (Uses of HTML)</h2>
+        <p>HTML का उपयोग मुख्य रूप से:</p>
+        <ul class="custom-ul">
+            <li>Web Pages बनाने में</li>
+            <li>Website Design करने में</li>
+            <li>Web Content Structure तैयार करने में</li>
+        </ul>
+
+        <h3>आजकल वेबसाइट बनाने के दो तरीके प्रचलित हैं:</h3>
+        
+        <h4>(A) Drag & Drop Editors (WYSIWYG)</h4>
+        <p><span class="highlight">WYSIWYG = What You See Is What You Get</span></p>
+        <p>इन Editors में बिना Coding किए Drag & Drop द्वारा वेबसाइट बनाई जा सकती है।</p>
+        
+        <h4>(B) Manual Coding</h4>
+        <p>इसमें HTML Code लिखकर Web Pages बनाए जाते हैं।</p>
+
+        <div class="callout">
+            <div class="callout-title">Most Important</div>
+            <p><span class="keyword">&gt;</span> यदि Web Development सीखना है तो HTML सबसे पहला और सबसे आवश्यक विषय है।</p>
+        </div>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>3. HTML सीखने के लिए आवश्यक चीजें</h2>
+        <p>HTML Coding करने के लिए मुख्यतः दो चीजें चाहिए:</p>
+        
+        <ol>
+            <li><strong>Text Editor</strong>
+                <ul class="custom-ul">
+                    <li>Notepad</li>
+                    <li>Notepad++</li>
+                    <li>Dreamweaver</li>
+                    <li>VS Code (बाद में)</li>
+                </ul>
+            </li>
+            <li><strong>Web Browser</strong>
+                <ul class="custom-ul">
+                    <li>Google Chrome</li>
+                    <li>Microsoft Edge</li>
+                    <li>Mozilla Firefox</li>
+                    <li>Opera</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+
+        <h2>4. HTML Tags</h2>
+        <p>HTML की पूरी Coding Tags के अंदर लिखी जाती है।</p>
+        <p>उदाहरण:</p>
+        <div class="code-block">&lt;html&gt;</div>
+        <p>Tag हमेशा Angle Brackets (<span class="keyword">&lt; &gt;</span>) के अंदर लिखा जाता है।</p>
+        
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+        
+        <h3>Tag की संरचना</h3>
+        <p>&lt; Tag Name &gt;</p>
+        <p>उदाहरण</p>
+        <div class="code-block">&lt;html&gt;
+&lt;body&gt;
+&lt;head&gt;
+&lt;title&gt;</div>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>5. Opening Tag और Closing Tag</h2>
+        <p><strong>Opening Tag</strong></p>
+        <div class="code-block">&lt;html&gt;</div>
+        
+        <p><strong>Closing Tag</strong></p>
+        <div class="code-block">&lt;/html&gt;</div>
+        
+        <h3>अंतर</h3>
+        <p>Closing Tag में Tag Name से पहले <span class="highlight">/ (Slash)</span> लगाया जाता है।</p>
+        
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+        
+        <h3>तुलना</h3>
+        <table>
+            <tr>
+                <th>Opening Tag</th>
+                <th>Closing Tag</th>
+            </tr>
+            <tr>
+                <td>&lt;html&gt;</td>
+                <td>&lt;/html&gt;</td>
+            </tr>
+            <tr>
+                <td>&lt;body&gt;</td>
+                <td>&lt;/body&gt;</td>
+            </tr>
+            <tr>
+                <td>&lt;head&gt;</td>
+                <td>&lt;/head&gt;</td>
+            </tr>
+            <tr>
+                <td>&lt;title&gt;</td>
+                <td>&lt;/title&gt;</td>
+            </tr>
+        </table>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>6. HTML Document का Basic Structure</h2>
+        <div class="code-block">&lt;html&gt;
+
+&lt;head&gt;
+
+&lt;title&gt;
+Hello HTML
+&lt;/title&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+
+Welcome To World
+
+&lt;/body&gt;
+
+&lt;/html&gt;</div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+
+        <h2>7. HTML Structure का कार्य</h2>
+        
+        <h3>(1) &lt;html&gt;</h3>
+        <ul class="custom-ul">
+            <li>पूरे HTML Document की शुरुआत करता है।</li>
+            <li>सबसे पहले Open होता है।</li>
+            <li>सबसे अंत में Close होता है।</li>
+        </ul>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+        
+        <h3>(2) &lt;head&gt;</h3>
+        <p>Head Section में ऐसी जानकारी लिखी जाती है जो Web Page पर दिखाई नहीं देती।</p>
+        <p>जैसे:</p>
+        <ul class="custom-ul">
+            <li>Title</li>
+            <li>Meta Information</li>
+            <li>CSS Links</li>
+            <li>JavaScript Links</li>
+        </ul>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h3>(3) &lt;title&gt;</h3>
+        <p>Browser Tab का नाम निर्धारित करता है।</p>
+        <p>उदाहरण:</p>
+        <div class="code-block">&lt;title&gt;Hello HTML&lt;/title&gt;</div>
+        <p>Browser में ऊपर Tab पर यही दिखाई देगा।</p>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h3>(4) &lt;body&gt;</h3>
+        <p>सबसे महत्वपूर्ण Tag।</p>
+        <p>Web Page पर जो कुछ दिखाई देता है, वह सब Body Tag के अंदर लिखा जाता है।</p>
+        <p>जैसे:</p>
+        <ul class="custom-ul" style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <li style="width: 40%;">Text</li>
+            <li style="width: 40%;">Images</li>
+            <li style="width: 40%;">Tables</li>
+            <li style="width: 40%;">Links</li>
+            <li style="width: 40%;">Videos</li>
+            <li style="width: 40%;">Colors</li>
+            <li style="width: 40%;">Background</li>
+            <li style="width: 40%;">Buttons</li>
+        </ul>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>8. Body Tag का महत्व</h2>
+        <p>Body Tag के अंदर निम्न सभी चीजें लिखी जाती हैं:</p>
+        <ul class="custom-ul" style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <li style="width: 30%;">Text</li>
+            <li style="width: 30%;">Image</li>
+            <li style="width: 30%;">Table</li>
+            <li style="width: 30%;">Heading</li>
+            <li style="width: 30%;">Paragraph</li>
+            <li style="width: 30%;">Color</li>
+            <li style="width: 30%;">Background</li>
+            <li style="width: 30%;">Formatting</li>
+            <li style="width: 30%;">Lists</li>
+        </ul>
+
+        <div class="callout">
+            <div class="callout-title">Memory Trick</div>
+            <p><span class="keyword">&gt;</span> जो भी Browser पर दिखाई देगा, वह Body Tag के अंदर होगा।</p>
+        </div>
+    </div>
+
+    <!-- PAGE 4 -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+
+        <h2>9. HTML File कैसे Save करें?</h2>
+        <p><strong>Step 1</strong> : Notepad खोलें।</p>
+        <p><strong>Step 2</strong> : नई File बनाएं।</p>
+        <p><strong>Step 3</strong> : File → Save As</p>
+        <p><strong>Step 4</strong> : File Name लिखें<br>
+           उदाहरण : <span class="highlight">first.html</span></p>
+        <p><strong>Step 5</strong> : Save As Type:<br>
+           All Files<br>
+           या आवश्यकतानुसार HTML Extension दें।</p>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 15px 0;">
+        
+        <div class="callout" style="border-color: #f57c00;">
+            <div class="callout-title" style="border-color: #f57c00; color: #f57c00;">महत्वपूर्ण</div>
+            <p>यदि केवल <br><span class="highlight">first</span><br>लिखकर Save करेंगे,<br>तो वह Notepad File बन जाएगी।</p>
+            <p>सही तरीका:<br><span class="highlight">first.html</span></p>
+        </div>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 15px 0;">
+
+        <h2>10. HTML File Run करना</h2>
+        <p>HTML File पर<br>
+           Double Click<br>
+           या<br>
+           Right Click → Open With → Browser</p>
+        <p>Browser में Page खुल जाएगा।</p>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 15px 0;">
+
+        <h2>11. पहला HTML Program</h2>
+        <div class="code-block">&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;
+Hello HTML
+&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+Welcome To World
+&lt;/body&gt;
+&lt;/html&gt;</div>
+
+        <h3>Output</h3>
+        <p><strong>Browser Tab</strong><br>Hello HTML</p>
+        <p><strong>Web Page</strong><br>Welcome To World</p>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 15px 0;">
+
+        <h2>12. HTML में Formatting कैसे होती है?</h2>
+        <p>HTML Editor में</p>
+        <ul class="custom-ul">
+            <li>Enter दबाना</li>
+            <li>Space देना</li>
+            <li>Paragraph बनाना</li>
+        </ul>
+        <p>इनका Browser Output पर कोई प्रभाव नहीं पड़ता।<br>
+        Browser केवल HTML Tags को समझता है।</p>
+    </div>
+
+    <!-- PAGE 5 -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+
+        <h2>13. HTML Tags के प्रकार</h2>
+        <p>दो प्रकार के Tags होते हैं।</p>
+        
+        <h3>(1) Container Tag</h3>
+        <p>इनमें Opening और Closing दोनों Tag होते हैं।</p>
+        <p>उदाहरण</p>
+        <div class="code-block">&lt;html&gt;&lt;/html&gt;
+&lt;body&gt;&lt;/body&gt;
+&lt;head&gt;&lt;/head&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;b&gt;&lt;/b&gt;</div>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 15px 0;">
+
+        <h3>(2) Empty Tag</h3>
+        <p>इनमें Closing Tag नहीं होता।</p>
+        <p>उदाहरण</p>
+        <div class="code-block">&lt;br&gt;</div>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 15px 0;">
+
+        <h3>तुलना</h3>
+        <table>
+            <tr>
+                <th>Container Tag</th>
+                <th>Empty Tag</th>
+            </tr>
+            <tr>
+                <td>Opening + Closing</td>
+                <td>केवल Opening</td>
+            </tr>
+            <tr>
+                <td>Content रखते हैं</td>
+                <td>Content नहीं रखते</td>
+            </tr>
+            <tr>
+                <td>उदाहरण: &lt;body&gt;&lt;/body&gt;</td>
+                <td>उदाहरण: &lt;br&gt;</td>
+            </tr>
+        </table>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 15px 0;">
+
+        <h2>14. BR Tag (Line Break)</h2>
+        <p><strong>उपयोग</strong><br>नई Line में जाने के लिए।</p>
+        <p><strong>Syntax</strong></p>
+        <div class="code-block">&lt;br&gt;</div>
+        
+        <p><strong>उदाहरण</strong></p>
+        <div class="code-block">Hello World
+&lt;br&gt;
+Welcome</div>
+
+        <p><strong>Output</strong></p>
+        <div class="code-block" style="background: rgba(0,0,0,0.02); border-style: dashed;">Hello World
+Welcome</div>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 15px 0;">
+
+        <h2>15. BR Tag की विशेषताएँ</h2>
+        <ul class="custom-ul">
+            <li>Empty Tag है।</li>
+            <li>Closing Tag नहीं होता।</li>
+            <li>एक &lt;br&gt; = एक Line Break</li>
+        </ul>
+    </div>
+
+    <!-- PAGE 6 -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+
+        <h3>Multiple Line Break</h3>
+        <div class="code-block">Hello
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+World</div>
+        
+        <p><strong>Output</strong></p>
+        <div class="code-block" style="background: rgba(0,0,0,0.02); border-style: dashed;">Hello<br><br><br>World</div>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>16. HTML में Enter क्यों काम नहीं करता?</h2>
+        <p>यदि Notepad में</p>
+        <div class="code-block">Hello
+
+World</div>
+        <p>लिख दिया जाए,<br>तो Browser में Output होगा</p>
+        <div class="code-block" style="background: rgba(0,0,0,0.02); border-style: dashed;">Hello World</div>
+        <p>क्योंकि HTML लगातार Spaces और Enter को Ignore करता है।<br>
+        नई Line के लिए <span class="highlight">&lt;br&gt;</span> आवश्यक है।</p>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>17. BR Tag कहाँ लगाया जाता है?</h2>
+        <p>जहाँ से नई Line चाहिए,<br>उस स्थान पर &lt;br&gt; लिखते हैं।</p>
+        <p>उदाहरण</p>
+        <div class="code-block">HTML is used for&lt;br&gt;
+Creating Web Pages</div>
+        <p>Output</p>
+        <div class="code-block" style="background: rgba(0,0,0,0.02); border-style: dashed;">HTML is used for
+Creating Web Pages</div>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>18. कई Line Break</h2>
+        <p>यदि</p>
+        <div class="code-block">&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;</div>
+        <p>लगाएँ<br>तो तीन Line Break मिलेंगे।</p>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>19. Text Formatting</h2>
+        <p>HTML में Formatting Tags द्वारा की जाती है।<br>
+        Editor के Formatting Options का Browser पर कोई प्रभाव नहीं पड़ता।</p>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>20. Bold Tag</h2>
+        <p>Bold करने के लिए<br>
+        <span class="highlight">&lt;b&gt;</span><br>
+        का उपयोग किया जाता है।</p>
+        <p>Syntax</p>
+        <div class="code-block">&lt;b&gt;
+Text
+&lt;/b&gt;</div>
+    </div>
+
+    <!-- PAGE 7 -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+
+        <p>उदाहरण</p>
+        <div class="code-block">&lt;b&gt;Hello World&lt;/b&gt;</div>
+        <p>Output</p>
+        <div class="code-block" style="background: rgba(0,0,0,0.02); border-style: dashed;"><strong>Hello World</strong></div>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>21. Bold Tag की विशेषताएँ</h2>
+        <ul class="custom-ul">
+            <li>Container Tag है।</li>
+            <li>Opening और Closing दोनों होते हैं।</li>
+            <li>Opening से Closing तक का पूरा Text Bold हो जाता है।</li>
+        </ul>
+        <p>उदाहरण</p>
+        <div class="code-block">&lt;b&gt;
+HTML stands for HyperText Markup Language
+&lt;/b&gt;</div>
+        <p>पूरा वाक्य <strong>Bold</strong> दिखाई देगा।</p>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>Visual Summary (Flowchart)</h2>
+        <svg class="svg-diagram" viewBox="0 0 500 400">
+            <!-- Box for HTML Document -->
+            <rect x="150" y="20" width="200" height="40" rx="8" stroke="#d32f2f" fill="#fff" />
+            <text x="250" y="45" text-anchor="middle" class="svg-heading">HTML Document</text>
+            
+            <!-- Lines from HTML Document -->
+            <path d="M 120 40 L 150 40" />
+            <path d="M 120 40 L 120 300" stroke-dasharray="4,4"/> <!-- Main vertical stem -->
+            
+            <!-- html -->
+            <path d="M 120 80 L 150 80" />
+            <rect x="150" y="60" width="100" height="40" rx="5" />
+            <text x="200" y="85" text-anchor="middle">&lt;html&gt;</text>
+            
+            <!-- head -->
+            <path d="M 120 140 L 150 140" />
+            <rect x="150" y="120" width="100" height="40" rx="5" />
+            <text x="200" y="145" text-anchor="middle">&lt;head&gt;</text>
+            
+            <!-- title inside head -->
+            <path d="M 200 160 L 200 180 L 230 180" />
+            <rect x="230" y="160" width="100" height="40" rx="5" />
+            <text x="280" y="185" text-anchor="middle">&lt;title&gt;</text>
+
+            <!-- body -->
+            <path d="M 120 220 L 150 220" />
+            <rect x="150" y="200" width="100" height="40" rx="5" />
+            <text x="200" y="225" text-anchor="middle">&lt;body&gt;</text>
+
+            <!-- body elements -->
+            <path d="M 200 240 L 200 360" /> <!-- Vertical stem for body -->
+            
+            <path d="M 200 260 L 230 260" />
+            <text x="240" y="265">Text</text>
+            
+            <path d="M 200 280 L 230 280" />
+            <text x="240" y="285">Images</text>
+            
+            <path d="M 200 300 L 230 300" />
+            <text x="240" y="305">Tables</text>
+            
+            <path d="M 200 320 L 230 320" />
+            <text x="240" y="325">Links</text>
+
+            <path d="M 200 340 L 230 340" />
+            <text x="240" y="345">Formatting</text>
+            
+            <path d="M 200 360 L 230 360" />
+            <text x="240" y="365">Other Content</text>
+        </svg>
+    </div>
+
+    <!-- PAGE 8 -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+
+        <h2>Tag Classification (Diagram)</h2>
+        <svg class="svg-diagram" viewBox="0 0 500 280">
+            <rect x="50" y="20" width="120" height="40" rx="8" stroke="#d32f2f" fill="#fff" />
+            <text x="110" y="45" text-anchor="middle" class="svg-heading">HTML Tags</text>
+            
+            <path d="M 110 60 L 110 220" stroke-dasharray="4,4"/> <!-- Main vertical line -->
+            
+            <!-- Container Tags -->
+            <path d="M 110 100 L 150 100" />
+            <rect x="150" y="80" width="150" height="40" rx="5" />
+            <text x="225" y="105" text-anchor="middle">Container Tags</text>
+            
+            <path d="M 225 120 L 225 210" />
+            
+            <path d="M 225 130 L 260 130" />
+            <text x="270" y="135">html</text>
+            
+            <path d="M 225 150 L 260 150" />
+            <text x="270" y="155">body</text>
+            
+            <path d="M 225 170 L 260 170" />
+            <text x="270" y="175">head</text>
+            
+            <path d="M 225 190 L 260 190" />
+            <text x="270" y="195">title</text>
+
+            <path d="M 225 210 L 260 210" />
+            <text x="270" y="215">b</text>
+
+            <!-- Empty Tags -->
+            <path d="M 110 240 L 150 240" />
+            <rect x="150" y="220" width="150" height="40" rx="5" />
+            <text x="225" y="245" text-anchor="middle">Empty Tags</text>
+            
+            <path d="M 225 260 L 225 270 L 260 270" />
+            <text x="270" y="275">br</text>
+        </svg>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>Important Points (Exam Oriented)</h2>
+        <ul class="custom-ul">
+            <li>HTML = HyperText Markup Language</li>
+            <li>HTML एक Markup Language है।</li>
+            <li>Web Page बनाने की पहली भाषा HTML है।</li>
+            <li>HTML Tags Angle Brackets <span class="highlight">&lt; &gt;</span> में लिखे जाते हैं।</li>
+            <li>Closing Tag में / लगाया जाता है।</li>
+            <li>&lt;html&gt; सबसे पहले Open और सबसे अंत में Close होता है।</li>
+            <li>&lt;head&gt; में Browser संबंधी जानकारी होती है।</li>
+            <li>&lt;title&gt; Browser Tab का नाम दिखाता है।</li>
+            <li>&lt;body&gt; में पूरा Visible Content लिखा जाता है।</li>
+            <li>HTML File हमेशा <span class="highlight">.html Extension</span> से Save करें।</li>
+            <li>&lt;br&gt; एक Empty Tag है।</li>
+            <li>&lt;b&gt; एक Container Tag है।</li>
+            <li>केवल Enter दबाने से Browser में नई Line नहीं आती।</li>
+            <li>नई Line के लिए &lt;br&gt; आवश्यक है।</li>
+        </ul>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 20px 0;">
+
+        <h2>Common Mistakes</h2>
+        <ul class="custom-ul" style="color: #d32f2f;">
+            <li>.html Extension भूल जाना।</li>
+            <li>Closing Tag न लगाना।</li>
+            <li>&lt;br&gt; को Closing Tag देना।</li>
+            <li>&lt;title&gt; को Body में लिखना।</li>
+            <li>Body के बाहर Content लिखना।</li>
+            <li>केवल Enter से Line Break की उम्मीद करना।</li>
+        </ul>
+    </div>
+
+    <!-- PAGE 9 -->
+    <div class="page">
+        <div class="spiral-binding"></div>
+
+        <h2>Memory Tricks</h2>
+        
+        <div class="callout" style="border-color: #388e3c; background: rgba(76, 175, 80, 0.05);">
+            <div class="callout-title" style="color: #388e3c; border-color: #388e3c;">HTML Structure</div>
+            <p style="text-align: center; font-size: 22px; margin: 10px 0;">
+                <strong>H → H → T → B</strong>
+            </p>
+            <p style="text-align: center;">HTML<br>Head<br>Title<br>Body</p>
+        </div>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div class="callout" style="flex: 1; min-width: 200px;">
+                <div class="callout-title">Container Tag</div>
+                <p style="text-align: center;">Open → Content → Close</p>
+            </div>
+            
+            <div class="callout" style="flex: 1; min-width: 200px;">
+                <div class="callout-title">Empty Tag</div>
+                <p style="text-align: center;">Only Open</p>
+            </div>
+        </div>
+
+        <div class="callout" style="border-color: #1976d2; background: rgba(33, 150, 243, 0.05);">
+            <div class="callout-title" style="color: #1976d2; border-color: #1976d2;">Body Tag</div>
+            <p style="font-size: 22px; text-align: center;">"जो दिखे, वह Body में लिखे।"</p>
+        </div>
+
+        <hr style="border: 0; border-bottom: 1px dashed rgba(21, 101, 192, 0.3); margin: 25px 0;">
+
+        <h2>Quick Revision</h2>
+        <ul class="custom-ul">
+            <li>HTML = HyperText Markup Language</li>
+            <li>HTML से Web Pages बनते हैं।</li>
+            <li>HTML Coding Tags के अंदर लिखी जाती है।</li>
+            <li>Tags Angle Brackets में लिखे जाते हैं।</li>
+            <li>Opening एवं Closing Tag अलग होते हैं।</li>
+            <li>&lt;html&gt; पूरा Document दर्शाता है।</li>
+            <li>&lt;head&gt; में Hidden Information रहती है।</li>
+            <li>&lt;title&gt; Browser Tab का नाम दिखाता है।</li>
+            <li>&lt;body&gt; में पूरा Visible Content होता है।</li>
+            <li>File को <span class="highlight">.html</span> Extension से Save करें।</li>
+            <li>&lt;br&gt; = Line Break (Empty Tag)</li>
+            <li>&lt;b&gt; = Bold Text (Container Tag)</li>
+        </ul>
+    </div>
+
+</body>
+</html>
