@@ -1,0 +1,60 @@
+{
+  "id": "/",
+  "name": "Bihar Polytechnic DCECE 2026",
+  "short_name": "DCECE 2026",
+  "description": "Complete Bihar Polytechnic Counselling Portal by LK SMART STUDIES",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "window-controls-overlay"
+  ],
+  "orientation": "portrait-primary",
+  "background_color": "#050814",
+  "theme_color": "#00f3ff",
+  "lang": "hi",
+  "dir": "ltr",
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Rank Predictor",
+      "short_name": "Predictor",
+      "url": "/#predictor",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Government Colleges",
+      "short_name": "Colleges",
+      "url": "/#colleges",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
