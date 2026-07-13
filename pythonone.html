@@ -1103,11 +1103,11 @@ e.preventDefault();
 }
 
 });
-                    </script>
-                    window.onbeforeprint=function(){
-alert("Printing is Disabled.");
-return false;
-}
+    <script>
+window.addEventListener("beforeprint", function () {
+    alert("Printing is Disabled.");
+});
+</script>
                     <script>
 document.addEventListener("visibilitychange",()=>{
 if(document.hidden){
