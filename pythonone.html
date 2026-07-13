@@ -254,12 +254,51 @@
             .spirals { display: none; } /* Hide spirals for clean printing if preferred, or keep them */
             @page { size: A4; margin: 10mm; }
         }
+        #landscapeBtn{
+    margin-top:20px;
+    padding:12px 22px;
+    font-size:18px;
+    border:none;
+    border-radius:10px;
+    background:#007bff;
+    color:#fff;
+    cursor:pointer;
+        }
+        @media print{
+    html,body{
+        display:none !important;
+    }
+        }
+        body{
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+        }
+        #watermark{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%) rotate(-35deg);
+font-size:55px;
+color:rgba(255,0,0,.08);
+font-weight:bold;
+pointer-events:none;
+z-index:999999;
+        }
+        
     </style>
 </head>
 <body>
 
 <div id="portrait-warning">
-    📱 बेहतर अनुभव के लिए कृपया अपने डिवाइस को Landscape Mode में घुमाएँ।
+    <div>
+        <p>📱 बेहतर अनुभव के लिए Landscape Mode चुनें।</p>
+
+        <button id="landscapeBtn">
+            🔄 Landscape + Full Screen
+        </button>
+    </div>
 </div>
 
 <div id="notebook">
@@ -1015,6 +1054,72 @@ print("Hello, World!")</div>
     </div>
 
 </div>
+<script>
+document.getElementById("landscapeBtn").addEventListener("click", async () => {
 
+    if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen().catch(()=>{});
+    }
+
+    if (screen.orientation && screen.orientation.lock) {
+        try {
+            await screen.orientation.lock("landscape");
+        } catch (e) {
+            alert("Auto Rotate ON करें और मोबाइल को Landscape में घुमाएँ।");
+        }
+    }
+});
+</script>
+                    <script>
+document.addEventListener("contextmenu",e=>e.preventDefault());
+document.addEventListener("copy",e=>e.preventDefault());
+document.addEventListener("cut",e=>e.preventDefault());
+document.addEventListener("paste",e=>e.preventDefault());
+document.addEventListener("dragstart",e=>e.preventDefault());
+document.addEventListener("selectstart",e=>e.preventDefault());
+                    </script>
+                    <script>
+document.addEventListener("keydown",function(e){
+
+if(e.key==="F12"){
+e.preventDefault();
+}
+
+if(e.ctrlKey && e.shiftKey &&
+["I","J","C"].includes(e.key.toUpperCase())){
+e.preventDefault();
+}
+
+if(e.ctrlKey && e.key.toUpperCase()=="U"){
+e.preventDefault();
+}
+
+if(e.ctrlKey && e.key.toUpperCase()=="S"){
+e.preventDefault();
+}
+
+if(e.ctrlKey && e.key.toUpperCase()=="P"){
+e.preventDefault();
+}
+
+});
+                    </script>
+                    window.onbeforeprint=function(){
+alert("Printing is Disabled.");
+return false;
+}
+                    <script>
+document.addEventListener("visibilitychange",()=>{
+if(document.hidden){
+document.body.style.filter="blur(20px)";
+}else{
+document.body.style.filter="none";
+}
+});
+                    </script>
+                    <div id="watermark">
+POLYTECHNIC HUB 
+                    </div>
+                    
 </body>
 </html>
