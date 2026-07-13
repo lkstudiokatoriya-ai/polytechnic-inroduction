@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Lecture Notes</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap');
+
+        :root {
+            --paper-bg: #fdfaf3;
+            --blue-ink: #1e3a8a;
+            --red-ink: #b91c1c;
+            --yellow-highlighter: rgba(253, 224, 71, 0.7);
+            --shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #d1d5db;
+            font-family: 'Kalam', cursive;
+            font-size: 20px;
+            color: var(--blue-ink);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Portrait Screen Overlay */
+        #portrait-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3a8a, #0f172a);
+            color: white;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #portrait-overlay p {
+            font-size: 24px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            background: white;
+            color: var(--blue-ink);
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            font-family: 'Kalam', cursive;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media screen and (orientation: portrait) {
+            #portrait-overlay {
+                display: flex;
+            }
+            #notebook-container {
+                display: none;
+            }
+        }
+
+        /* Notebook Container */
+        #notebook-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            gap: 40px;
+        }
+
+        /* Page Setup */
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            background-color: var(--paper-bg);
+            /* Clean paper texture */
+            background-image: 
+                radial-gradient(#e2dfd5 1px, transparent 1px);
+            background-size: 20px 20px;
+            position: relative;
+            padding: 25mm 25mm 25mm 35mm;
+            box-shadow: 10px 10px 25px var(--shadow), -2px 0 10px rgba(0,0,0,0.05);
+            border-radius: 3px 10px 10px 3px;
+            overflow: visible;
+        }
+
+        /* Spiral Binding Simulation */
+        .page::before {
+            content: '';
+            position: absolute;
+            left: 10mm;
+            top: 0;
+            bottom: 0;
+            width: 15mm;
+            background-image: radial-gradient(circle at 50% 10mm, #2d2d2d 4mm, transparent 4.5mm);
+            background-size: 15mm 20mm;
+            background-repeat: repeat-y;
+            z-index: 1;
+        }
+
+        .page::after {
+            content: '';
+            position: absolute;
+            left: 3mm;
+            top: 0;
+            bottom: 0;
+            width: 25mm;
+            background-image: 
+                radial-gradient(ellipse 12mm 3.5mm at 50% 10mm, transparent 10mm, #b5b5b5 10.5mm, #6b6b6b 12mm, transparent 12.5mm);
+            background-size: 25mm 20mm;
+            background-repeat: repeat-y;
+            z-index: 2;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            color: var(--red-ink);
+            break-after: avoid;
+            page-break-after: avoid;
+        }
+
+        h1 { font-size: 32px; text-align: center; margin-bottom: 20px; text-decoration: underline; text-decoration-thickness: 2px; }
+        h2 { font-size: 26px; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px dashed rgba(185, 28, 28, 0.4); display: inline-block;}
+        h3 { font-size: 22px; margin-top: 15px; margin-bottom: 10px; }
+        
+        p { margin-bottom: 15px; }
+
+        ul, ol { margin-left: 25px; margin-bottom: 15px; }
+        li { margin-bottom: 8px; position: relative; }
+        ul li::marker { color: var(--red-ink); }
+
+        /* Highlights */
+        .highlight {
+            background-color: var(--yellow-highlighter);
+            padding: 2px 6px;
+            border-radius: 4px;
+            box-decoration-break: clone;
+            font-weight: bold;
+        }
+
+        /* Callouts / Boxes */
+        .callout {
+            border: 2px solid var(--blue-ink);
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            padding: 15px 20px;
+            margin: 20px 0;
+            background: rgba(30, 58, 138, 0.03);
+            break-inside: avoid;
+            page-break-inside: avoid;
+            position: relative;
+        }
+
+        .callout.red-box {
+            border-color: var(--red-ink);
+            background: rgba(185, 28, 28, 0.03);
+        }
+
+        .label {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background-color: var(--red-ink);
+            color: white;
+            padding: 2px 15px;
+            font-size: 16px;
+            border-radius: 12px;
+            transform: rotate(-3deg);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            font-weight: bold;
+        }
+
+        /* Tables */
+        .table-container {
+            break-inside: avoid;
+            page-break-inside: avoid;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 19px;
+        }
+        th, td {
+            border: 2px solid var(--blue-ink);
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            color: var(--red-ink);
+            font-weight: bold;
+            border-bottom: 3px solid var(--red-ink);
+            background: rgba(185, 28, 28, 0.05);
+        }
+        table {
+            border-radius: 2px;
+            border-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><path d='M1 1 Q 50 5, 99 1 Q 95 50, 99 99 Q 50 95, 1 99 Q 5 50, 1 1' stroke='%231e3a8a' fill='none' stroke-width='3'/></svg>") 3 stretch;
+        }
+
+        /* SVG Diagrams & Elements */
+        .diagram {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 25px 0;
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        svg text { font-family: 'Kalam', cursive; font-size: 18px; }
+
+        .mind-map {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            break-inside: avoid;
+            page-break-inside: avoid;
+            margin: 25px 0;
+        }
+        
+        .mind-node {
+            border: 2px dashed var(--red-ink);
+            padding: 8px 20px;
+            border-radius: 30px;
+            background: white;
+            font-weight: bold;
+        }
+        
+        .mind-arrow {
+            color: var(--blue-ink);
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Divider */
+        .divider {
+            text-align: center;
+            color: var(--red-ink);
+            font-size: 24px;
+            margin: 15px 0;
+            opacity: 0.6;
+        }
+
+        .section-block {
+            break-inside: avoid;
+            page-break-inside: avoid;
+            margin-bottom: 20px;
+        }
+
+        /* Print Settings */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            body {
+                background: none;
+            }
+            #portrait-overlay {
+                display: none !important;
+            }
+            #notebook-container {
+                display: block;
+                padding: 0;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+                page-break-after: always;
+            }
+            .page::before, .page::after {
+                display: none; /* Hide spirals on print */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Portrait Overlay -->
+    <div id="portrait-overlay">
+        <p>📱 बेहतर अनुभव के लिए कृपया अपने डिवाइस को Landscape Mode में घुमाएँ।</p>
+        <div class="btn-group">
+            <button class="btn" onclick="enterLandscape()">Continue →</button>
+            <button class="btn" onclick="window.history.back()" style="background: var(--red-ink); color: white;">Back</button>
+        </div>
+    </div>
+
+    <!-- Notebook -->
+    <div id="notebook-container">
+
+        <!-- Page 1 -->
+        <div class="page">
+            <h1>📘 AI (Artificial Intelligence) — परिचय: Lecture 1 Notes</h1>
+            
+            <h3 style="text-align: center; color: var(--blue-ink);">विषय: आर्टिफिशियल इंटेलिजेंस (AI) क्या है और यह कैसे काम करता है</h3>
+
+            <div class="divider">~ ~ ~ ~ ~ ~</div>
+
+            <div class="section-block">
+                <h2>1. AI सीखना क्यों ज़रूरी है?</h2>
+                <ul>
+                    <li>आज हर जगह AI की चर्चा हो रही है — इसे सीखने का यह सबसे सही समय है।</li>
+                    <li>जितनी देर करेंगे ("कल सीखेंगे", "अगले महीने सीखेंगे"), उतना ही यह मुश्किल होता जाएगा।</li>
+                    <li><span class="highlight">AI सीखने के लिए बैकग्राउंड मायने नहीं रखता</span> — डॉक्टर, फार्मर, नर्स, स्टूडेंट, हाउसवाइफ — कोई भी सीख सकता है।</li>
+                    <li>अब स्कूलों में भी AI को एक विषय के रूप में पढ़ाया जा रहा है — Maths, Science, English जितना ही ज़रूरी।</li>
+                </ul>
+                <div class="callout red-box">
+                    <span class="label">Most Important</span>
+                    <p><strong>Key Point:</strong> AI सीखने के लिए टेक्निकल बैकग्राउंड ज़रूरी नहीं।</p>
+                </div>
+            </div>
+
+            <div class="section-block">
+                <h2>2. AI की परिभाषा (Definition)</h2>
+                <h3>English Definition</h3>
+                <div class="callout">
+                    <p>"AI is a system that studies a lot of information, finds patterns in it, and then uses those patterns to make predictions and produce outputs."</p>
+                </div>
+                
+                <h3>सरल भाषा में समझें</h3>
+                <p>AI एक ऐसा सिस्टम है जो:</p>
+                <ol>
+                    <li>बहुत सारी <span class="highlight">information</span> लेता है और पढ़ता है</li>
+                    <li>उसमें से <span class="highlight">patterns</span> ढूंढता है</li>
+                    <li>उन patterns के आधार पर <span class="highlight">output/answer</span> देता है</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Page 2 -->
+        <div class="page">
+            <div class="section-block">
+                <h2>3. Pattern Finding — मुख्य सिद्धांत</h2>
+                <p><strong>Pattern ढूंढने का मतलब:</strong></p>
+                <ul>
+                    <li>कौन से शब्द के बाद कौन सा शब्द आएगा (word prediction)</li>
+                    <li>इंसान sentences कैसे बनाते हैं</li>
+                    <li>कोई प्रक्रिया सामान्यतः कैसे होती है</li>
+                </ul>
+                <p>एक बार पैटर्न समझने के बाद, AI उन्हीं पैटर्न्स के आधार पर अगला शब्द/निर्णय predict करता है।</p>
+                
+                <div class="callout red-box">
+                    <span class="label">Core Idea</span>
+                    <p><strong>Core Idea:</strong> AI is essentially a <span class="highlight">next-word predictor</span>, लेकिन बहुत बड़े (massive) स्तर पर।</p>
+                </div>
+            </div>
+
+            <div class="section-block table-container">
+                <h3>उदाहरण (Examples)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Example</th>
+                            <th>Pattern</th>
+                            <th>Predicted Output</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>लड़की-लड़का-लड़की-लड़का-लड़की-___</td>
+                            <td>Alternating pattern</td>
+                            <td><span class="highlight">लड़का</span></td>
+                        </tr>
+                        <tr>
+                            <td>"Once upon a ___"</td>
+                            <td>Familiar phrase pattern</td>
+                            <td><span class="highlight">"time"</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>समझ:</strong> जैसे इंसान का दिमाग existing information से पैटर्न पहचान कर अगला शब्द गेस करता है, वैसे ही AI बहुत बड़े पैमाने पर डेटा से पैटर्न सीखकर output देता है।</p>
+            </div>
+
+            <div class="divider">~ ~ ~ ~ ~ ~</div>
+
+            <div class="section-block">
+                <h2>4. AI की सरल परिभाषा (Simplified)</h2>
+                
+                <div class="diagram">
+                    <svg width="450" height="150" viewBox="0 0 450 150">
+                        <defs>
+                            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c" />
+                            </marker>
+                        </defs>
+                        
+                        <!-- Box 1 -->
+                        <rect x="10" y="50" width="120" height="50" rx="15" fill="#fef08a" stroke="#1e3a8a" stroke-width="2" />
+                        <text x="70" y="80" text-anchor="middle" fill="#1e3a8a" font-weight="bold">जानकारी समझना</text>
+                        
+                        <!-- Arrow 1 -->
+                        <path d="M 130 75 L 170 75" stroke="#b91c1c" stroke-width="3" marker-end="url(#arrow)" />
+
+                        <!-- Box 2 -->
+                        <rect x="180" y="50" width="100" height="50" rx="15" fill="#fef08a" stroke="#1e3a8a" stroke-width="2" />
+                        <text x="230" y="80" text-anchor="middle" fill="#1e3a8a" font-weight="bold">पैटर्न ढूंढना</text>
+
+                        <!-- Arrow 2 -->
+                        <path d="M 280 75 L 320 75" stroke="#b91c1c" stroke-width="3" marker-end="url(#arrow)" />
+
+                        <!-- Box 3 -->
+                        <rect x="330" y="50" width="110" height="50" rx="15" fill="#fef08a" stroke="#1e3a8a" stroke-width="2" />
+                        <text x="385" y="80" text-anchor="middle" fill="#1e3a8a" font-weight="bold">जवाब / काम</text>
+                        
+                        <!-- Title text inside diagram area -->
+                        <text x="225" y="25" text-anchor="middle" fill="#b91c1c" font-size="20" font-weight="bold">AI (Artificial Intelligence)</text>
+                    </svg>
+                </div>
+                
+                <p style="text-align: center; font-weight: bold; color: var(--blue-ink);">AI = एक सिस्टम जो बहुत सारी जानकारी को समझता है → उसमें पैटर्न ढूंढता है → उन्हीं पैटर्न के अनुसार जवाब/काम करता है।</p>
+            </div>
+        </div>
+
+        <!-- Page 3 -->
+        <div class="page">
+            <div class="section-block">
+                <h2>5. रोज़मर्रा की ज़िंदगी में AI के उदाहरण</h2>
+                <p>आप बिना जाने भी रोज़ AI इस्तेमाल कर रहे हैं:</p>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Application</th>
+                                <th>AI का उपयोग</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Google Maps</td>
+                                <td>सबसे तेज़ route बताना</td>
+                            </tr>
+                            <tr>
+                                <td>Keyboard Typing</td>
+                                <td>Auto-correct / अगला शब्द सुझाना</td>
+                            </tr>
+                            <tr>
+                                <td>Instagram / YouTube</td>
+                                <td>Personalized video recommendations</td>
+                            </tr>
+                            <tr>
+                                <td>Netflix</td>
+                                <td>आपकी पसंद के अनुसार content suggest करना</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="callout">
+                    <p><strong>Note:</strong> आपके और आपके parents के Instagram/YouTube पर अलग-अलग content दिखना — यह भी AI-based personalization का उदाहरण है।</p>
+                </div>
+            </div>
+
+            <div class="divider">~ ~ ~ ~ ~ ~</div>
+
+            <div class="section-block">
+                <h2>6. AI को लेकर आम डर — क्लियरिफिकेशन</h2>
+                <ul>
+                    <li>❌ <strong>गलत धारणा:</strong> "AI रोबोट बनकर हमारी नौकरी छीन लेगा।"</li>
+                    <li>✅ <strong>सच्चाई:</strong> AI खुद नौकरी नहीं छीनेगा, बल्कि <span class="highlight">जो लोग AI सीख लेंगे, वे उन लोगों की जगह ले सकते हैं जो AI नहीं सीखते।</span></li>
+                </ul>
+                
+                <div class="callout red-box">
+                    <span class="label">Key Takeaway</span>
+                    <p>समस्या AI नहीं है, समस्या है AI न सीखना।</p>
+                </div>
+            </div>
+
+            <div class="section-block">
+                <h2>7. AI इस्तेमाल करते समय ज़रूरी सावधानियाँ</h2>
+                <ol>
+                    <li><strong>AI गलतियाँ भी करता है</strong> — इसलिए पूरी तरह AI पर निर्भर (rely) होना गलत है।</li>
+                    <li><strong>AI का मिसयूज़ न करें</strong> — AI एक बहुत बड़ी power है, जिम्मेदारी से इस्तेमाल करें।</li>
+                    <li>AI खुद सही या गलत नहीं होता — यह इस बात पर निर्भर करता है कि <span class="highlight">इस्तेमाल करने वाले की नीयत (intention) क्या है।</span></li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Page 4 -->
+        <div class="page">
+            <div class="section-block">
+                <div class="callout">
+                    <span class="label">Shortcut</span>
+                    <h2 style="margin-top: 0; border:none;">📝 Quick Revision Points</h2>
+                    <ul>
+                        <li>AI = Pattern-finding + Prediction system</li>
+                        <li>AI बड़े डेटा से सीखता है और next output predict करता है</li>
+                        <li>रोज़मर्रा के उदाहरण: Maps, Keyboard, Instagram, YouTube, Netflix</li>
+                        <li>AI नौकरी नहीं छीनेगा — AI सीखने वाले लोग आगे निकलेंगे</li>
+                        <li>AI पर पूरी तरह निर्भर न हों, ज़िम्मेदारी से उपयोग करें</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="divider">~ ~ ~ ~ ~ ~</div>
+
+            <div class="section-block">
+                <h2 style="display: block; text-align: center;">🧠 Memory Trick</h2>
+                <p style="text-align: center;"><strong>"SPO" Formula याद रखें:</strong></p>
+                
+                <div class="mind-map">
+                    <div class="mind-node" style="background: rgba(30, 58, 138, 0.1);">S = Study (data study करना)</div>
+                    <div class="mind-arrow">↓</div>
+                    <div class="mind-node" style="background: rgba(253, 224, 71, 0.3);">P = Pattern (pattern ढूंढना)</div>
+                    <div class="mind-arrow">↓</div>
+                    <div class="mind-node" style="background: rgba(185, 28, 28, 0.1);">O = Output (output देना)</div>
+                </div>
+            </div>
+
+            <div class="divider">~ ~ ~ ~ ~ ~</div>
+
+            <div class="section-block">
+                <div class="callout red-box">
+                    <span class="label">Frequently Asked</span>
+                    <h2 style="margin-top: 0; border: none;">❓ Possible Exam/Interview Questions</h2>
+                    <ol>
+                        <li>AI की परिभाषा अपने शब्दों में लिखिए।</li>
+                        <li>AI किस प्रकार pattern के आधार पर काम करता है? उदाहरण सहित समझाइए।</li>
+                        <li>रोज़मर्रा की ज़िंदगी में AI के तीन उदाहरण दीजिए।</li>
+                        <li>क्या AI इंसानों की नौकरी छीन लेगा? स्पष्ट कीजिए।</li>
+                        <li>AI का उपयोग करते समय किन सावधानियों का ध्यान रखना चाहिए?</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function enterLandscape() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+            
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(function(error) {
+                    console.log("Orientation lock failed: " + error);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
