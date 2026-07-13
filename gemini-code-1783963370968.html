@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Unit-1 Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base Resets */
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #555;
+            font-family: 'Kalam', cursive, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Portrait Mode Warning */
+        #portrait-warning {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #fcfcf4;
+            color: #CC0000;
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        @media screen and (orientation: portrait) {
+            #notebook { display: none !important; }
+            #portrait-warning { display: flex !important; }
+        }
+
+        /* Notebook Container */
+        #notebook {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 40px 20px;
+        }
+
+        /* A4 Page Styling */
+        .notebook-page {
+            width: 210mm;
+            min-height: 297mm;
+            background-color: #fdfdf8;
+            background-image: radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            box-shadow: 10px 10px 25px rgba(0,0,0,0.4), inset 0 0 40px rgba(0,0,0,0.03);
+            position: relative;
+            box-sizing: border-box;
+            padding: 25mm 20mm 25mm 30mm; /* Extra left padding for spirals */
+            border-radius: 3px 8px 8px 3px;
+            color: #0000B3; /* Blue pen */
+            font-size: 17px;
+            line-height: 1.6;
+            overflow: visible;
+        }
+
+        /* Spirals Binding */
+        .spirals {
+            position: absolute;
+            left: 8mm;
+            top: 10mm;
+            bottom: 10mm;
+            width: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        .spiral-hole {
+            width: 14px;
+            height: 14px;
+            background: #444; /* Table underneath */
+            border-radius: 50%;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.8), 1px 1px 1px rgba(255,255,255,0.8);
+            position: relative;
+        }
+        .spiral-ring {
+            position: absolute;
+            width: 28px;
+            height: 5px;
+            background: linear-gradient(to bottom, #dcdcdc, #fff, #999);
+            border-radius: 3px;
+            left: -12px;
+            top: 4px;
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            transform: rotate(-12deg);
+        }
+
+        /* Typography & Colors */
+        h1 {
+            color: #CC0000;
+            font-size: 28px;
+            text-align: center;
+            border-bottom: 2px solid #CC0000;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+        h2 {
+            color: #CC0000;
+            font-size: 22px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+        h3 {
+            color: #CC0000;
+            font-size: 20px;
+            text-align: center;
+            margin-top: 0;
+            page-break-after: avoid;
+            break-after: avoid;
+        }
+        .red-text {
+            color: #CC0000;
+            font-weight: bold;
+        }
+        .highlight {
+            background-color: rgba(255, 255, 0, 0.4); /* Yellow highlighter */
+            padding: 0 4px;
+            border-radius: 3px;
+        }
+
+        /* Handwritten elements */
+        ul {
+            list-style-type: none;
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        ul li::before {
+            content: "•";
+            color: #CC0000;
+            font-weight: bold;
+            display: inline-block; 
+            width: 1em;
+            margin-left: -1em;
+        }
+        ol {
+            padding-left: 25px;
+            margin: 10px 0;
+        }
+        p {
+            margin: 8px 0;
+        }
+        
+        /* Code Box */
+        .code-box {
+            border: 2px solid #555;
+            border-radius: 3px 255px 3px 255px / 255px 3px 255px 3px; /* Sketchy border */
+            background: rgba(240, 240, 250, 0.6);
+            padding: 12px;
+            margin: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
+            color: #222;
+            font-size: 15px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            white-space: pre-wrap;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        .code-title {
+            font-weight: bold;
+            color: #CC0000;
+            margin-bottom: 5px;
+            text-decoration: underline;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 20px 0;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            border: 2px solid #0000B3;
+            border-radius: 255px 5px 225px 5px/15px 225px 15px 255px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #0000B3;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            color: #CC0000;
+            background-color: rgba(204, 0, 0, 0.05);
+        }
+
+        /* Labels & Callouts */
+        .callout {
+            border: 2px dashed #CC0000;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 0, 0.1);
+            page-break-inside: avoid;
+            break-inside: avoid;
+            position: relative;
+            transform: rotate(-1deg);
+        }
+        .callout-badge {
+            background: #CC0000;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            font-weight: bold;
+        }
+
+        /* SVGs / Graphics */
+        .sketch-svg {
+            display: block;
+            margin: 20px auto;
+            max-width: 100%;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+        
+        .block-protect {
+            page-break-inside: avoid;
+            break-inside: avoid;
+            margin-bottom: 15px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body { background: none; }
+            #portrait-warning { display: none !important; }
+            #notebook { padding: 0; gap: 0; display: block; }
+            .notebook-page {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                height: 100%;
+                page-break-after: always;
+                border-radius: 0;
+            }
+            .spirals { display: none; } /* Hide spirals for clean printing if preferred, or keep them */
+            @page { size: A4; margin: 10mm; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="portrait-warning">
+    📱 बेहतर अनुभव के लिए कृपया अपने डिवाइस को Landscape Mode में घुमाएँ।
+</div>
+
+<div id="notebook">
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+        
+        <h1>UNIT-1: Fundamentals of Python Programming</h1>
+        <h3>SBTE Bihar Diploma — Complete Exam Preparation Guide</h3>
+        
+        <hr style="border-top: 2px dashed #0000B3; margin: 20px 0;">
+        
+        <h1>SECTION A: OBJECTIVE QUESTIONS (PYQ)</h1>
+        
+        <div class="block-protect">
+            <h2>Q1. Who developed Python? <span style="font-size: 16px; color: #555;">(Asked in 2022)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> Python is a high-level, general-purpose programming language created by <span class="highlight">Guido van Rossum</span>, a Dutch programmer.</p>
+            <p><span class="red-text">Theory:</span> Guido van Rossum began implementing Python in <span class="highlight">December 1989</span> as a successor to the ABC language. He wanted a language that was easy to read, simple to use, and powerful enough for real-world tasks. He is often referred to as the <span class="highlight">"Benevolent Dictator for Life (BDFL)"</span> of Python, a title he held until he stepped back from the role in 2018.</p>
+            <p><span class="red-text">Real-Life Example:</span> Just as Dennis Ritchie developed C and James Gosling developed Java, Guido van Rossum single-handedly designed Python's philosophy and syntax.</p>
+            <p><span class="red-text">Important Points:</span></p>
+            <ul>
+                <li>Creator: Guido van Rossum</li>
+                <li>Nationality: Dutch</li>
+                <li>Organization: CWI, Netherlands</li>
+                <li>Title given: BDFL (Benevolent Dictator for Life)</li>
+            </ul>
+        </div>
+
+        <div class="block-protect">
+            <p><span class="red-text">PYQ Connection:</span> Directly asked in 2022 objective section; may repeat as 1-mark or fill-in-the-blank question.</p>
+            <p><span class="red-text">Viva Questions:</span><br>
+            1. Who is known as the father of Python?<br>
+            2. What does BDFL stand for?</p>
+            <p><span class="red-text">Practice Questions:</span><br>
+            1. Name the creator of Python language.<br>
+            2. In which institute was Python first developed?</p>
+            <div class="callout">
+                <div class="callout-badge">Shortcut</div>
+                <span class="red-text">Short Notes:</span> Python → Created by Guido van Rossum → Netherlands → Successor of ABC language.<br>
+                <span class="red-text">Quick Revision:</span> Guido van Rossum = Creator of Python (BDFL).
+            </div>
+            <p><span class="red-text">Exam Point of View:</span> 1-mark objective question; write name correctly with spelling "Guido van Rossum."</p>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q2. In which year was Python developed? <span style="font-size: 16px; color: #555;">(Asked in 2023)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> Python's development began in <span class="highlight">December 1989</span>, and the first official version, Python 0.9.0, was released in <span class="highlight">February 1991</span>.</p>
+            
+            <p><span class="red-text">Theory - Timeline of Python versions:</span></p>
+            
+            <svg class="sketch-svg" viewBox="0 0 600 120" style="max-height: 120px;">
+                <path d="M 50 60 L 550 60" stroke="#0000B3" stroke-width="2" fill="none" stroke-linecap="round"/>
+                
+                <circle cx="80" cy="60" r="5" fill="#CC0000" />
+                <text x="80" y="45" text-anchor="middle" font-family="Kalam" font-size="14" fill="#CC0000">1989</text>
+                <text x="80" y="85" text-anchor="middle" font-family="Kalam" font-size="12" fill="#0000B3">Started</text>
+
+                <circle cx="180" cy="60" r="5" fill="#CC0000" />
+                <text x="180" y="45" text-anchor="middle" font-family="Kalam" font-size="14" fill="#CC0000">1991</text>
+                <text x="180" y="85" text-anchor="middle" font-family="Kalam" font-size="12" fill="#0000B3">v0.9.0</text>
+
+                <circle cx="280" cy="60" r="5" fill="#CC0000" />
+                <text x="280" y="45" text-anchor="middle" font-family="Kalam" font-size="14" fill="#CC0000">1994</text>
+                <text x="280" y="85" text-anchor="middle" font-family="Kalam" font-size="12" fill="#0000B3">v1.0</text>
+
+                <circle cx="380" cy="60" r="5" fill="#CC0000" />
+                <text x="380" y="45" text-anchor="middle" font-family="Kalam" font-size="14" fill="#CC0000">2000</text>
+                <text x="380" y="85" text-anchor="middle" font-family="Kalam" font-size="12" fill="#0000B3">v2.0</text>
+
+                <circle cx="480" cy="60" r="5" fill="#CC0000" />
+                <text x="480" y="45" text-anchor="middle" font-family="Kalam" font-size="14" fill="#CC0000">2008</text>
+                <text x="480" y="85" text-anchor="middle" font-family="Kalam" font-size="12" fill="#0000B3">v3.0</text>
+            </svg>
+
+            <ul>
+                <li>1989: Development started by Guido van Rossum</li>
+                <li>1991: Python 0.9.0 released (first public release)</li>
+                <li>1994: Python 1.0 released</li>
+                <li>2000: Python 2.0 released</li>
+                <li>2008: Python 3.0 released (not backward compatible with Python 2)</li>
+                <li>2020: Python 2 officially discontinued (support ended)</li>
+            </ul>
+        </div>
+
+        <div class="block-protect">
+            <p><span class="red-text">Real-Life Example:</span> Similar to how software evolves in versions (like Windows 7 → Windows 10 → Windows 11), Python also evolved from version 1 to version 3, each adding new features.</p>
+            <p><span class="red-text">Important Points:</span> Started: December 1989 | First release: 1991 | Python 3: 2008 | Currently Python 3.x is used everywhere.</p>
+            <p><span class="red-text">Viva Questions:</span> 1. When was Python 3.0 released? 2. Why was Python 2 discontinued?</p>
+            <p><span class="red-text">Practice Questions:</span> 1. Write the year of Python's first release. 2. What is the difference between Python 2 and Python 3?</p>
+            <div class="callout">
+                <div class="callout-badge">Most Important</div>
+                <span class="red-text">Exam Point of View:</span> Remember exact years; examiner may ask year of Python 3 release specifically.<br>
+                <span class="red-text">Quick Revision:</span> 1989 (started) → 1991 (v0.9) → 2000 (v2.0) → 2008 (v3.0).
+            </div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q3. Python is a High-Level Programming Language. Explain why this statement is correct. <span style="font-size: 16px; color: #555;">(Asked in 2024)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> A <span class="highlight">high-level language</span> is one that is written in a human-readable form (close to English) and is independent of machine/hardware architecture, requiring an interpreter or compiler to convert it into machine code.</p>
+            <p><span class="red-text">Theory — Reasons Python is High-Level:</span></p>
+            <ol>
+                <li><strong>Simple, English-like syntax</strong> — no need for complex symbols like ; or {} in most cases.</li>
+                <li><strong>Abstraction from hardware</strong> — programmer doesn't manage memory manually (automatic garbage collection).</li>
+                <li><strong>Portability</strong> — same code runs on Windows, Linux, Mac without change.</li>
+                <li><strong>Interpreted execution</strong> — Python interpreter converts code line-by-line into machine code.</li>
+                <li><strong>Rich built-in libraries</strong> reduce the need to write low-level logic.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <p><span class="red-text">Real-Life Example:</span> Writing in Python is like giving instructions in plain English to an assistant (interpreter) who then figures out how to physically do the task (machine-level execution) — you don't need to explain every micro-detail.</p>
+            <div class="code-box">
+<span class="code-title">Python Program:</span>
+# High-level, simple syntax example
+name = "Rahul"
+print("Hello,", name)
+
+<span class="code-title">Output:</span>
+Hello, Rahul</div>
+            <p><span class="red-text">Important Points:</span> High-level = closer to human language | Low-level = closer to machine (Assembly, Machine code) | Python hides hardware-level complexity | Needs an interpreter (CPython) to run.</p>
+            <div class="callout">
+                <div class="callout-badge">Frequently Asked</div>
+                <span class="red-text">Exam Point of View:</span> Give definition + minimum 3 reasons with example for full marks.<br>
+                <span class="red-text">Quick Revision:</span> Python is high-level → simple syntax + portability + no hardware handling + interpreted.
+            </div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q4. An Expression is a combination of values, variables and operators. Explain. <span style="font-size: 16px; color: #555;">(Asked in 2024)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> An <span class="highlight">expression</span> in Python is any legal combination of <strong>values (constants), variables, and operators</strong> that evaluates to produce a single value.</p>
+            <p><span class="red-text">Theory - Types of expressions:</span></p>
+            <ol>
+                <li><strong>Arithmetic Expression</strong> → a + b * 2</li>
+                <li><strong>Relational Expression</strong> → a > b (returns True/False)</li>
+                <li><strong>Logical Expression</strong> → a > 5 and b < 10</li>
+                <li><strong>String Expression</strong> → "Hello" + "World"</li>
+            </ol>
+            <p>Every expression, when evaluated by Python, returns a value that can be stored in a variable or printed.</p>
+            <p><span class="red-text">Real-Life Example:</span> Just like a mathematical formula Area = length × width combines variables and an operator to give a result, a Python expression works the same way.</p>
+        </div>
+
+        <div class="block-protect">
+            <div class="code-box">
+<span class="code-title">Python Program:</span>
+a = 10
+b = 5
+expr1 = a + b                 # arithmetic expression
+expr2 = a > b                 # relational expression
+expr3 = (a > 5) and (b < 10)  # logical expression
+print(expr1, expr2, expr3)
+
+<span class="code-title">Output:</span>
+15 True True</div>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+        
+        <div class="block-protect">
+            <p><span class="red-text">Important Points:</span> Expression always returns a value | Made up of: values + variables + operators | Different from a "statement," which performs an action but may not return a value.</p>
+            <div class="callout">
+                <div class="callout-badge">Shortcut</div>
+                <span class="red-text">Quick Revision:</span> Expression = combination that evaluates to a value; types = arithmetic/relational/logical/string.
+            </div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q5. What are Mutable Data Types in Python? <span style="font-size: 16px; color: #555;">(Asked in 2024)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> <span class="highlight">Mutable data types</span> are those whose value/content <strong>can be changed</strong> after creation, without changing their memory address (identity).</p>
+            <p><span class="red-text">Theory:</span></p>
+            <ul>
+                <li><strong>Mutable types:</strong> list, dictionary, set</li>
+                <li><strong>Immutable types (opposite):</strong> int, float, string, tuple, bool</li>
+            </ul>
+            <p>When we modify a mutable object, its id() (memory address) stays the same. When we try to "modify" an immutable object, Python actually creates a new object in memory.</p>
+            <p><span class="red-text">Real-Life Example:</span> A mutable object is like a <strong>whiteboard</strong> — you can erase and rewrite on it while it remains the same board. An immutable object is like a <strong>printed page</strong> — to change the text, you must print a new page.</p>
+        </div>
+
+        <div class="block-protect">
+            <div class="code-box">
+<span class="code-title">Python Program:</span>
+# Mutable example - list
+my_list = [1, 2, 3]
+print("Before:", my_list, id(my_list))
+my_list.append(4)
+print("After:", my_list, id(my_list))   # id remains same
+
+# Immutable example - string
+my_str = "hello"
+print("Before:", my_str, id(my_str))
+my_str = my_str + " world"
+print("After:", my_str, id(my_str))     # id changes
+
+<span class="code-title">Output:</span>
+Before: [1, 2, 3] 140234567891200
+After: [1, 2, 3, 4] 140234567891200
+Before: hello 140234567892345
+After: hello world 140234567893456</div>
+            <p><em>(Actual id numbers will vary by system.)</em></p>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <p><span class="red-text">Important Points:</span> Mutable: list, dict, set | Immutable: int, float, string, tuple, bool, frozenset | id() function checks memory address.</p>
+            <div class="callout">
+                <div class="callout-badge">Most Important</div>
+                <span class="red-text">Exam Point of View:</span> Always mention id() function and give one program-based proof.<br>
+                <span class="red-text">Quick Revision:</span> Mutable = list/dict/set (changeable); Immutable = int/float/str/tuple (unchangeable).
+            </div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q6. What are Core Data Types in Python? <span style="font-size: 16px; color: #555;">(Asked in 2024)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> <strong>Core (built-in) data types</strong> are the fundamental data types provided by Python to store and represent different kinds of data.</p>
+            
+            <p><span class="red-text">Theory — Classification:</span></p>
+            <table>
+                <tr><th>Category</th><th>Data Types</th></tr>
+                <tr><td>Numeric</td><td>int, float, complex</td></tr>
+                <tr><td>Sequence</td><td>str, list, tuple, range</td></tr>
+                <tr><td>Mapping</td><td>dict</td></tr>
+                <tr><td>Set Type</td><td>set, frozenset</td></tr>
+                <tr><td>Boolean</td><td>bool</td></tr>
+                <tr><td>Binary</td><td>bytes, bytearray</td></tr>
+                <tr><td>None Type</td><td>NoneType</td></tr>
+            </table>
+            
+            <svg class="sketch-svg" viewBox="0 0 600 250" style="margin-top: 10px;">
+                <rect x="230" y="10" width="140" height="40" rx="10" fill="#f4f4f9" stroke="#CC0000" stroke-width="2"/>
+                <text x="300" y="35" text-anchor="middle" font-family="Kalam" font-size="16" fill="#CC0000" font-weight="bold">Core Data Types</text>
+                
+                <path d="M 300 50 L 100 100" stroke="#0000B3" stroke-width="2" fill="none"/>
+                <path d="M 300 50 L 300 100" stroke="#0000B3" stroke-width="2" fill="none"/>
+                <path d="M 300 50 L 500 100" stroke="#0000B3" stroke-width="2" fill="none"/>
+                <path d="M 250 50 L 180 160" stroke="#0000B3" stroke-width="2" fill="none"/>
+                <path d="M 350 50 L 420 160" stroke="#0000B3" stroke-width="2" fill="none"/>
+
+                <rect x="50" y="100" width="100" height="30" rx="5" fill="#fff" stroke="#0000B3"/>
+                <text x="100" y="120" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0000B3">Numeric</text>
+                <text x="100" y="140" text-anchor="middle" font-family="Kalam" font-size="12" fill="#555">int, float, complex</text>
+
+                <rect x="250" y="100" width="100" height="30" rx="5" fill="#fff" stroke="#0000B3"/>
+                <text x="300" y="120" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0000B3">Sequence</text>
+                <text x="300" y="140" text-anchor="middle" font-family="Kalam" font-size="12" fill="#555">str, list, tuple</text>
+
+                <rect x="450" y="100" width="100" height="30" rx="5" fill="#fff" stroke="#0000B3"/>
+                <text x="500" y="120" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0000B3">Mapping</text>
+                <text x="500" y="140" text-anchor="middle" font-family="Kalam" font-size="12" fill="#555">dict</text>
+
+                <rect x="130" y="160" width="100" height="30" rx="5" fill="#fff" stroke="#0000B3"/>
+                <text x="180" y="180" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0000B3">Set Types</text>
+                
+                <rect x="370" y="160" width="100" height="30" rx="5" fill="#fff" stroke="#0000B3"/>
+                <text x="420" y="180" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0000B3">Boolean</text>
+            </svg>
+            
+            <p><span class="red-text">Real-Life Example:</span> Like a warehouse has different sections for different goods (electronics, groceries, clothes), Python has different data types for different kinds of data.</p>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <div class="code-box">
+<span class="code-title">Python Program:</span>
+a = 10          # int
+b = 10.5        # float
+c = 3 + 4j      # complex
+d = "Python"    # string
+e = [1, 2, 3]   # list
+f = (1, 2, 3)   # tuple
+g = {"key": "value"}  # dict
+h = {1, 2, 3}   # set
+i = True        # bool
+
+for var in [a, b, c, d, e, f, g, h, i]:
+    print(var, "->", type(var))
+
+<span class="code-title">Output:</span>
+10 -> &lt;class 'int'&gt;
+10.5 -> &lt;class 'float'&gt;
+(3+4j) -> &lt;class 'complex'&gt;
+Python -> &lt;class 'str'&gt;
+[1, 2, 3] -> &lt;class 'list'&gt;
+(1, 2, 3) -> &lt;class 'tuple'&gt;
+{'key': 'value'} -> &lt;class 'dict'&gt;
+{1, 2, 3} -> &lt;class 'set'&gt;
+True -> &lt;class 'bool'&gt;</div>
+            <div class="callout">
+                <div class="callout-badge">Shortcut</div>
+                <span class="red-text">Quick Revision:</span> int, float, complex, str, list, tuple, dict, set, bool, NoneType. Draw classification table for full marks!
+            </div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q7. Which of the following is an incorrect variable declaration? Explain the rules of variable declaration. <span style="font-size: 16px; color: #555;">(Asked in 2023)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> A <span class="highlight">variable</span> is a named location in memory used to store data values. Python has specific rules that must be followed to create a valid (legal) variable name.</p>
+            <p><span class="red-text">Theory — Rules for Variable Naming in Python:</span></p>
+            <ol>
+                <li>Must start with a <strong>letter (a-z, A-Z) or underscore (_)</strong> — cannot start with a digit.</li>
+                <li>Can contain letters, digits, and underscores only (no spaces or special characters like @, #, %, -).</li>
+                <li>Cannot be a <strong>Python keyword</strong> (e.g., if, for, class).</li>
+                <li>Case-sensitive: Name and name are different variables.</li>
+                <li>No spaces allowed (use underscore instead, e.g., first_name).</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <div class="code-box">
+<span class="code-title">Example of Incorrect Declarations:</span>
+1name = "Ram"       # ❌ Invalid — starts with digit
+first name = 10     # ❌ Invalid — contains space
+class = "A"         # ❌ Invalid — 'class' is a keyword
+first-name = "Sita" # ❌ Invalid — hyphen not allowed
+
+<span class="code-title">Example of Correct Declarations:</span>
+name1 = "Ram"        # ✅ Valid
+_first_name = "Sita" # ✅ Valid
+firstName = "Geeta"  # ✅ Valid</div>
+            <p><span class="red-text">Real-Life Example:</span> Just as a person's name in official documents cannot start with a number or contain symbols, Python variable names must follow strict identifier rules.</p>
+            <div class="callout">
+                <div class="callout-badge">Memory Trick</div>
+                <span class="red-text">Rule:</span> Letter/underscore start → only letters/digits/underscore → not a keyword → case-sensitive.
+            </div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q8. Explain Membership Operators in Python with suitable examples. <span style="font-size: 16px; color: #555;">(Asked in 2024 - Subjective Trend)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> <strong>Membership operators</strong> are used to test whether a value or variable is found in a sequence (string, list, tuple, set, dictionary). Python provides two membership operators: <span class="highlight">in</span> and <span class="highlight">not in</span>.</p>
+            
+            <table>
+                <tr><th>Operator</th><th>Description</th><th>Example</th></tr>
+                <tr><td>in</td><td>Returns True if value exists in sequence</td><td>5 in [1,5,9] → True</td></tr>
+                <tr><td>not in</td><td>Returns True if value does NOT exist</td><td>3 not in [1,5,9] → True</td></tr>
+            </table>
+
+            <p><span class="red-text">Real-Life Example:</span> Checking if a student's roll number exists in the attendance list — in operator works exactly like that search.</p>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <div class="code-box">
+<span class="code-title">Python Program:</span>
+fruits = ["apple", "banana", "mango"]
+print("banana" in fruits)
+print("grapes" in fruits)
+print("grapes" not in fruits)
+
+# with string
+text = "Python Programming"
+print("Prog" in text)
+
+<span class="code-title">Output:</span>
+True
+False
+True
+True</div>
+            <div class="callout">
+                <div class="callout-badge">Shortcut</div>
+                <span class="red-text">Quick Revision:</span> in → True if present; not in → True if absent. Always show both with a string and a list example for full marks!
+            </div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q9. Solve the following Operator-based MCQs and explain the correct answers. <span style="font-size: 16px; color: #555;">(Asked in 2022)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> This question tests understanding of Python <strong>operators</strong> — arithmetic, relational, logical, assignment, bitwise, and identity/membership operators — through multiple-choice evaluation.</p>
+            <p><span class="red-text">Theory — Operator Categories:</span></p>
+            <ul>
+                <li><strong>Arithmetic:</strong> + - * / // % **</li>
+                <li><strong>Relational:</strong> == != > < >= <=</li>
+                <li><strong>Logical:</strong> and or not</li>
+                <li><strong>Assignment:</strong> = += -= *= /=</li>
+                <li><strong>Identity:</strong> is, is not</li>
+                <li><strong>Membership:</strong> in, not in</li>
+            </ul>
+        </div>
+        
+        <div class="block-protect">
+            <p><span class="red-text">Sample MCQ Practice with Explanation:</span></p>
+            <p><strong>Q.</strong> What is the output of 17 // 3?<br>
+            a) 5.67  b) 5  c) 6  d) 2<br>
+            <span class="highlight">Answer: b) 5</span> — // is floor division; it discards the decimal part.</p>
+            
+            <p><strong>Q.</strong> What is the output of 17 % 3?<br>
+            a) 5  b) 2  c) 5.6  d) 0<br>
+            <span class="highlight">Answer: b) 2</span> — % gives the remainder (17 = 5×3 + 2).</p>
+            
+            <p><strong>Q.</strong> What is the output of 2 ** 3?<br>
+            a) 6  b) 8  c) 9  d) 5<br>
+            <span class="highlight">Answer: b) 8</span> — ** is exponentiation (2³ = 8).</p>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <div class="callout">
+                <div class="callout-badge">Memory Trick</div>
+                <span class="red-text">Operator Precedence:</span> () > ** > * / // % > + - > relational > logical.<br>
+                Master floor division (//), modulus (%), and exponent (**) — most repeated in MCQs.
+            </div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q10. Explain the input() function in Python with syntax and example. <span style="font-size: 16px; color: #555;">(Asked in 2024)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> The <span class="highlight">input()</span> function is a built-in Python function used to accept data from the user through the keyboard during program execution. It always returns the entered value as a <strong>string</strong>.</p>
+            <p><span class="red-text">Syntax:</span><br>
+            <code>variable = input("prompt message")</code></p>
+            <p>Return type is always str; use int() or float() to convert if numeric input is needed.</p>
+            <p><span class="red-text">Real-Life Example:</span> Like a form asking "Enter your name:" and waiting for you to type and press Enter — that's exactly what input() does in a program.</p>
+            <div class="code-box">
+<span class="code-title">Python Program:</span>
+name = input("Enter your name: ")
+age = int(input("Enter your age: "))  # type conversion
+print("Name:", name)
+print("Age next year:", age + 1)
+
+<span class="code-title">Output:</span>
+Enter your name: Rohit
+Enter your age: 20
+Name: Rohit
+Age next year: 21</div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q11. What is the correct file extension of a Python program? Explain its importance. <span style="font-size: 16px; color: #555;">(Asked in 2024)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> A Python source code file is saved with the extension <span class="highlight">.py</span>. Other related extensions include .pyc (compiled bytecode), .pyw (Windows GUI scripts), and .ipynb (Jupyter notebooks).</p>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <p><span class="red-text">Importance of .py extension:</span></p>
+            <ol>
+                <li>Identifies the file as Python source code for OS and IDEs.</li>
+                <li>Enables the Python interpreter to recognize and execute the file directly.</li>
+                <li>Allows IDEs (like PyCharm, VS Code) to provide syntax highlighting and error detection.</li>
+                <li>Needed for import statements — modules are imported using the file name without .py.</li>
+            </ol>
+            <p><span class="red-text">Real-Life Example:</span> Just like .docx tells the OS to open a file in Word, .py tells the OS/interpreter to treat the file as Python code.</p>
+            <div class="callout">
+                <div class="callout-badge">Shortcut</div>
+                <span class="red-text">Quick Revision:</span> .py = source code, .pyc = compiled bytecode, .pyw = GUI script (no console). Simply write .py with one-line reasoning — quick, easy marks.
+            </div>
+        </div>
+
+        <hr style="border-top: 2px dashed #0000B3; margin: 20px 0;">
+        <h1>SECTION B: SUBJECTIVE QUESTIONS (PYQ)</h1>
+
+        <div class="block-protect">
+            <h2>Q1. Explain various Data Types used in Python with suitable examples. <span style="font-size: 16px; color: #555;">(Asked in 2022)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> A <strong>data type</strong> defines the kind of value a variable can hold and the operations that can be performed on it. Python is <strong>dynamically typed</strong>, meaning the type is decided automatically at runtime based on the assigned value.</p>
+            <p><span class="red-text">Theory — Detailed Classification:</span></p>
+            <p><strong>1. Numeric Types:</strong> int (whole numbers), float (decimal numbers), complex (real & imaginary).</p>
+            <p><strong>2. Sequence Types:</strong> str (characters), list (ordered, mutable), tuple (ordered, immutable).</p>
+            <p><strong>3. Mapping Type:</strong> dict (key-value pairs).</p>
+            <p><strong>4. Set Types:</strong> set (unordered, unique), frozenset.</p>
+            <p><strong>5. Boolean Type:</strong> bool (True or False).</p>
+            <p><strong>6. None Type:</strong> NoneType (represents absence of value).</p>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <div class="code-box">
+<span class="code-title">Python Program:</span>
+roll_no = 101                     # int
+name = "Anjali"                   # str
+percentage = 89.5                 # float
+subjects = ["Maths", "Science"]   # list
+details = {"roll": 101, "name": "Anjali"}  # dict
+is_pass = True                    # bool
+
+print(type(roll_no), type(name), type(percentage))
+print(type(subjects), type(details), type(is_pass))
+
+<span class="code-title">Output:</span>
+&lt;class 'int'&gt; &lt;class 'str'&gt; &lt;class 'float'&gt;
+&lt;class 'list'&gt; &lt;class 'dict'&gt; &lt;class 'bool'&gt;</div>
+            <div class="callout">
+                <div class="callout-badge">Most Important</div>
+                <span class="red-text">Exam Point of View:</span> High-weightage question (4-6 marks); always include a classification table + program. Python decides type automatically (dynamically typed).
+            </div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q2. Describe the installation process of Python and explain Python Path. <span style="font-size: 16px; color: #555;">(Asked in 2022)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> <strong>Installation</strong> refers to setting up the Python interpreter on a computer system so that Python programs can be written and executed. The <strong>Python Path</strong> (PATH environment variable) tells the operating system where to find the Python executable file so it can be run from any location in the command line/terminal.</p>
+            
+            <svg class="sketch-svg" viewBox="0 0 500 100" style="margin: 10px auto;">
+                <rect x="10" y="30" width="120" height="40" rx="5" fill="#f4f4f9" stroke="#0000B3"/>
+                <text x="70" y="55" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0000B3">1. Download</text>
+                
+                <path d="M 130 50 L 160 50" stroke="#CC0000" stroke-width="2" marker-end="url(#arrow)"/>
+                
+                <rect x="170" y="30" width="160" height="40" rx="5" fill="#f4f4f9" stroke="#0000B3"/>
+                <text x="250" y="45" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0000B3">2. Install</text>
+                <text x="250" y="60" text-anchor="middle" font-family="Kalam" font-size="12" fill="#CC0000">(Tick "Add to PATH")</text>
+
+                <path d="M 330 50 L 360 50" stroke="#CC0000" stroke-width="2" marker-end="url(#arrow)"/>
+                
+                <rect x="370" y="30" width="120" height="40" rx="5" fill="#f4f4f9" stroke="#0000B3"/>
+                <text x="430" y="55" text-anchor="middle" font-family="Kalam" font-size="14" fill="#0000B3">3. Verify</text>
+                
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#CC0000" />
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <p><span class="red-text">Theory — Steps to Install Python (Windows):</span></p>
+            <ol>
+                <li>Visit the official website: python.org/downloads</li>
+                <li>Download the latest stable installer for your OS.</li>
+                <li>Run the installer (.exe file).</li>
+                <li><strong>Important:</strong> Check the box <span class="highlight">"Add Python to PATH"</span> before clicking Install.</li>
+                <li>Click "Install Now" and wait for setup to complete.</li>
+                <li>Verify installation by opening Command Prompt and typing: <code>python --version</code></li>
+            </ol>
+            
+            <p><span class="red-text">Explaining Python Path:</span></p>
+            <ul>
+                <li>PATH is a system environment variable listing directories where executable programs are located.</li>
+                <li>If Python's installation folder is added to PATH, typing python in any terminal window directly launches the interpreter.</li>
+            </ul>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q3. Write a short note on Python Programming and its History. <span style="font-size: 16px; color: #555;">(Asked in 2023)</span></h2>
+            <p><span class="red-text">Theory — History and Evolution:</span></p>
+            <ul>
+                <li><strong>1989:</strong> Guido van Rossum began working on Python at CWI, Netherlands.</li>
+                <li><strong>Name origin:</strong> Named after the British comedy show <em>"Monty Python's Flying Circus"</em> — not the snake.</li>
+                <li><strong>1991:</strong> Python 0.9.0 released.</li>
+                <li><strong>2000:</strong> Python 2.0 released.</li>
+                <li><strong>2008:</strong> Python 3.0 released — a major redesign, not backward-compatible.</li>
+                <li><strong>Present:</strong> Maintained by the Python Software Foundation (PSF).</li>
+            </ul>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q4. Explain Membership Operators in Python with suitable examples. <span style="font-size: 16px; color: #555;">(Asked in 2023)</span></h2>
+            <p><em>(Identical in concept to Objective Q8, detail expanded for subjective marks. Test presence/absence in sequence returning Boolean.)</em></p>
+            <div class="code-box">
+<span class="code-title">Python Program:</span>
+marks = {"Maths": 90, "Science": 85}
+print("Maths" in marks)       # checks keys
+print(90 in marks.values())   # checks values</div>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q5. Explain the History and Evolution of Python in detail. <span style="font-size: 16px; color: #555;">(Asked in 2024)</span></h2>
+            <table>
+                <tr><th>Year</th><th>Event</th></tr>
+                <tr><td>1989</td><td>Guido van Rossum starts Python as a hobby project at CWI</td></tr>
+                <tr><td>1991</td><td>Python 0.9.0 released — classes, exceptions, functions, core types</td></tr>
+                <tr><td>1994</td><td>Python 1.0 — added lambda, map, filter, reduce</td></tr>
+                <tr><td>2000</td><td>Python 2.0 — list comprehensions, garbage collector, Unicode support</td></tr>
+                <tr><td>2008</td><td>Python 3.0 — major overhaul; NOT backward compatible</td></tr>
+                <tr><td>2020</td><td>Python 2 support officially ended</td></tr>
+                <tr><td>Present</td><td>Python 3.x actively maintained by Python Software Foundation (PSF)</td></tr>
+            </table>
+            <p><span class="red-text">Reasons for Growth:</span> Simple syntax, huge libraries (NumPy, Django), strong community, cross-platform, free/open-source.</p>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q6. Explain Lambda Function with suitable examples. <span style="font-size: 16px; color: #555;">(Asked in 2024)</span></h2>
+            <p><span class="red-text">Technical Definition:</span> A <span class="highlight">lambda function</span> is a small, anonymous (nameless) function defined using the lambda keyword. It can take any number of arguments but contains only a <strong>single expression</strong>.</p>
+            <p><span class="red-text">Syntax:</span> <code>lambda arguments: expression</code></p>
+            <ul>
+                <li>No def keyword or function name required.</li>
+                <li>No return statement needed.</li>
+            </ul>
+            <div class="code-box">
+<span class="code-title">Python Program:</span>
+# Simple lambda function
+square = lambda x: x * x
+print(square(5))    # Output: 25
+
+# Lambda with filter()
+numbers = [1, 2, 3, 4, 5, 6]
+even_nums = list(filter(lambda x: x % 2 == 0, numbers))
+print(even_nums)    # Output: [2, 4, 6]</div>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <hr style="border-top: 2px dashed #0000B3; margin: 20px 0;">
+        <h1>SECTION C: EXPECTED QUESTIONS</h1>
+
+        <div class="block-protect">
+            <h2>Q1. Explain the Features of Python with suitable examples.</h2>
+            <p><span class="red-text">Theory — Major Features:</span></p>
+            <ol>
+                <li><strong>Simple and Easy to Learn</strong> — English-like syntax, minimal punctuation.</li>
+                <li><strong>Free and Open Source</strong> — freely downloadable; source code can be modified.</li>
+                <li><strong>Interpreted Language</strong> — executes code line-by-line; no separate compilation step.</li>
+                <li><strong>Portable</strong> — same code runs on Windows, Linux, macOS without modification.</li>
+                <li><strong>Object-Oriented</strong> — supports classes, objects, inheritance.</li>
+                <li><strong>High-Level Language</strong> — abstracts hardware-level details.</li>
+                <li><strong>Extensive Standard Library</strong> — built-in modules.</li>
+                <li><strong>Dynamically Typed</strong> — no need to declare variable types explicitly.</li>
+                <li><strong>Extensible</strong> — can integrate with C, C++, Java code.</li>
+            </ol>
+            <p><span class="red-text">Real-Life Example:</span> Python's versatility is like a Swiss Army knife — one tool usable for web development, automation, data science, and AI.</p>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q2. Explain Variables, Identifiers and Keywords in Python.</h2>
+            <ul>
+                <li><strong>Variable:</strong> Named memory location to store data. Created automatically when value is assigned (e.g., x = 10).</li>
+                <li><strong>Identifier:</strong> Name used to identify a variable, function, class, etc. Must start with letter/underscore, case-sensitive.</li>
+                <li><strong>Keyword:</strong> Reserved word with predefined meaning (e.g., if, else, for). Python has <span class="highlight">35 keywords</span>.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q3. Explain Type Conversion in Python with suitable examples.</h2>
+            <p><span class="red-text">Technical Definition:</span> <strong>Type conversion</strong> is the process of converting a value from one data type to another.</p>
+            
+            <p><strong>1. Implicit Type Conversion:</strong><br>
+            Performed automatically by Python during expressions to avoid data loss (e.g., int → float).</p>
+            
+            <p><strong>2. Explicit Type Conversion (Type Casting):</strong><br>
+            Performed manually using built-in functions: int(), float(), str(), etc.</p>
+
+            <div class="code-box">
+<span class="code-title">Python Program:</span>
+# Implicit conversion
+a = 10        # int
+b = 5.5       # float
+c = a + b     # int automatically converted to float
+print(c, type(c))   # 15.5 &lt;class 'float'&gt;
+
+# Explicit conversion
+x = "25"
+y = int(x) + 10     # string converted to int explicitly
+print(y, type(y))   # 35 &lt;class 'int'&gt;</div>
+        </div>
+
+        <div class="block-protect">
+            <h2>Q4. Explain Python IDE and write a program to display "Hello World".</h2>
+            <p><span class="red-text">Technical Definition:</span> An <strong>IDE (Integrated Development Environment)</strong> is software that provides tools for writing, editing, debugging, and running code.</p>
+            <p><span class="red-text">Popular IDEs:</span> IDLE (default bundle), PyCharm, VS Code, Jupyter Notebook.</p>
+            <div class="code-box">
+<span class="code-title">Python Program (Hello World):</span>
+# hello.py
+print("Hello, World!")</div>
+        </div>
+    </div>
+
+    <div class="notebook-page">
+        <div class="spirals">
+            <script>for(let i=0; i<35; i++) document.write('<div class="spiral-hole"><div class="spiral-ring"></div></div>');</script>
+        </div>
+
+        <div class="block-protect">
+            <h1 style="color: #0000B3; border-bottom-color: #0000B3;">OVERALL UNIT-1 QUICK REVISION SHEET</h1>
+            <table>
+                <tr><th>Topic</th><th>Key Fact</th></tr>
+                <tr><td>Creator</td><td>Guido van Rossum</td></tr>
+                <tr><td>Started</td><td>1989 (CWI, Netherlands)</td></tr>
+                <tr><td>First Release</td><td>1991 (v0.9)</td></tr>
+                <tr><td>Major Versions</td><td>v1 (1994), v2 (2000), v3 (2008)</td></tr>
+                <tr><td>Named After</td><td>Monty Python's Flying Circus</td></tr>
+                <tr><td>File Extension</td><td>.py</td></tr>
+                <tr><td>Nature</td><td>High-level, interpreted, dynamically typed, OOP</td></tr>
+                <tr><td>Core Data Types</td><td>int, float, complex, str, list, tuple, dict, set, bool, NoneType</td></tr>
+                <tr><td>Mutable Types</td><td>list, dict, set</td></tr>
+                <tr><td>Immutable Types</td><td>int, float, str, tuple, bool</td></tr>
+                <tr><td>Membership Operators</td><td>in, not in</td></tr>
+                <tr><td>Input Function</td><td>input() → always returns string</td></tr>
+                <tr><td>Type Conversion</td><td>Implicit (auto) / Explicit (int(), float(), str())</td></tr>
+                <tr><td>Default IDE</td><td>IDLE</td></tr>
+                <tr><td>Maintained By</td><td>Python Software Foundation (PSF)</td></tr>
+            </table>
+            
+            <p style="text-align: center; margin-top: 20px; font-weight: bold; color: #CC0000;">
+                All Unit-1 PYQ (Objective + Subjective) and Expected Questions covered above with full exam-oriented detail as per SBTE Bihar Diploma pattern.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
