@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Base styles mimicking css/style.css */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        /* Custom scrollbar for sidebar and main content */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-gray-800">
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-20 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-white w-64 h-full border-r border-gray-200 flex flex-col fixed lg:static transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-30">
+        <!-- Logo -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-200">
+            <i data-lucide="layout-dashboard" class="text-blue-600 mr-3 w-6 h-6"></i>
+            <span class="text-xl font-bold text-gray-900">EduDash</span>
+            <!-- Close button for mobile -->
+            <button class="ml-auto lg:hidden text-gray-500 hover:text-gray-800" onclick="toggleSidebar()">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Menu</p>
+            
+            <a href="#" data-target="home" class="nav-link flex items-center px-3 py-2.5 text-sm font-medium rounded-lg bg-blue-50 text-blue-700">
+                <i data-lucide="home" class="w-5 h-5 mr-3"></i>
+                Dashboard Home
+            </a>
+
+            <div class="pt-4 pb-2">
+                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Content</p>
+                <a href="#" data-target="upload-notes" class="nav-link flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                    <i data-lucide="file-up" class="w-5 h-5 mr-3"></i>
+                    Upload Notes
+                </a>
+                <a href="#" data-target="upload-videos" class="nav-link flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 mt-1">
+                    <i data-lucide="video" class="w-5 h-5 mr-3"></i>
+                    Upload Videos
+                </a>
+            </div>
+
+            <div class="pt-4 pb-2">
+                <p class="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Management</p>
+                <a href="#" data-target="manage-notes" class="nav-link flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                    <i data-lucide="folder-open" class="w-5 h-5 mr-3"></i>
+                    Manage Notes
+                </a>
+                <a href="#" data-target="manage-videos" class="nav-link flex items-center px-3 py-2.5 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 hover:text-gray-900 mt-1">
+                    <i data-lucide="film" class="w-5 h-5 mr-3"></i>
+                    Manage Videos
+                </a>
+            </div>
+        </nav>
+
+        <!-- Bottom Actions -->
+        <div class="p-4 border-t border-gray-200 space-y-2">
+            <a href="#" data-target="settings" class="nav-link flex items-center px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+                <i data-lucide="settings" class="w-5 h-5 mr-3"></i>
+                Settings
+            </a>
+            <button onclick="handleLogout()" class="w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg text-red-600 hover:bg-red-50 transition-colors">
+                <i data-lucide="log-out" class="w-5 h-5 mr-3"></i>
+                Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full w-full lg:w-[calc(100%-16rem)]">
+        <!-- Topbar (Mobile mainly) -->
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0">
+            <div class="flex items-center">
+                <button class="lg:hidden text-gray-500 hover:text-gray-700 mr-4" onclick="toggleSidebar()">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <h1 id="page-title" class="text-xl font-semibold text-gray-800">Dashboard</h1>
+            </div>
+            
+            <!-- User Profile Dropdown (Dummy) -->
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-400 hover:text-gray-600 relative">
+                    <i data-lucide="bell" class="w-6 h-6"></i>
+                    <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
+                </button>
+                <div class="h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
+                    AD
+                </div>
+            </div>
+        </header>
+
+        <!-- Sections Container -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+            
+            <!-- 1. Dashboard Home Section -->
+            <section id="section-home" class="content-section">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Stat Card 1 -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center space-x-4">
+                        <div class="bg-blue-100 p-3 rounded-lg text-blue-600">
+                            <i data-lucide="file-text" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Total Notes</p>
+                            <h3 class="text-2xl font-bold text-gray-900">142</h3>
+                        </div>
+                    </div>
+                    <!-- Stat Card 2 -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center space-x-4">
+                        <div class="bg-purple-100 p-3 rounded-lg text-purple-600">
+                            <i data-lucide="video" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Total Videos</p>
+                            <h3 class="text-2xl font-bold text-gray-900">48</h3>
+                        </div>
+                    </div>
+                    <!-- Stat Card 3 -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center space-x-4">
+                        <div class="bg-green-100 p-3 rounded-lg text-green-600">
+                            <i data-lucide="users" class="w-8 h-8"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Active Students</p>
+                            <h3 class="text-2xl font-bold text-gray-900">1,204</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Uploads</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between py-3 border-b border-gray-50">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-blue-50 p-2 rounded text-blue-500"><i data-lucide="file-text" class="w-5 h-5"></i></div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Calculus Chapter 4 Notes.pdf</p>
+                                    <p class="text-xs text-gray-500">Uploaded 2 hours ago</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Published</span>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-gray-50">
+                            <div class="flex items-center space-x-3">
+                                <div class="bg-purple-50 p-2 rounded text-purple-500"><i data-lucide="video" class="w-5 h-5"></i></div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">Physics Lab Experiment 2.mp4</p>
+                                    <p class="text-xs text-gray-500">Uploaded 5 hours ago</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Published</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Upload Notes Section -->
+            <section id="section-upload-notes" class="content-section hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-2xl mx-auto">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-6">Upload New Notes</h2>
+                    <form onsubmit="handleUpload(event, 'notes')" class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Document Title</label>
+                            <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-shadow" placeholder="e.g., Biology Midterm Study Guide">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Subject / Category</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+                                <option>Mathematics</option>
+                                <option>Physics</option>
+                                <option>Chemistry</option>
+                                <option>Biology</option>
+                                <option>Computer Science</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Upload File (PDF, DOCX)</label>
+                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                                <div class="space-y-1 text-center">
+                                    <i data-lucide="upload-cloud" class="mx-auto h-12 w-12 text-gray-400"></i>
+                                    <div class="flex text-sm text-gray-600 justify-center">
+                                        <label for="file-upload" class="relative cursor-pointer rounded-md bg-transparent font-medium text-blue-600 hover:text-blue-500">
+                                            <span>Upload a file</span>
+                                            <input id="file-upload" name="file-upload" type="file" class="sr-only" required>
+                                        </label>
+                                        <p class="pl-1">or drag and drop</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">PDF, DOCX up to 10MB</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex justify-center items-center">
+                                <i data-lucide="save" class="w-5 h-5 mr-2"></i> Save & Publish Note
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- 3. Upload Videos Section -->
+            <section id="section-upload-videos" class="content-section hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-2xl mx-auto">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-6">Upload Video Lecture</h2>
+                    <form onsubmit="handleUpload(event, 'video')" class="space-y-5">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Video Title</label>
+                            <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-shadow" placeholder="e.g., Introduction to Thermodynamics">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Video URL (YouTube/Vimeo) or direct link</label>
+                            <input type="url" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-shadow" placeholder="https://youtube.com/...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" placeholder="Brief description of the lecture..."></textarea>
+                        </div>
+                        <div class="pt-4">
+                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors flex justify-center items-center">
+                                <i data-lucide="video" class="w-5 h-5 mr-2"></i> Add Video Lecture
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- 4. Manage Notes Section -->
+            <section id="section-manage-notes" class="content-section hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-gray-800">Manage Notes</h2>
+                        <div class="relative">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                            <input type="text" placeholder="Search notes..." class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                                    <th class="px-6 py-4 font-medium">Document Name</th>
+                                    <th class="px-6 py-4 font-medium">Category</th>
+                                    <th class="px-6 py-4 font-medium">Date Uploaded</th>
+                                    <th class="px-6 py-4 font-medium text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 text-sm">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 font-medium text-gray-900 flex items-center">
+                                        <i data-lucide="file-text" class="text-blue-500 w-4 h-4 mr-2"></i> Calculus Chapter 4
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-600">Mathematics</td>
+                                    <td class="px-6 py-4 text-gray-600">Oct 24, 2023</td>
+                                    <td class="px-6 py-4 text-right space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800" title="Edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                        <button class="text-red-600 hover:text-red-800" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 font-medium text-gray-900 flex items-center">
+                                        <i data-lucide="file-text" class="text-blue-500 w-4 h-4 mr-2"></i> Data Structures Intro
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-600">Computer Science</td>
+                                    <td class="px-6 py-4 text-gray-600">Oct 22, 2023</td>
+                                    <td class="px-6 py-4 text-right space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800" title="Edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                        <button class="text-red-600 hover:text-red-800" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Manage Videos Section -->
+            <section id="section-manage-videos" class="content-section hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                        <h2 class="text-lg font-semibold text-gray-800">Manage Videos</h2>
+                        <div class="relative">
+                            <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4"></i>
+                            <input type="text" placeholder="Search videos..." class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 w-64">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                                    <th class="px-6 py-4 font-medium">Video Title</th>
+                                    <th class="px-6 py-4 font-medium">Views</th>
+                                    <th class="px-6 py-4 font-medium">Date Uploaded</th>
+                                    <th class="px-6 py-4 font-medium text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 text-sm">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 font-medium text-gray-900 flex items-center">
+                                        <i data-lucide="youtube" class="text-red-500 w-4 h-4 mr-2"></i> Physics Lab Exper...
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-600">1,245</td>
+                                    <td class="px-6 py-4 text-gray-600">Oct 24, 2023</td>
+                                    <td class="px-6 py-4 text-right space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800" title="Edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                        <button class="text-red-600 hover:text-red-800" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 font-medium text-gray-900 flex items-center">
+                                        <i data-lucide="youtube" class="text-red-500 w-4 h-4 mr-2"></i> Advanced Algorith...
+                                    </td>
+                                    <td class="px-6 py-4 text-gray-600">890</td>
+                                    <td class="px-6 py-4 text-gray-600">Oct 20, 2023</td>
+                                    <td class="px-6 py-4 text-right space-x-2">
+                                        <button class="text-blue-600 hover:text-blue-800" title="Edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                        <button class="text-red-600 hover:text-red-800" title="Delete"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Settings Section -->
+            <section id="section-settings" class="content-section hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-2xl mx-auto">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-6">Platform Settings</h2>
+                    
+                    <form onsubmit="event.preventDefault(); alert('Settings saved successfully!');" class="space-y-6">
+                        <!-- Profile Settings -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-900 mb-3 border-b pb-2">Profile Information</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm text-gray-700 mb-1">Admin Name</label>
+                                    <input type="text" value="System Administrator" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-700 mb-1">Email Address</label>
+                                    <input type="email" value="admin@edudash.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preferences -->
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-900 mb-3 border-b pb-2">Preferences</h3>
+                            <div class="space-y-3">
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" checked class="form-checkbox h-5 w-5 text-blue-600 rounded">
+                                    <span class="text-sm text-gray-700">Email notifications for new user registrations</span>
+                                </label>
+                                <label class="flex items-center space-x-3 cursor-pointer">
+                                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded">
+                                    <span class="text-sm text-gray-700">Enable Dark Mode (Coming Soon)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 px-6 rounded-lg transition-colors">
+                                Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Unified JavaScript (Representing app.js, upload.js, auth.js) -->
+    <script>
+        // ==========================================
+        // js/app.js - Core UI and Navigation Logic
+        // ==========================================
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Dictionary to map section IDs to human-readable titles
+        const pageTitles = {
+            'home': 'Dashboard',
+            'upload-notes': 'Upload Notes',
+            'upload-videos': 'Upload Videos',
+            'manage-notes': 'Manage Notes',
+            'manage-videos': 'Manage Videos',
+            'settings': 'Settings'
+        };
+
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.add('hidden');
+            });
+
+            // Show selected section
+            const targetSection = document.getElementById('section-' + sectionId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+
+            // Update top bar title
+            document.getElementById('page-title').innerText = pageTitles[sectionId] || 'Dashboard';
+
+            // Update active state in sidebar navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                // Reset all links to default state
+                link.classList.remove('bg-blue-50', 'text-blue-700');
+                link.classList.add('text-gray-700', 'hover:bg-gray-100');
+            });
+
+            // Set active class on clicked link
+            const activeLink = document.querySelector(`.nav-link[data-target="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.remove('text-gray-700', 'hover:bg-gray-100');
+                activeLink.classList.add('bg-blue-50', 'text-blue-700');
+            }
+
+            // If on mobile, close sidebar after clicking
+            if (window.innerWidth < 1024) {
+                toggleSidebar(false);
+            }
+        }
+
+        // Setup Event Listeners on DOM Load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Default load
+            showSection('home');
+
+            // Attach click events to nav links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const target = link.getAttribute('data-target');
+                    showSection(target);
+                });
+            });
+        });
+
+        // Mobile Sidebar Toggle
+        function toggleSidebar(forceState = null) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+            const newState = forceState !== null ? forceState : !isOpen;
+
+            if (newState) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
+
+
+        // ==========================================
+        // js/upload.js - Upload Handling Logic
+        // ==========================================
+        
+        function handleUpload(event, type) {
+            event.preventDefault();
+            // Create a custom UI modal instead of alert
+            const button = event.target.querySelector('button[type="submit"]');
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin"></i> Uploading...`;
+            lucide.createIcons();
+            button.disabled = true;
+
+            // Simulate network request
+            setTimeout(() => {
+                event.target.reset(); // clear form
+                button.innerHTML = `<i data-lucide="check" class="w-5 h-5 mr-2"></i> Success!`;
+                button.classList.add('bg-green-600', 'hover:bg-green-700');
+                lucide.createIcons();
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    button.disabled = false;
+                    lucide.createIcons();
+                    // Optional: Switch back to manage screen
+                    // showSection(type === 'notes' ? 'manage-notes' : 'manage-videos');
+                }, 2000);
+            }, 1500);
+        }
+
+        // ==========================================
+        // js/auth.js - Authentication/Logout Logic
+        // ==========================================
+
+        function handleLogout() {
+            const confirmed = confirm("Are you sure you want to log out?");
+            if (confirmed) {
+                // In a real app, clear tokens here
+                document.body.innerHTML = `
+                    <div class="h-screen w-screen flex flex-col items-center justify-center bg-gray-100">
+                        <i data-lucide="check-circle" class="w-16 h-16 text-green-500 mb-4"></i>
+                        <h2 class="text-2xl font-bold text-gray-800">Logged Out Successfully</h2>
+                        <p class="text-gray-500 mt-2">Redirecting to login...</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                // Simulate redirect
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
