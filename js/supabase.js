@@ -8,3 +8,14 @@ const supabase = window.supabase.createClient(
 );
 console.log("Supabase Connected");
 console.log(supabase);
+supabase
+  .from("notes")
+  .select("*")
+  .limit(1)
+  .then(({ data, error }) => {
+    if (error) {
+      alert("❌ " + error.message);
+    } else {
+      alert("✅ Supabase Connected");
+    }
+  });
