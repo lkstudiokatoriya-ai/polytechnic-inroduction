@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Objective Question Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    /* Reset and Base Styles */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        background-color: #0a0a0a;
+        font-family: 'Kalam', cursive, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    /* Portrait Overlay */
+    #portrait-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.95);
+        color: white;
+        z-index: 9999;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+    }
+    #portrait-overlay p {
+        font-size: 24px;
+        margin-bottom: 30px;
+        font-weight: 700;
+        color: #FFD700;
+    }
+    .btn-group {
+        display: flex;
+        gap: 20px;
+    }
+    .btn-group button {
+        font-family: 'Kalam', cursive;
+        font-size: 20px;
+        font-weight: 700;
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .btn-confirm { background-color: #00FF00; color: #000; }
+    .btn-cancel { background-color: #ff4444; color: #fff; }
+    .btn-group button:active { transform: scale(0.95); }
+
+    /* Media Query to show overlay on portrait devices */
+    @media (orientation: portrait) {
+        #portrait-overlay { display: flex; }
+        .notebook-container { display: none; }
+    }
+
+    /* Notebook Design */
+    .notebook-container {
+        width: 100%;
+        max-width: 297mm; /* A4 Landscape width */
+        margin: 20px;
+    }
+    .notebook-page {
+        background-color: #181818;
+        width: 100%;
+        min-height: 210mm; /* A4 Landscape height */
+        padding: 40px 40px 40px 90px;
+        border-radius: 8px;
+        box-shadow: 10px 10px 30px rgba(0,0,0,0.8), inset 0 0 50px rgba(0,0,0,0.5);
+        position: relative;
+        /* Layout for MCQs */
+        column-count: 2;
+        column-gap: 50px;
+        column-rule: 1px solid #333;
+    }
+
+    /* Spiral Binding Effect */
+    .notebook-page::before {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0; left: 25px; width: 30px;
+        background-image: radial-gradient(circle at center, #0a0a0a 7px, transparent 8px);
+        background-size: 100% 40px;
+        z-index: 2;
+    }
+    .notebook-page::after {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0; left: 0; width: 40px;
+        background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 16px, #999 16px, #999 24px, transparent 24px, transparent 40px);
+        background-size: 100% 40px;
+        border-right: 1px solid #222;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.8);
+    }
+
+    /* Typography inside Notebook */
+    .q-block {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        margin-bottom: 30px;
+    }
+    .q-text {
+        color: #FFD700;
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        line-height: 1.3;
+    }
+    .o-text {
+        color: #FFFFFF;
+        font-size: 18px;
+        margin-bottom: 4px;
+        padding-left: 15px;
+        line-height: 1.3;
+    }
+    .a-text {
+        color: #00FF00;
+        font-size: 18px;
+        font-weight: 700;
+        margin-top: 10px;
+    }
+
+    /* Print Optimization */
+    @media print {
+        @page { size: A4 landscape; margin: 0; }
+        body { margin: 0; background: none; }
+        .notebook-container { margin: 0; max-width: none; width: 297mm; }
+        .notebook-page { 
+            box-shadow: none; 
+            border-radius: 0; 
+            min-height: 210mm;
+            page-break-after: always; 
+        }
+        #portrait-overlay { display: none !important; }
+    }
+</style>
+</head>
+<body>
+
+    <div id="portrait-overlay">
+        <p>📱 बेहतर अनुभव के लिए कृपया अपने डिवाइस को Landscape Mode में घुमाएँ।</p>
+        <div class="btn-group">
+            <button class="btn-confirm" onclick="confirmLandscape()">Confirm (Auto Landscape)</button>
+            <button class="btn-cancel" onclick="cancelAction()">Cancel (Back)</button>
+        </div>
+    </div>
+
+    <div class="notebook-container">
+        <div class="notebook-page">
+            
+            <div class="q-block">
+                <div class="q-text">Question 1<br>Fundamental particles present in the nucleus of an atom are</div>
+                <div class="o-text">A. Proton and electron</div>
+                <div class="o-text">B. Neutron and electron</div>
+                <div class="o-text">C. Proton and neutron</div>
+                <div class="o-text">D. Proton, neutron and electron</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 2<br>Which of the following has the maximum e/m ratio?</div>
+                <div class="o-text">A. Electron</div>
+                <div class="o-text">B. Proton</div>
+                <div class="o-text">C. Neutron</div>
+                <div class="o-text">D. Alpha particle</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 3<br>The maximum number of electrons in a principal shell is</div>
+                <div class="o-text">A. n^2</div>
+                <div class="o-text">B. 2n^2</div>
+                <div class="o-text">C. 2n+1</div>
+                <div class="o-text">D. 2n</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 4<br>Isotopes of an element have</div>
+                <div class="o-text">A. Same atomic number</div>
+                <div class="o-text">B. Same mass number</div>
+                <div class="o-text">C. Different atomic number</div>
+                <div class="o-text">D. Same number of neutrons</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 5<br>The shape of a p-orbital is</div>
+                <div class="o-text">A. Spherical</div>
+                <div class="o-text">B. Dumb-bell</div>
+                <div class="o-text">C. Double dumb-bell</div>
+                <div class="o-text">D. Complex</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 6<br>According to Bohr's theory, the angular momentum of an electron is an integral multiple of</div>
+                <div class="o-text">A. h/2pi</div>
+                <div class="o-text">B. h/pi</div>
+                <div class="o-text">C. 2h/pi</div>
+                <div class="o-text">D. h/4pi</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 7<br>Which quantum number determines the orientation of the orbital?</div>
+                <div class="o-text">A. Principal</div>
+                <div class="o-text">B. Azimuthal</div>
+                <div class="o-text">C. Magnetic</div>
+                <div class="o-text">D. Spin</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 8<br>The Indian sage who postulated the philosophy of the atom (Parmanu) is</div>
+                <div class="o-text">A. Aryabhata</div>
+                <div class="o-text">B. Acharya Kanad</div>
+                <div class="o-text">C. Charaka</div>
+                <div class="o-text">D. Sushruta</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 9<br>The bond formed by the mutual sharing of electrons is called</div>
+                <div class="o-text">A. Ionic bond</div>
+                <div class="o-text">B. Covalent bond</div>
+                <div class="o-text">C. Coordinate bond</div>
+                <div class="o-text">D. Hydrogen bond</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 10<br>The shape of a water molecule is</div>
+                <div class="o-text">A. Linear</div>
+                <div class="o-text">B. Tetrahedral</div>
+                <div class="o-text">C. V-shaped (Bent)</div>
+                <div class="o-text">D. Trigonal planar</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 11<br>Which of the following is a coordinate compound?</div>
+                <div class="o-text">A. H2O</div>
+                <div class="o-text">B. NH4+</div>
+                <div class="o-text">C. CH4</div>
+                <div class="o-text">D. NaCl</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 12<br>Dipole moment is highest for</div>
+                <div class="o-text">A. CH4</div>
+                <div class="o-text">B. NF3</div>
+                <div class="o-text">C. NH3</div>
+                <div class="o-text">D. CO2</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 13<br>Hydrogen bonding is maximum in</div>
+                <div class="o-text">A. H2S</div>
+                <div class="o-text">B. H2O</div>
+                <div class="o-text">C. HCl</div>
+                <div class="o-text">D. HF</div>
+                <div class="a-text">Correct Answer: D</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 14<br>The electronic configuration of Cu (Z=29) is</div>
+                <div class="o-text">A. [Ar] 4s2 3d9</div>
+                <div class="o-text">B. [Ar] 4s1 3d10</div>
+                <div class="o-text">C. [Ar] 4s2 3d8</div>
+                <div class="o-text">D. [Ar] 4s0 3d10</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 15<br>Pauli's exclusion principle states that</div>
+                <div class="o-text">A. No two electrons have the same 4 quantum numbers</div>
+                <div class="o-text">B. Electrons fill lower energy levels first</div>
+                <div class="o-text">C. Pairing occurs after all orbitals are singly occupied</div>
+                <div class="o-text">D. Position and momentum cannot be measured simultaneously</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 16<br>Which of the following molecules has a linear shape?</div>
+                <div class="o-text">A. H2O</div>
+                <div class="o-text">B. CO2</div>
+                <div class="o-text">C. NH3</div>
+                <div class="o-text">D. CH4</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 17<br>Aufbau principle dictates the filling of orbitals based on</div>
+                <div class="o-text">A. Decreasing energy</div>
+                <div class="o-text">B. Increasing energy</div>
+                <div class="o-text">C. Spin of electrons</div>
+                <div class="o-text">D. Magnetic momentum</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 18<br>Normality of a solution depends upon</div>
+                <div class="o-text">A. Molecular weight</div>
+                <div class="o-text">B. Equivalent weight</div>
+                <div class="o-text">C. Number of moles</div>
+                <div class="o-text">D. Volume of solvent only</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 19<br>Molarity of a solution is defined as</div>
+                <div class="o-text">A. Moles of solute per liter of solution</div>
+                <div class="o-text">B. Moles of solute per kg of solvent</div>
+                <div class="o-text">C. Grams of solute per liter of solution</div>
+                <div class="o-text">D. Equivalent of solute per liter of solution</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 20<br>De Broglie wavelength equation is given by</div>
+                <div class="o-text">A. lambda = h/mv</div>
+                <div class="o-text">B. lambda = mv/h</div>
+                <div class="o-text">C. lambda = h/m</div>
+                <div class="o-text">D. lambda = v/mh</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 21<br>Hardness of water is primarily due to the presence of salts of</div>
+                <div class="o-text">A. Sodium and Potassium</div>
+                <div class="o-text">B. Calcium and Magnesium</div>
+                <div class="o-text">C. Iron and Zinc</div>
+                <div class="o-text">D. Copper and Silver</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 22<br>Temporary hardness of water can be removed by</div>
+                <div class="o-text">A. Boiling</div>
+                <div class="o-text">B. Filtration</div>
+                <div class="o-text">C. Chlorination</div>
+                <div class="o-text">D. Adding alum</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 23<br>Permanent hardness is caused by</div>
+                <div class="o-text">A. Bicarbonates of Ca and Mg</div>
+                <div class="o-text">B. Chlorides and sulphates of Ca and Mg</div>
+                <div class="o-text">C. Carbonates of Na and K</div>
+                <div class="o-text">D. Nitrates of Na and K</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 24<br>The standard unit of hardness of water is</div>
+                <div class="o-text">A. ppm</div>
+                <div class="o-text">B. mg/L</div>
+                <div class="o-text">C. Degree Clark</div>
+                <div class="o-text">D. All of the above</div>
+                <div class="a-text">Correct Answer: D</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 25<br>The indicator used in EDTA titration is</div>
+                <div class="o-text">A. Methyl orange</div>
+                <div class="o-text">B. Phenolphthalein</div>
+                <div class="o-text">C. Eriochrome Black-T (EBT)</div>
+                <div class="o-text">D. Starch</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 26<br>Zeolite process is mainly used for</div>
+                <div class="o-text">A. Disinfection</div>
+                <div class="o-text">B. Removing hardness</div>
+                <div class="o-text">C. Removing turbidity</div>
+                <div class="o-text">D. Removing taste</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 27<br>The pH value of pure water at 25°C is</div>
+                <div class="o-text">A. 5</div>
+                <div class="o-text">B. 7</div>
+                <div class="o-text">C. 9</div>
+                <div class="o-text">D. 14</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 28<br>BOD stands for</div>
+                <div class="o-text">A. Biological Oxygen Demand</div>
+                <div class="o-text">B. Biochemical Oxygen Demand</div>
+                <div class="o-text">C. Basic Oxygen Demand</div>
+                <div class="o-text">D. Bacterial Oxygen Demand</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 29<br>Dissolved Oxygen (DO) indicates</div>
+                <div class="o-text">A. High contamination</div>
+                <div class="o-text">B. Water purity</div>
+                <div class="o-text">C. High bacterial growth</div>
+                <div class="o-text">D. Heavy metal presence</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 30<br>Chemical Oxygen Demand (COD) utilizes which oxidizing agent?</div>
+                <div class="o-text">A. KMnO4</div>
+                <div class="o-text">B. K2Cr2O7</div>
+                <div class="o-text">C. H2O2</div>
+                <div class="o-text">D. O3</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 31<br>Soda-lime process is used to remove</div>
+                <div class="o-text">A. Salinity</div>
+                <div class="o-text">B. Hardness</div>
+                <div class="o-text">C. Acidity</div>
+                <div class="o-text">D. Dissolved gases</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 32<br>Ion exchange resin process for water softening utilizes</div>
+                <div class="o-text">A. Only cation resins</div>
+                <div class="o-text">B. Only anion resins</div>
+                <div class="o-text">C. Both cation and anion resins</div>
+                <div class="o-text">D. Silica gel</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 33<br>Which parameter measures the organic pollution level in water?</div>
+                <div class="o-text">A. TDS</div>
+                <div class="o-text">B. pH</div>
+                <div class="o-text">C. BOD</div>
+                <div class="o-text">D. Hardness</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 34<br>The Indian standard specification for drinking water pH range is</div>
+                <div class="o-text">A. 5.0 to 6.5</div>
+                <div class="o-text">B. 6.5 to 8.5</div>
+                <div class="o-text">C. 8.5 to 10.0</div>
+                <div class="o-text">D. 4.0 to 7.0</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 35<br>Which of the following causes alkalinity in water?</div>
+                <div class="o-text">A. Carbonates</div>
+                <div class="o-text">B. Bicarbonates</div>
+                <div class="o-text">C. Hydroxides</div>
+                <div class="o-text">D. All of the above</div>
+                <div class="a-text">Correct Answer: D</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 36<br>The reagent used in EDTA titration to maintain pH around 10 is</div>
+                <div class="o-text">A. Buffer solution (NH4OH + NH4Cl)</div>
+                <div class="o-text">B. HCl solution</div>
+                <div class="o-text">C. NaOH solution</div>
+                <div class="o-text">D. NaCl solution</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 37<br>Hardness is universally expressed in terms of equivalents of</div>
+                <div class="o-text">A. CaCO3</div>
+                <div class="o-text">B. MgCO3</div>
+                <div class="o-text">C. CaCl2</div>
+                <div class="o-text">D. MgSO4</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 38<br>The acceptable limit of TDS for drinking water according to IS standards is</div>
+                <div class="o-text">A. 500 mg/L</div>
+                <div class="o-text">B. 1500 mg/L</div>
+                <div class="o-text">C. 2500 mg/L</div>
+                <div class="o-text">D. 5000 mg/L</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 39<br>Permanent hardness of water CANNOT be removed by</div>
+                <div class="o-text">A. Zeolite process</div>
+                <div class="o-text">B. Ion exchange process</div>
+                <div class="o-text">C. Boiling</div>
+                <div class="o-text">D. Soda-lime process</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 40<br>Permutit is chemically known as</div>
+                <div class="o-text">A. Sodium aluminosilicate</div>
+                <div class="o-text">B. Calcium silicate</div>
+                <div class="o-text">C. Magnesium aluminate</div>
+                <div class="o-text">D. Potassium silicate</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 41<br>The chief ore of iron is</div>
+                <div class="o-text">A. Bauxite</div>
+                <div class="o-text">B. Haematite</div>
+                <div class="o-text">C. Galena</div>
+                <div class="o-text">D. Cinnabar</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 42<br>Bauxite is an important ore of</div>
+                <div class="o-text">A. Iron</div>
+                <div class="o-text">B. Aluminum</div>
+                <div class="o-text">C. Copper</div>
+                <div class="o-text">D. Zinc</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 43<br>Roasting is typically carried out in the</div>
+                <div class="o-text">A. Absence of air</div>
+                <div class="o-text">B. Presence of excess air</div>
+                <div class="o-text">C. Vacuum</div>
+                <div class="o-text">D. Presence of pure oxygen only</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 44<br>Calcination is the process of heating the ore</div>
+                <div class="o-text">A. Below its melting point in absence of air</div>
+                <div class="o-text">B. Above its melting point</div>
+                <div class="o-text">C. In presence of air</div>
+                <div class="o-text">D. With solid carbon</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 45<br>During metallurgy, flux reacts with gangue to form</div>
+                <div class="o-text">A. Pure metal</div>
+                <div class="o-text">B. Alloy</div>
+                <div class="o-text">C. Slag</div>
+                <div class="o-text">D. Matrix</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 46<br>Brass is an alloy consisting of</div>
+                <div class="o-text">A. Cu and Sn</div>
+                <div class="o-text">B. Cu and Zn</div>
+                <div class="o-text">C. Cu and Ni</div>
+                <div class="o-text">D. Fe and C</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 47<br>Bronze mainly contains</div>
+                <div class="o-text">A. Cu and Sn</div>
+                <div class="o-text">B. Cu and Zn</div>
+                <div class="o-text">C. Pb and Sn</div>
+                <div class="o-text">D. Al and Mg</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 48<br>Stainless steel mainly contains</div>
+                <div class="o-text">A. Fe, C, Cr, Ni</div>
+                <div class="o-text">B. Fe, Cu, Zn</div>
+                <div class="o-text">C. Fe, Mg, Mn</div>
+                <div class="o-text">D. Fe, Pb, Sn</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 49<br>Which of the following is a prominent example of Ancient Indian Metallurgy?</div>
+                <div class="o-text">A. Eiffel Tower</div>
+                <div class="o-text">B. Delhi Iron Pillar</div>
+                <div class="o-text">C. Statue of Liberty</div>
+                <div class="o-text">D. Golden Gate Bridge</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 50<br>The monomer of Natural Rubber is</div>
+                <div class="o-text">A. Chloroprene</div>
+                <div class="o-text">B. Isoprene</div>
+                <div class="o-text">C. Neoprene</div>
+                <div class="o-text">D. Styrene</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 51<br>Vulcanization of rubber is done using</div>
+                <div class="o-text">A. Oxygen</div>
+                <div class="o-text">B. Nitrogen</div>
+                <div class="o-text">C. Sulfur</div>
+                <div class="o-text">D. Carbon</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 52<br>Teflon is a polymer of</div>
+                <div class="o-text">A. Vinyl chloride</div>
+                <div class="o-text">B. Tetrafluoroethylene</div>
+                <div class="o-text">C. Styrene</div>
+                <div class="o-text">D. Ethylene</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 53<br>Bakelite is formed by the condensation polymerization of phenol and</div>
+                <div class="o-text">A. Acetaldehyde</div>
+                <div class="o-text">B. Formaldehyde</div>
+                <div class="o-text">C. Acetone</div>
+                <div class="o-text">D. Methanol</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 54<br>Nylon-6,6 is an example of a</div>
+                <div class="o-text">A. Addition polymer</div>
+                <div class="o-text">B. Condensation polymer</div>
+                <div class="o-text">C. Natural polymer</div>
+                <div class="o-text">D. Inorganic polymer</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 55<br>PVC stands for</div>
+                <div class="o-text">A. Polyvinyl carbon</div>
+                <div class="o-text">B. Polyvinyl chloride</div>
+                <div class="o-text">C. Polyvanadium chloride</div>
+                <div class="o-text">D. Polyvinyl chlorate</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 56<br>Which of the following is a thermosetting polymer?</div>
+                <div class="o-text">A. Polythene</div>
+                <div class="o-text">B. PVC</div>
+                <div class="o-text">C. Teflon</div>
+                <div class="o-text">D. Bakelite</div>
+                <div class="a-text">Correct Answer: D</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 57<br>The monomer of Orlon (Polyacrylonitrile) is</div>
+                <div class="o-text">A. Ethylene</div>
+                <div class="o-text">B. Acrylonitrile</div>
+                <div class="o-text">C. Vinyl chloride</div>
+                <div class="o-text">D. Styrene</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 58<br>Terylene (Dacron) is formed from Ethylene glycol and</div>
+                <div class="o-text">A. Phthalic acid</div>
+                <div class="o-text">B. Terephthalic acid</div>
+                <div class="o-text">C. Adipic acid</div>
+                <div class="o-text">D. Benzoic acid</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 59<br>Duralumin is a highly useful alloy of</div>
+                <div class="o-text">A. Al, Cu, Mg, Mn</div>
+                <div class="o-text">B. Fe, C, Cr</div>
+                <div class="o-text">C. Cu, Zn, Sn</div>
+                <div class="o-text">D. Pb, Sb, Cu</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 60<br>Extraction of Aluminium is generally carried out by</div>
+                <div class="o-text">A. Blast furnace</div>
+                <div class="o-text">B. Hall-Heroult process</div>
+                <div class="o-text">C. Cyanide process</div>
+                <div class="o-text">D. Roasting only</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 61<br>Crystalline solids are generally</div>
+                <div class="o-text">A. Isotropic</div>
+                <div class="o-text">B. Anisotropic</div>
+                <div class="o-text">C. Amorphous</div>
+                <div class="o-text">D. Gaseous</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 62<br>Glass is a common example of</div>
+                <div class="o-text">A. Crystalline solid</div>
+                <div class="o-text">B. Amorphous solid</div>
+                <div class="o-text">C. Metallic solid</div>
+                <div class="o-text">D. Ionic solid</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 63<br>The number of atoms in a Body Centered Cubic (BCC) unit cell is</div>
+                <div class="o-text">A. 1</div>
+                <div class="o-text">B. 2</div>
+                <div class="o-text">C. 4</div>
+                <div class="o-text">D. 6</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 64<br>The number of atoms in a Face Centered Cubic (FCC) unit cell is</div>
+                <div class="o-text">A. 1</div>
+                <div class="o-text">B. 2</div>
+                <div class="o-text">C. 4</div>
+                <div class="o-text">D. 8</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 65<br>A primitive unit cell has lattice points (atoms) located at</div>
+                <div class="o-text">A. Corners only</div>
+                <div class="o-text">B. Face centers only</div>
+                <div class="o-text">C. Body center only</div>
+                <div class="o-text">D. Edge centers only</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 66<br>Frenkel defect is a type of</div>
+                <div class="o-text">A. Point defect</div>
+                <div class="o-text">B. Line defect</div>
+                <div class="o-text">C. Surface defect</div>
+                <div class="o-text">D. Volume defect</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 67<br>Which defect lowers the density of the crystal?</div>
+                <div class="o-text">A. Frenkel defect</div>
+                <div class="o-text">B. Schottky defect</div>
+                <div class="o-text">C. Interstitial defect</div>
+                <div class="o-text">D. Impurity defect</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 68<br>F-centers in a crystal lattice are responsible for its</div>
+                <div class="o-text">A. Density</div>
+                <div class="o-text">B. Hardness</div>
+                <div class="o-text">C. Color</div>
+                <div class="o-text">D. Electrical resistance</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 69<br>Band theory classifies solid materials into</div>
+                <div class="o-text">A. Acids, bases, salts</div>
+                <div class="o-text">B. Conductors, insulators, semiconductors</div>
+                <div class="o-text">C. Metals, non-metals, metalloids</div>
+                <div class="o-text">D. Crystalline, amorphous, polymeric</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 70<br>In semiconductors, the energy band gap between valence and conduction band is</div>
+                <div class="o-text">A. Zero</div>
+                <div class="o-text">B. Very large</div>
+                <div class="o-text">C. Small</div>
+                <div class="o-text">D. Infinite</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 71<br>Materials that are weakly repelled by a magnetic field are called</div>
+                <div class="o-text">A. Paramagnetic</div>
+                <div class="o-text">B. Diamagnetic</div>
+                <div class="o-text">C. Ferromagnetic</div>
+                <div class="o-text">D. Antiferromagnetic</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 72<br>Iron, Cobalt, and Nickel are classic examples of</div>
+                <div class="o-text">A. Paramagnetic materials</div>
+                <div class="o-text">B. Diamagnetic materials</div>
+                <div class="o-text">C. Ferromagnetic materials</div>
+                <div class="o-text">D. Ferrimagnetic materials</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 73<br>Antiferromagnetic materials possess</div>
+                <div class="o-text">A. Maximum magnetic moment</div>
+                <div class="o-text">B. Zero net magnetic moment</div>
+                <div class="o-text">C. High electrical conductivity</div>
+                <div class="o-text">D. Low melting points</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 74<br>Bragg's Law for X-ray diffraction is mathematically expressed as</div>
+                <div class="o-text">A. n * lambda = 2d * sin(theta)</div>
+                <div class="o-text">B. n * lambda = d * sin(theta)</div>
+                <div class="o-text">C. lambda = 2d * cos(theta)</div>
+                <div class="o-text">D. n * lambda = 2d * tan(theta)</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 75<br>The coordination number of an atom in an FCC crystal lattice is</div>
+                <div class="o-text">A. 6</div>
+                <div class="o-text">B. 8</div>
+                <div class="o-text">C. 12</div>
+                <div class="o-text">D. 4</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 76<br>The coordination number of an atom in a BCC crystal lattice is</div>
+                <div class="o-text">A. 6</div>
+                <div class="o-text">B. 8</div>
+                <div class="o-text">C. 12</div>
+                <div class="o-text">D. 4</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 77<br>Solid CO2 (Dry ice) is classified as a</div>
+                <div class="o-text">A. Metallic solid</div>
+                <div class="o-text">B. Ionic solid</div>
+                <div class="o-text">C. Molecular solid</div>
+                <div class="o-text">D. Covalent network solid</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 78<br>Diamond is a classic example of a</div>
+                <div class="o-text">A. Covalent network solid</div>
+                <div class="o-text">B. Metallic solid</div>
+                <div class="o-text">C. Molecular solid</div>
+                <div class="o-text">D. Ionic solid</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 79<br>Kjeldahl method (in this specific solid state context) is utilized to determine the</div>
+                <div class="o-text">A. Density of crystal</div>
+                <div class="o-text">B. Melting point of crystalline solid</div>
+                <div class="o-text">C. Refractive index</div>
+                <div class="o-text">D. Magnetic moment</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 80<br>NaCl (Sodium Chloride) is a typical example of an</div>
+                <div class="o-text">A. Ionic solid</div>
+                <div class="o-text">B. Metallic solid</div>
+                <div class="o-text">C. Molecular solid</div>
+                <div class="o-text">D. Covalent solid</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 81<br>Which of the following is a strong electrolyte?</div>
+                <div class="o-text">A. Acetic acid</div>
+                <div class="o-text">B. Carbonic acid</div>
+                <div class="o-text">C. Sodium chloride (NaCl)</div>
+                <div class="o-text">D. Ammonium hydroxide</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 82<br>Kohlrausch's law relates to</div>
+                <div class="o-text">A. Vapor pressure of solutions</div>
+                <div class="o-text">B. Molar conductivity at infinite dilution</div>
+                <div class="o-text">C. Electrolysis of molten salts</div>
+                <div class="o-text">D. Rate of chemical reaction</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 83<br>Faraday's first law of electrolysis is mathematically given by</div>
+                <div class="o-text">A. W = ZIt</div>
+                <div class="o-text">B. W = Z/It</div>
+                <div class="o-text">C. W = I/Zt</div>
+                <div class="o-text">D. W = Zt/I</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 84<br>The standard electrode potential of the Standard Hydrogen Electrode (SHE) is assigned as</div>
+                <div class="o-text">A. 1.0 V</div>
+                <div class="o-text">B. 0.0 V</div>
+                <div class="o-text">C. -1.0 V</div>
+                <div class="o-text">D. 0.5 V</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 85<br>In a galvanic cell, the anode is the electrode where</div>
+                <div class="o-text">A. Reduction occurs</div>
+                <div class="o-text">B. Oxidation occurs</div>
+                <div class="o-text">C. Positive ions are formed</div>
+                <div class="o-text">D. Neutralization occurs</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 86<br>The Nernst equation is primarily used to calculate</div>
+                <div class="o-text">A. Viscosity of electrolytes</div>
+                <div class="o-text">B. Electrode potential at any concentration</div>
+                <div class="o-text">C. Mass of substance deposited</div>
+                <div class="o-text">D. Temperature of the cell</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 87<br>A standard Dry cell is a common example of a</div>
+                <div class="o-text">A. Primary cell</div>
+                <div class="o-text">B. Secondary cell</div>
+                <div class="o-text">C. Fuel cell</div>
+                <div class="o-text">D. Solar cell</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 88<br>A Lead storage battery is classified as a</div>
+                <div class="o-text">A. Primary cell</div>
+                <div class="o-text">B. Secondary cell</div>
+                <div class="o-text">C. Fuel cell</div>
+                <div class="o-text">D. Concentration cell</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 89<br>During the discharging process of a lead storage battery</div>
+                <div class="o-text">A. Lead is formed</div>
+                <div class="o-text">B. PbO2 is formed</div>
+                <div class="o-text">C. H2SO4 is consumed</div>
+                <div class="o-text">D. Water is consumed</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 90<br>Fuel cells uniquely convert the chemical energy of a fuel directly into</div>
+                <div class="o-text">A. Heat energy</div>
+                <div class="o-text">B. Mechanical energy</div>
+                <div class="o-text">C. Electrical energy</div>
+                <div class="o-text">D. Light energy</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 91<br>Rusting of iron is an everyday example of</div>
+                <div class="o-text">A. Physical change</div>
+                <div class="o-text">B. Electrochemical corrosion</div>
+                <div class="o-text">C. Nuclear reaction</div>
+                <div class="o-text">D. Biological degradation</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 92<br>Chemically, rust is primarily</div>
+                <div class="o-text">A. Hydrated ferric oxide</div>
+                <div class="o-text">B. Ferric chloride</div>
+                <div class="o-text">C. Ferrous sulphate</div>
+                <div class="o-text">D. Ferrous oxide</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 93<br>Wet corrosion is also scientifically known as</div>
+                <div class="o-text">A. Chemical corrosion</div>
+                <div class="o-text">B. Electrochemical corrosion</div>
+                <div class="o-text">C. Atmospheric corrosion</div>
+                <div class="o-text">D. Thermal corrosion</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 94<br>In sacrificial anodic protection to prevent corrosion, the protected metal is made the</div>
+                <div class="o-text">A. Anode</div>
+                <div class="o-text">B. Cathode</div>
+                <div class="o-text">C. Electrolyte</div>
+                <div class="o-text">D. Salt bridge</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 95<br>Galvanization is the specific process of coating</div>
+                <div class="o-text">A. Zinc on iron</div>
+                <div class="o-text">B. Tin on iron</div>
+                <div class="o-text">C. Copper on iron</div>
+                <div class="o-text">D. Silver on copper</div>
+                <div class="a-text">Correct Answer: A</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 96<br>The conductance of an electrolytic solution primarily depends on</div>
+                <div class="o-text">A. Only temperature</div>
+                <div class="o-text">B. Only concentration</div>
+                <div class="o-text">C. Both temperature and concentration</div>
+                <div class="o-text">D. Neither temperature nor concentration</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 97<br>Equivalent conductivity is typically expressed in the units of</div>
+                <div class="o-text">A. S cm^-1</div>
+                <div class="o-text">B. S cm^2 eq^-1</div>
+                <div class="o-text">C. S m^2 mol^-1</div>
+                <div class="o-text">D. Ohm cm</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 98<br>The salt bridge in a galvanic cell serves to</div>
+                <div class="o-text">A. Produce electricity directly</div>
+                <div class="o-text">B. Maintain electrical neutrality</div>
+                <div class="o-text">C. Act as a catalyst</div>
+                <div class="o-text">D. Increase the cell temperature</div>
+                <div class="a-text">Correct Answer: B</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 99<br>Which of the following metals is most prone to atmospheric corrosion?</div>
+                <div class="o-text">A. Gold</div>
+                <div class="o-text">B. Platinum</div>
+                <div class="o-text">C. Iron</div>
+                <div class="o-text">D. Silver</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+            <div class="q-block">
+                <div class="q-text">Question 100<br>Cathodic protection is widely and effectively used to protect</div>
+                <div class="o-text">A. Glass windows</div>
+                <div class="o-text">B. Wooden furniture</div>
+                <div class="o-text">C. Underground metal pipelines</div>
+                <div class="o-text">D. Plastic pipes</div>
+                <div class="a-text">Correct Answer: C</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function confirmLandscape() {
+            let doc = document.documentElement;
+            if (doc.requestFullscreen) {
+                doc.requestFullscreen();
+            } else if (doc.webkitRequestFullscreen) { /* Safari */
+                doc.webkitRequestFullscreen();
+            } else if (doc.msRequestFullscreen) { /* IE11 */
+                doc.msRequestFullscreen();
+            }
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock("landscape").catch(function(error) {
+                    console.log("Orientation lock failed:", error);
+                });
+            }
+            document.getElementById('portrait-overlay').style.display = 'none';
+            document.querySelector('.notebook-container').style.display = 'block';
+        }
+
+        function cancelAction() {
+            window.history.back();
+        }
+    </script>
+</body>
+</html>
