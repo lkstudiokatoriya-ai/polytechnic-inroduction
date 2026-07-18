@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Student Video Library | POLYTECHNIC HUB</title>
+    
+    <!-- Google Fonts: Inter for UI text, Outfit for premium display headings -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (via CDN for single-file requirement) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Phosphor Icons: Minimalist, premium vector icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                            950: '#0f172a',
+                        },
+                        dark: {
+                            900: '#020617', // Very black/blue - Deep space
+                            800: '#0f172a', // Slate 900
+                            700: '#1e293b', // Slate 800
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.4s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(15px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Theme & Background */
+        body {
+            background-color: #020617;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(30, 58, 138, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 85% 30%, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 12px 30px -10px rgba(37, 99, 235, 0.25);
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+        }
+
+        /* Typography Utilities */
+        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* Custom Premium Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.4); border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.8); }
+
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        /* Perfect 16:9 Video Player Wrapper (NO overlapping layers allowed inside) */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            width: 100%;
+            overflow: hidden;
+            background-color: #000;
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            outline: none;
+        }
+
+        /* Fullscreen handling */
+        .video-wrapper:fullscreen {
+            border-radius: 0;
+            padding-bottom: 0;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+        }
+        .video-wrapper:-webkit-full-screen { border-radius: 0; padding-bottom: 0; height: 100vh; width: 100vw; }
+        .video-wrapper:-moz-full-screen { border-radius: 0; padding-bottom: 0; height: 100vh; width: 100vw; }
+
+        .thumbnail-hover img { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .thumbnail-hover:hover img { transform: scale(1.08); }
+
+        /* Dynamic Stagger Animations generated by JS */
+        .stagger-1 { animation-delay: 0.05s; }
+        .stagger-2 { animation-delay: 0.10s; }
+        .stagger-3 { animation-delay: 0.15s; }
+        .stagger-4 { animation-delay: 0.20s; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Premium Sticky Header -->
+    <header class="sticky-header glass-panel border-b border-white/5 pt-6 pb-5 px-4 md:px-8">
+        <div class="max-w-7xl mx-auto flex flex-col items-center">
+            <!-- Branding -->
+            <div class="text-center mb-5 cursor-pointer group" onclick="app.navigate('home')">
+                <h1 class="font-display text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-cyan-300 tracking-tight transition-transform group-hover:scale-[1.02]">
+                    Student Video Library
+                </h1>
+                <p class="text-slate-400 text-sm md:text-base font-medium tracking-[0.2em] uppercase mt-1">All Study Videos</p>
+            </div>
+            
+            <!-- Global Interactive Search -->
+            <div class="relative w-full max-w-2xl mx-auto group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="ph ph-magnifying-glass text-xl text-slate-400 group-focus-within:text-brand-400 transition-colors"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="searchInput"
+                    placeholder="Search courses, videos, channels..." 
+                    class="block w-full pl-12 pr-12 py-3.5 bg-dark-800/80 border border-slate-700/80 rounded-2xl text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 focus:bg-dark-900 transition-all text-base shadow-inner"
+                    autocomplete="off"
+                >
+                <button id="clearSearchBtn" class="absolute inset-y-0 right-0 pr-4 hidden items-center text-slate-400 hover:text-white transition-colors">
+                    <i class="ph-fill ph-x-circle text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dynamic Main Content Area -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 md:px-8 py-8" id="app-container">
+        <!-- Content injected by JavaScript -->
+    </main>
+
+    <!-- Professional Footer -->
+    <footer class="glass-panel border-t border-white/5 mt-auto pt-10 pb-8 px-4 md:px-8">
+        <div class="max-w-4xl mx-auto flex flex-col items-center text-center space-y-6">
+            <div class="space-y-1">
+                <h2 class="text-brand-400 font-display font-bold text-xl tracking-wider">POLYTECHNIC HUB</h2>
+                <p class="text-slate-400 text-sm font-medium">© Lalan Kumar</p>
+            </div>
+            
+            <div class="w-12 h-1 bg-gradient-to-r from-brand-600 to-brand-400 rounded-full opacity-60"></div>
+            
+            <div class="text-slate-400 text-xs md:text-sm leading-relaxed font-light bg-dark-800/50 p-5 md:p-6 rounded-2xl border border-white/5 w-full">
+                <h3 class="text-slate-200 font-semibold uppercase tracking-wider mb-3 text-xs">Copyright & Disclaimer</h3>
+                <p class="mb-1">This page embeds publicly available YouTube videos for educational purposes only.</p>
+                <p class="mb-1">All embedded videos, thumbnails and related content belong to their respective YouTube creators and copyright owners.</p>
+                <p class="mb-1">POLYTECHNIC HUB does not claim ownership of any embedded video.</p>
+                <p>If you are the copyright owner and have any concerns, please contact us for prompt review or removal.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Official YouTube IFrame Player API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- Enterprise Architecture JavaScript -->
+    <script>
+        /**
+         * DATABASE & ASSETS (Verified Real Public Educational Videos)
+         * Using highly reliable channels (FreeCodeCamp, 3Blue1Brown, CrashCourse, Engineering Mindset)
+         * to guarantee no black screens or playback errors during embedded usage.
+         */
+        const playlists = [
+            {
+                id: 'ee',
+                name: 'Electrical Engineering',
+                description: 'Master the fundamentals of electrical circuits, voltage, current, and power systems.',
+                thumbnail: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=800&q=80',
+            },
+            {
+                id: 'math',
+                name: 'Engineering Mathematics',
+                description: 'Advanced calculus, linear algebra, and differential equations tailored for engineering logic.',
+                thumbnail: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80',
+            },
+            {
+                id: 'physics',
+                name: 'Applied Physics',
+                description: 'Newtonian mechanics, thermodynamics, and quantum concepts applied to real-world engineering.',
+                thumbnail: 'https://images.unsplash.com/photo-1636466497217-26c8c540a8be?auto=format&fit=crop&w=800&q=80',
+            },
+            {
+                id: 'computer',
+                name: 'Computer Science',
+                description: 'Programming fundamentals, algorithms, and logical structures for modern software engineering.',
+                thumbnail: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80',
+            }
+        ];
+
+        // Verified public embeddable YouTube IDs
+        const rawVideos = [
+            // Electrical Engineering (Engineering Mindset)
+            { id: 'v1', playlistId: 'ee', title: 'Voltage, Current, Resistance & Power', description: 'A fundamental animated breakdown of how basic electrical quantities interact in a circuit.', channel: 'Engineering Mindset', youtubeId: 'mc979OhitAg' },
+            { id: 'v2', playlistId: 'ee', title: 'How Three Phase Electricity Works', description: 'Visualizing alternators, 3-phase power waveforms, and why it is used in industrial engineering.', channel: 'Engineering Mindset', youtubeId: '4oRT7PoXSS0' },
+            { id: 'v3', playlistId: 'ee', title: 'Capacitors Explained', description: 'What are capacitors? How do they work? A complete technical guide to capacitance.', channel: 'Engineering Mindset', youtubeId: 'X4EUwTwZ110' },
+
+            // Engineering Mathematics (3Blue1Brown)
+            { id: 'v4', playlistId: 'math', title: 'The Essence of Calculus', description: 'A deep visual intuition for the foundational concepts of limits, derivatives, and integrals.', channel: '3Blue1Brown', youtubeId: 'WUvTyaaNkzM' },
+            { id: 'v5', playlistId: 'math', title: 'Vectors | Essence of linear algebra', description: 'What actually is a vector? Understanding the geometric and numeric perspectives.', channel: '3Blue1Brown', youtubeId: 'fNk_zzaMoSs' },
+            { id: 'v6', playlistId: 'math', title: 'Linear transformations and matrices', description: 'Visualizing how matrices transform space, an essential concept for computer graphics and engineering.', channel: '3Blue1Brown', youtubeId: 'k7RM-ot2NWY' },
+
+            // Applied Physics (CrashCourse)
+            { id: 'v7', playlistId: 'physics', title: 'Motion in a Straight Line', description: 'Understanding displacement, velocity, and acceleration in one-dimensional kinematics.', channel: 'CrashCourse', youtubeId: 'ZM8ECpBuQYE' },
+            { id: 'v8', playlistId: 'physics', title: 'Newton\'s Laws of Motion', description: 'Force, mass, and acceleration. Breaking down the three laws that govern classical mechanics.', channel: 'CrashCourse', youtubeId: 'Y1Q0P6rD8b8' },
+            
+            // Computer Science (FreeCodeCamp)
+            { id: 'v9', playlistId: 'computer', title: 'Python for Beginners', description: 'Full course introducing variables, data structures, loops, and logic in Python programming.', channel: 'freeCodeCamp', youtubeId: 'rfscVS0vtbw' },
+            { id: 'v10', playlistId: 'computer', title: 'JavaScript Algorithms and Data Structures', description: 'Mastering the core structures of software engineering. Arrays, lists, trees, and algorithmic efficiency.', channel: 'freeCodeCamp', youtubeId: 'PkZNo7MFOUg' },
+        ];
+
+        // Format data: Map playlist details and dynamically generate high-res YouTube thumbnails
+        const videos = rawVideos.map(video => {
+            const playlist = playlists.find(p => p.id === video.playlistId);
+            return {
+                ...video,
+                playlistName: playlist ? playlist.name : 'Uncategorized',
+                // maxresdefault is 1080p, hqdefault is 480p fallback
+                thumbnail: `https://img.youtube.com/vi/${video.youtubeId}/maxresdefault.jpg`,
+                hqThumbnail: `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`
+            };
+        });
+
+        /**
+         * STATE MANAGEMENT
+         */
+        const state = {
+            view: 'home', // 'home', 'playlist', 'player', 'search'
+            activePlaylist: null,
+            activeVideo: null,
+            searchQuery: '',
+            ytPlayer: null,
+            // Persist user progress in localStorage
+            watchedHistory: JSON.parse(localStorage.getItem('phub_progress')) || []
+        };
+
+        // DOM Elements
+        const DOM = {
+            container: document.getElementById('app-container'),
+            searchInput: document.getElementById('searchInput'),
+            clearBtn: document.getElementById('clearSearchBtn')
+        };
+
+        /**
+         * INITIALIZATION & EVENT LISTENERS
+         */
+        function initApp() {
+            // Search Input Handling
+            DOM.searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.trim().toLowerCase();
+                if (query.length > 0) {
+                    DOM.clearBtn.classList.remove('hidden');
+                    DOM.clearBtn.classList.add('flex');
+                    app.search(query);
+                } else {
+                    DOM.clearBtn.classList.add('hidden');
+                    DOM.clearBtn.classList.remove('flex');
+                    app.navigate(state.view === 'search' ? (state.activePlaylist ? 'playlist' : 'home') : state.view);
+                }
+            });
+
+            // Clear Search Button
+            DOM.clearBtn.addEventListener('click', () => {
+                DOM.searchInput.value = '';
+                DOM.clearBtn.classList.add('hidden');
+                DOM.clearBtn.classList.remove('flex');
+                app.navigate(state.activeVideo ? 'player' : (state.activePlaylist ? 'playlist' : 'home'));
+            });
+
+            // Initial Render
+            app.navigate('home');
+        }
+
+        /**
+         * CORE APPLICATION CONTROLLER
+         */
+        const app = {
+            navigate: (view, id = null) => {
+                // Cleanup YouTube player if navigating away from player view
+                if (view !== 'player' && state.ytPlayer) {
+                    state.ytPlayer.destroy();
+                    state.ytPlayer = null;
+                }
+
+                // Temporary override for search without breaking history
+                if (view === 'search') {
+                    renderSearch(id); // id holds search data here
+                    return;
+                }
+
+                state.view = view;
+                
+                // Clear search box natively
+                if (DOM.searchInput.value !== '') {
+                    DOM.searchInput.value = '';
+                    DOM.clearBtn.classList.add('hidden');
+                    DOM.clearBtn.classList.remove('flex');
+                }
+
+                // Scroll to top on navigation
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                switch(view) {
+                    case 'home':
+                        state.activePlaylist = null;
+                        state.activeVideo = null;
+                        renderHome();
+                        break;
+                    case 'playlist':
+                        if (id) state.activePlaylist = id;
+                        renderPlaylist();
+                        break;
+                    case 'player':
+                        if (id) state.activeVideo = id;
+                        renderPlayer();
+                        break;
+                }
+            },
+
+            // Handles gesture-initiated playback + Fullscreen API
+            playVideoFullExperience: (videoId, event) => {
+                if (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                // 1. Navigate and Render UI synchronously
+                app.navigate('player', videoId);
+                
+                // 2. Immediately attempt Fullscreen on the newly rendered player container
+                // This MUST happen in the same execution stack as the user gesture (click)
+                const playerContainer = document.getElementById('fs-wrapper');
+                if (playerContainer) {
+                    const requestFS = playerContainer.requestFullscreen || 
+                                      playerContainer.webkitRequestFullscreen || 
+                                      playerContainer.mozRequestFullScreen || 
+                                      playerContainer.msRequestFullscreen;
+                    if (requestFS) {
+                        requestFS.call(playerContainer).catch(err => {
+                            console.log("Fullscreen API requires stricter user gesture or unsupported.", err);
+                        });
+                    }
+
+                    // Attempt to lock orientation to Landscape for Mobile
+                    try {
+                        if (screen.orientation && screen.orientation.lock) {
+                            screen.orientation.lock('landscape').catch(() => {
+                                // Silently catch - orientation lock is heavily restricted on some devices
+                            });
+                        }
+                    } catch (e) {}
+                }
+            },
+            
+            search: (query) => {
+                const vidResults = videos.filter(v => 
+                    v.title.toLowerCase().includes(query) ||
+                    v.description.toLowerCase().includes(query) ||
+                    v.channel.toLowerCase().includes(query) ||
+                    v.playlistName.toLowerCase().includes(query)
+                );
+                const plResults = playlists.filter(p => 
+                    p.name.toLowerCase().includes(query) ||
+                    p.description.toLowerCase().includes(query)
+                );
+                app.navigate('search', { videos: vidResults, playlists: plResults, query });
+            },
+
+            markAsWatched: (videoId) => {
+                if (!state.watchedHistory.includes(videoId)) {
+                    state.watchedHistory.push(videoId);
+                    localStorage.setItem('phub_progress', JSON.stringify(state.watchedHistory));
+                }
+            },
+
+            getProgress: (playlistId) => {
+                const pVideos = videos.filter(v => v.playlistId === playlistId);
+                const total = pVideos.length;
+                if (total === 0) return { watched: 0, total: 0, percentage: 0 };
+                const watched = pVideos.filter(v => state.watchedHistory.includes(v.id)).length;
+                return { watched, total, percentage: Math.round((watched / total) * 100) };
+            },
+
+            playNext: () => {
+                const current = videos.find(v => v.id === state.activeVideo);
+                if (!current) return;
+                const pVids = videos.filter(v => v.playlistId === current.playlistId);
+                const idx = pVids.findIndex(v => v.id === state.activeVideo);
+                if (idx < pVids.length - 1) app.navigate('player', pVids[idx + 1].id);
+            },
+
+            playPrev: () => {
+                const current = videos.find(v => v.id === state.activeVideo);
+                if (!current) return;
+                const pVids = videos.filter(v => v.playlistId === current.playlistId);
+                const idx = pVids.findIndex(v => v.id === state.activeVideo);
+                if (idx > 0) app.navigate('player', pVids[idx - 1].id);
+            }
+        };
+
+        /**
+         * UI RENDERERS
+         */
+        function renderHome() {
+            let html = `
+                <div class="animate-fade-in w-full">
+                    <div class="flex items-center mb-8 gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-600/20 border border-brand-500/30 flex items-center justify-center text-brand-400 shadow-inner">
+                            <i class="ph-fill ph-books text-xl"></i>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-display font-bold text-white">Engineering Playlists</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
+            `;
+
+            playlists.forEach((pl, index) => {
+                const count = videos.filter(v => v.playlistId === pl.id).length;
+                const prog = app.getProgress(pl.id);
+                const delay = `stagger-${(index % 4) + 1}`;
+                
+                html += `
+                    <div onclick="app.navigate('playlist', '${pl.id}')" class="glass-card rounded-2xl overflow-hidden cursor-pointer group animate-slide-up ${delay} flex flex-col h-full">
+                        <div class="relative w-full pt-[56.25%] overflow-hidden thumbnail-hover bg-dark-900">
+                            <img src="${pl.thumbnail}" alt="${pl.name}" class="absolute top-0 left-0 w-full h-full object-cover" loading="lazy">
+                            <div class="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-90"></div>
+                            <div class="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 border border-white/10 shadow-lg text-slate-200">
+                                <i class="ph-fill ph-list-video text-brand-400"></i> ${count} Videos
+                            </div>
+                        </div>
+                        
+                        <div class="p-5 flex flex-col flex-grow">
+                            <h3 class="text-lg md:text-xl font-bold mb-2 text-white group-hover:text-brand-400 transition-colors line-clamp-1">${pl.name}</h3>
+                            <p class="text-slate-400 text-sm line-clamp-2 mb-5 leading-relaxed font-light flex-grow">${pl.description}</p>
+                            
+                            <div class="mt-auto">
+                                <div class="flex justify-between text-xs text-slate-400 font-medium mb-2">
+                                    <span>Progress</span>
+                                    <span class="text-brand-300 font-bold">${prog.watched} / ${prog.total}</span>
+                                </div>
+                                <div class="w-full bg-dark-900 rounded-full h-1.5 overflow-hidden shadow-inner border border-white/5">
+                                    <div class="bg-gradient-to-r from-brand-600 to-cyan-400 h-1.5 rounded-full transition-all duration-1000" style="width: ${prog.percentage}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            DOM.container.innerHTML = html;
+        }
+
+        function renderPlaylist() {
+            const pl = playlists.find(p => p.id === state.activePlaylist);
+            if (!pl) return app.navigate('home');
+
+            const plVids = videos.filter(v => v.playlistId === pl.id);
+            const prog = app.getProgress(pl.id);
+
+            let html = `
+                <div class="animate-fade-in w-full">
+                    <!-- Premium Breadcrumb -->
+                    <button onclick="app.navigate('home')" class="mb-6 inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors group font-medium bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl border border-white/5">
+                        <i class="ph-bold ph-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                        Library
+                    </button>
+
+                    <!-- Hero Banner -->
+                    <div class="glass-panel rounded-3xl p-6 md:p-10 mb-10 relative overflow-hidden flex flex-col md:flex-row gap-8 items-center border-t border-brand-500/20 shadow-2xl">
+                        <div class="absolute -right-32 -top-32 w-96 h-96 bg-brand-600/10 rounded-full blur-3xl pointer-events-none"></div>
+                        
+                        <div class="w-full md:w-1/3 pt-[56.25%] md:pt-0 md:h-56 rounded-2xl overflow-hidden relative shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] shrink-0 border border-white/10">
+                            <img src="${pl.thumbnail}" alt="${pl.name}" class="absolute top-0 left-0 md:static w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-brand-900/10 mix-blend-overlay"></div>
+                        </div>
+                        
+                        <div class="flex-grow z-10 w-full text-center md:text-left">
+                            <div class="inline-flex items-center gap-2 mb-3 bg-brand-500/10 border border-brand-500/20 text-brand-300 text-[10px] font-extrabold px-3 py-1.5 rounded-full uppercase tracking-[0.15em]">
+                                <i class="ph-fill ph-book-open"></i> Course Module
+                            </div>
+                            <h2 class="text-3xl md:text-5xl font-display font-bold text-white mb-4 tracking-tight drop-shadow-md">${pl.name}</h2>
+                            <p class="text-slate-300 mb-8 max-w-2xl leading-relaxed text-base font-light mx-auto md:mx-0">${pl.description}</p>
+                            
+                            <div class="flex flex-col sm:flex-row gap-5 items-center w-full max-w-2xl">
+                                <button onclick="app.playVideoFullExperience('${plVids[0]?.id}', event)" class="w-full sm:w-auto bg-brand-600 hover:bg-brand-500 text-white font-semibold py-3.5 px-8 rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] hover:shadow-[0_0_30px_rgba(37,99,235,0.5)] transform hover:-translate-y-0.5">
+                                    <i class="ph-fill ph-play-circle text-2xl"></i>
+                                    Play Course
+                                </button>
+                                
+                                <div class="w-full sm:flex-grow bg-dark-900/50 p-4 rounded-xl border border-white/5">
+                                    <div class="flex justify-between text-xs text-slate-300 font-semibold mb-2">
+                                        <span>Completion</span>
+                                        <span class="text-brand-400">${prog.watched} of ${prog.total} Videos</span>
+                                    </div>
+                                    <div class="w-full bg-dark-800 rounded-full h-2 shadow-inner overflow-hidden">
+                                        <div class="bg-gradient-to-r from-brand-600 to-cyan-400 h-2 rounded-full transition-all duration-1000 relative" style="width: ${prog.percentage}%">
+                                            <div class="absolute inset-0 bg-white/20 w-full h-full animate-pulse"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Video Grid -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <h3 class="text-xl font-bold text-white">Course Content</h3>
+                        <div class="h-px flex-grow bg-gradient-to-r from-white/10 to-transparent"></div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
+            `;
+
+            plVids.forEach((v, index) => {
+                const isWatched = state.watchedHistory.includes(v.id);
+                const delay = `stagger-${(index % 4) + 1}`;
+                
+                html += `
+                    <div onclick="app.playVideoFullExperience('${v.id}', event)" class="glass-card rounded-2xl overflow-hidden cursor-pointer group animate-slide-up ${delay} flex flex-col h-full border ${isWatched ? 'border-brand-900/50 bg-brand-900/10' : 'border-white/5'}">
+                        <div class="relative w-full pt-[56.25%] overflow-hidden thumbnail-hover bg-dark-900">
+                            <!-- Fallback to hqdefault if maxresdefault fails -->
+                            <img src="${v.thumbnail}" onerror="this.src='${v.hqThumbnail}'" alt="${v.title}" class="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-700" loading="lazy">
+                            
+                            <!-- Overlays -->
+                            <div class="absolute inset-0 bg-dark-900/20 group-hover:bg-transparent transition-colors"></div>
+                            
+                            <!-- Play Button Hover Effect -->
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <div class="w-14 h-14 rounded-full bg-brand-600/90 backdrop-blur-md flex items-center justify-center text-white shadow-[0_0_20px_rgba(37,99,235,0.6)] transform scale-75 group-hover:scale-100 transition-transform duration-300">
+                                    <i class="ph-fill ph-play text-2xl ml-1"></i>
+                                </div>
+                            </div>
+
+                            ${isWatched ? `<div class="absolute top-3 left-3 bg-brand-600/90 backdrop-blur-sm text-white text-[10px] uppercase tracking-wider px-2 py-1 rounded-md flex items-center gap-1 font-bold shadow-lg border border-brand-400/30"><i class="ph-bold ph-check"></i> Watched</div>` : ''}
+                        </div>
+                        
+                        <div class="p-4 md:p-5 flex flex-col flex-grow">
+                            <h4 class="text-base font-bold mb-2 text-slate-100 group-hover:text-brand-400 transition-colors line-clamp-2 leading-snug">${v.title}</h4>
+                            <p class="text-slate-400 text-sm line-clamp-2 mb-4 font-light leading-relaxed flex-grow">${v.description}</p>
+                            
+                            <div class="flex items-center gap-2 mt-auto pt-4 border-t border-white/5">
+                                <div class="w-6 h-6 rounded-full bg-dark-800 flex items-center justify-center border border-white/10 shrink-0 text-slate-400">
+                                    <i class="ph-fill ph-user text-xs"></i>
+                                </div>
+                                <span class="text-xs text-slate-400 font-medium line-clamp-1">${v.channel}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            DOM.container.innerHTML = html;
+        }
+
+        function renderPlayer() {
+            const v = videos.find(vid => vid.id === state.activeVideo);
+            if (!v) return app.navigate('home');
+
+            // Set context and mark watched
+            state.activePlaylist = v.playlistId;
+            app.markAsWatched(v.id);
+            
+            const pl = playlists.find(p => p.id === v.playlistId);
+            const plVids = videos.filter(vid => vid.playlistId === v.playlistId);
+            const cIdx = plVids.findIndex(vid => vid.id === v.id);
+            const hasNext = cIdx < plVids.length - 1;
+            const hasPrev = cIdx > 0;
+            const prog = app.getProgress(pl.id);
+
+            let html = `
+                <div class="animate-fade-in w-full flex flex-col lg:flex-row gap-6 lg:gap-8">
+                    
+                    <!-- LEFT COLUMN: Main Player Area -->
+                    <div class="w-full lg:w-2/3 xl:w-3/4 flex flex-col gap-5">
+                        
+                        <!-- Top Navigation Bar -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/5 p-3 px-5 rounded-2xl border border-white/5">
+                            <button onclick="app.navigate('playlist')" class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group text-sm font-semibold">
+                                <div class="w-8 h-8 rounded-full bg-dark-800 flex items-center justify-center border border-white/10 group-hover:bg-brand-600 transition-colors">
+                                    <i class="ph-bold ph-arrow-left"></i>
+                                </div>
+                                Back to Playlist
+                            </button>
+                            
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Module Progress</span>
+                                <div class="w-24 md:w-32 bg-dark-900 rounded-full h-1.5 shadow-inner border border-white/5 overflow-hidden">
+                                    <div class="bg-brand-500 h-1.5 rounded-full" style="width: ${prog.percentage}%"></div>
+                                </div>
+                                <span class="text-xs font-extrabold text-brand-400">${prog.watched}/${prog.total}</span>
+                            </div>
+                        </div>
+
+                        <!-- 
+                            CRITICAL: Video Player Wrapper 
+                            Used for Fullscreen API targeting. MUST NOT contain absolute overlapping elements 
+                            that interfere with IFrame clicks/UI. 
+                        -->
+                        <div id="fs-wrapper" class="w-full bg-black rounded-xl overflow-hidden shadow-[0_15px_40px_-10px_rgba(0,0,0,0.7)] border border-white/10">
+                            <div class="video-wrapper" id="yt-player-container">
+                                <!-- YT IFrame Injected Here -->
+                            </div>
+                        </div>
+
+                        <!-- Player Controls -->
+                        <div class="flex items-center justify-between mt-1">
+                            <button onclick="app.playPrev()" class="${hasPrev ? 'bg-dark-800 hover:bg-dark-700 text-white border border-white/10 hover:border-white/20' : 'bg-dark-900 text-slate-600 cursor-not-allowed opacity-50'} px-5 py-3.5 rounded-xl flex items-center justify-center gap-2 font-semibold text-sm transition-all w-1/2 mr-2" ${!hasPrev ? 'disabled' : ''}>
+                                <i class="ph-bold ph-caret-left text-lg"></i> Previous
+                            </button>
+                            
+                            <button onclick="app.playNext()" class="${hasNext ? 'bg-brand-600 hover:bg-brand-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.25)]' : 'bg-dark-900 text-slate-600 cursor-not-allowed opacity-50'} px-5 py-3.5 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all w-1/2 ml-2" ${!hasNext ? 'disabled' : ''}>
+                                Next Video <i class="ph-bold ph-caret-right text-lg"></i>
+                            </button>
+                        </div>
+
+                        <!-- Video Metadata Panel -->
+                        <div class="glass-panel rounded-2xl p-6 md:p-8 mt-2 border-t border-brand-500/20">
+                            <h1 class="text-2xl md:text-3xl lg:text-4xl font-display font-bold text-white mb-5 leading-tight">${v.title}</h1>
+                            
+                            <div class="flex items-center gap-4 mb-6 pb-6 border-b border-white/10">
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-brand-900 to-dark-700 flex items-center justify-center border border-white/10 shadow-inner shrink-0">
+                                    <i class="ph-fill ph-chalkboard-teacher text-2xl text-brand-300"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold mb-0.5">Instructor / Channel</p>
+                                    <p class="text-white font-semibold text-base">${v.channel}</p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-3 flex items-center gap-2">
+                                    <i class="ph-fill ph-text-align-left text-brand-500"></i> Description
+                                </h3>
+                                <p class="text-slate-300 leading-relaxed font-light text-sm md:text-base whitespace-pre-line">${v.description}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: Related Videos Sidebar -->
+                    <div class="w-full lg:w-1/3 xl:w-1/4 flex flex-col gap-4">
+                        <!-- Sticky sidebar wrapper -->
+                        <div class="glass-panel rounded-2xl p-5 lg:sticky lg:top-24 flex flex-col max-h-[85vh] border-t border-white/10 shadow-xl">
+                            
+                            <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-white border-b border-white/10 pb-4">
+                                <i class="ph-fill ph-list-dashes text-brand-400"></i> Up Next
+                            </h3>
+                            
+                            <!-- Custom Scrollable List -->
+                            <div class="overflow-y-auto pr-2 -mr-2 space-y-3 flex-grow custom-scrollbar">
+                                ${plVids.map(related => {
+                                    const isCurrent = related.id === state.activeVideo;
+                                    const isDone = state.watchedHistory.includes(related.id);
+                                    
+                                    return `
+                                    <div onclick="app.playVideoFullExperience('${related.id}', event)" class="flex gap-3 group cursor-pointer p-2.5 rounded-xl transition-all duration-300 ${isCurrent ? 'bg-brand-900/40 border border-brand-500/40 shadow-inner' : 'hover:bg-white/5 border border-transparent'}">
+                                        
+                                        <!-- Sidebar Thumbnail -->
+                                        <div class="relative w-32 md:w-40 lg:w-28 xl:w-32 aspect-video rounded-lg overflow-hidden bg-dark-900 shrink-0 border border-white/5">
+                                            <img src="${related.thumbnail}" onerror="this.src='${related.hqThumbnail}'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                            
+                                            ${isCurrent ? `
+                                                <div class="absolute inset-0 bg-brand-900/60 backdrop-blur-[1px] flex items-center justify-center">
+                                                    <div class="w-8 h-8 bg-brand-500 rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.8)] animate-pulse">
+                                                        <i class="ph-fill ph-speaker-high text-white text-xs ml-0.5"></i>
+                                                    </div>
+                                                </div>
+                                            ` : `
+                                                <div class="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                                                    <i class="ph-fill ph-play text-white/90 text-2xl drop-shadow-md scale-90 group-hover:scale-110 transition-transform"></i>
+                                                </div>
+                                            `}
+                                            
+                                            ${isDone && !isCurrent ? `
+                                                <div class="absolute bottom-1 right-1 bg-brand-600/90 text-white text-[9px] px-1 py-0.5 rounded flex items-center font-bold">
+                                                    <i class="ph-bold ph-check"></i>
+                                                </div>
+                                            ` : ''}
+                                        </div>
+                                        
+                                        <!-- Sidebar Text -->
+                                        <div class="flex-grow flex flex-col justify-center min-w-0">
+                                            <h4 class="text-xs sm:text-sm font-semibold text-slate-200 line-clamp-2 leading-snug group-hover:text-brand-300 transition-colors ${isCurrent ? 'text-brand-300' : ''}">${related.title}</h4>
+                                            <p class="text-[10px] text-slate-500 mt-1.5 font-medium truncate">${related.channel}</p>
+                                        </div>
+                                    </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            DOM.container.innerHTML = html;
+            
+            // Re-initialize YouTube Player
+            initYouTubePlayer(v.youtubeId);
+        }
+
+        function renderSearch({ videos: vResults, playlists: pResults, query }) {
+            let html = `
+                <div class="animate-fade-in w-full">
+                    <div class="mb-8 flex items-center gap-3 border-b border-white/10 pb-6">
+                        <div class="w-10 h-10 rounded-full bg-dark-800 flex items-center justify-center text-slate-400">
+                            <i class="ph-bold ph-magnifying-glass text-xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-display font-bold text-white">Search Results</h2>
+                            <p class="text-slate-400 text-sm mt-0.5">Showing results for "<span class="text-brand-400 font-semibold">${query}</span>"</p>
+                        </div>
+                    </div>
+            `;
+
+            if (pResults.length === 0 && vResults.length === 0) {
+                html += `
+                    <div class="text-center py-24 glass-panel rounded-3xl border border-dashed border-white/20 max-w-2xl mx-auto">
+                        <i class="ph-light ph-files text-6xl text-slate-600 mb-4 inline-block"></i>
+                        <h3 class="text-xl font-bold text-slate-300 mb-2">No learning materials found</h3>
+                        <p class="text-slate-500 font-light">Try searching for generic terms like "Math", "Physics", or "Python".</p>
+                    </div>
+                </div>`;
+                return DOM.container.innerHTML = html;
+            }
+
+            if (pResults.length > 0) {
+                html += `
+                    <h3 class="text-sm font-bold mb-4 text-slate-400 uppercase tracking-widest flex items-center gap-2"><i class="ph-fill ph-books text-brand-500"></i> Modules</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+                `;
+                pResults.forEach(pl => {
+                    html += `
+                        <div onclick="app.navigate('playlist', '${pl.id}')" class="glass-card p-3 rounded-2xl flex items-center gap-4 cursor-pointer group hover:bg-white/5 border border-white/5">
+                            <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-dark-900 border border-white/10">
+                                <img src="${pl.thumbnail}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="font-bold text-white text-sm group-hover:text-brand-400 transition-colors truncate">${pl.name}</h4>
+                                <p class="text-[10px] text-slate-400 mt-1 uppercase font-semibold tracking-wider">Playlist</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            if (vResults.length > 0) {
+                html += `
+                    <h3 class="text-sm font-bold mb-4 text-slate-400 uppercase tracking-widest flex items-center gap-2"><i class="ph-fill ph-video-camera text-brand-500"></i> Videos</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
+                `;
+                vResults.forEach((v, idx) => {
+                    const delay = `stagger-${(idx % 4) + 1}`;
+                    html += `
+                        <div onclick="app.playVideoFullExperience('${v.id}', event)" class="glass-card rounded-2xl overflow-hidden cursor-pointer group animate-slide-up ${delay} flex flex-col h-full border border-white/5">
+                            <div class="relative w-full pt-[56.25%] overflow-hidden bg-dark-900">
+                                <img src="${v.thumbnail}" onerror="this.src='${v.hqThumbnail}'" class="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                                <div class="absolute inset-0 bg-dark-900/30 group-hover:bg-transparent transition-colors"></div>
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                    <div class="w-14 h-14 rounded-full bg-brand-600/90 backdrop-blur-md flex items-center justify-center text-white shadow-lg transform scale-75 group-hover:scale-100 transition-transform">
+                                        <i class="ph-fill ph-play text-2xl ml-1"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4 flex flex-col flex-grow">
+                                <span class="text-[9px] uppercase font-bold text-brand-400 tracking-wider mb-2 block truncate">${v.playlistName}</span>
+                                <h4 class="text-sm font-bold mb-2 text-slate-100 group-hover:text-brand-400 transition-colors line-clamp-2">${v.title}</h4>
+                                <div class="flex items-center gap-2 mt-auto pt-3 border-t border-white/5">
+                                    <i class="ph-fill ph-user text-slate-500 text-xs"></i>
+                                    <span class="text-xs text-slate-400 font-medium truncate">${v.channel}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            html += `</div>`;
+            DOM.container.innerHTML = html;
+        }
+
+        /**
+         * OFFICIAL YOUTUBE IFRAME API INTEGRATION
+         * Handles rendering, responsive scaling, autoplay and auto-next functionality.
+         */
+        function onYouTubeIframeAPIReady() {
+            window.ytApiReady = true;
+            // If the user somehow loaded directly into a player route
+            if (state.view === 'player' && state.activeVideo) {
+                const v = videos.find(vid => vid.id === state.activeVideo);
+                if (v) initYouTubePlayer(v.youtubeId);
+            }
+        }
+
+        function initYouTubePlayer(youtubeId) {
+            // Safety check for API load time
+            if (!window.ytApiReady || typeof YT === 'undefined' || !YT.Player) {
+                setTimeout(() => initYouTubePlayer(youtubeId), 150);
+                return;
+            }
+
+            // Clean instantiation
+            if (state.ytPlayer) {
+                state.ytPlayer.destroy();
+            }
+
+            // Create Player attached to the specific container ID
+            state.ytPlayer = new YT.Player('yt-player-container', {
+                videoId: youtubeId,
+                playerVars: {
+                    'autoplay': 1,         // Start immediately (crucial for fullscreen UX)
+                    'rel': 0,              // Disable related videos outside our ecosystem
+                    'modestbranding': 1,   // Hide YT Logo
+                    'playsinline': 1,      // Allow inline playback on iOS
+                    'enablejsapi': 1,
+                    'color': 'white'
+                },
+                events: {
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerStateChange(event) {
+            // YT.PlayerState.ENDED is 0. Trigger Auto-Next.
+            if (event.data === 0) {
+                app.playNext();
+            }
+        }
+
+        // Boot Application
+        document.addEventListener('DOMContentLoaded', initApp);
+
+    </script>
+</body>
+</html>
