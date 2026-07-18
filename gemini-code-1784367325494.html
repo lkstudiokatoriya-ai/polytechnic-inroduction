@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Objective Question Book</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap');
+
+        :root {
+            --q-color: #00F5FF;
+            --opt-color: #FFFFFF;
+            --ans-color: #00FF66;
+            --hl-color: #FF9800;
+            --bg-color: #1e1e24;
+            --spiral-bg: #111;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0d0d0d;
+            font-family: 'Kalam', cursive;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .notebook {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 30px 0;
+        }
+
+        .page {
+            width: 297mm;
+            min-height: 210mm;
+            background-color: var(--bg-color);
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 25px 25px;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            border-radius: 5px 15px 15px 5px;
+            display: flex;
+            padding-left: 55px; /* space for spiral */
+            page-break-after: always;
+        }
+
+        .spiral-binding {
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            border-right: 1px solid rgba(0,0,0,0.5);
+            background: linear-gradient(to right, rgba(0,0,0,0.2), transparent);
+        }
+
+        .coil-wrapper {
+            position: relative;
+            width: 35px;
+            height: 16px;
+        }
+
+        .coil {
+            width: 35px;
+            height: 12px;
+            background: linear-gradient(to bottom, #eeeeee, #ffffff, #999999);
+            border-radius: 6px;
+            box-shadow: 2px 3px 5px rgba(0,0,0,0.8), inset 0 -2px 3px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
+        }
+
+        .hole {
+            width: 14px;
+            height: 14px;
+            background-color: #080808;
+            border-radius: 50%;
+            position: absolute;
+            right: 2px;
+            top: -1px;
+            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.9);
+            z-index: 1;
+        }
+
+        .content {
+            padding: 25px 35px 25px 15px;
+            width: 100%;
+            column-count: 2;
+            column-gap: 40px;
+            column-rule: 1px dashed rgba(255,255,255,0.15);
+        }
+
+        .mcq {
+            break-inside: avoid;
+            page-break-inside: avoid;
+            margin-bottom: 22px;
+        }
+
+        .section-title {
+            color: var(--hl-color);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            break-after: avoid;
+        }
+
+        .q-text {
+            color: var(--q-color);
+            font-size: 1.15rem;
+            line-height: 1.4;
+            margin-bottom: 3px;
+        }
+
+        .o-text {
+            color: var(--opt-color);
+            font-size: 1.05rem;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            margin-left: 10px;
+        }
+
+        .correct {
+            color: var(--ans-color);
+            text-shadow: 0 0 8px rgba(0, 255, 102, 0.4);
+            font-weight: bold;
+        }
+
+        .highlight {
+            color: var(--hl-color);
+        }
+
+        /* Portrait Overlay */
+        #portrait-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #0d0d0d;
+            z-index: 9999;
+            color: #fff;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .overlay-msg {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .overlay-btns {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-confirm { background: #00FF66; color: #000; }
+        .btn-cancel { background: #FF3333; color: #FFF; }
+
+        @media screen and (orientation: portrait) {
+            #portrait-overlay { display: flex; }
+            .notebook { display: none; }
+        }
+
+        @media print {
+            @page {
+                size: A4 landscape;
+                margin: 0;
+            }
+            body { background: none; }
+            .notebook { padding: 0; gap: 0; }
+            .page {
+                margin: 0;
+                box-shadow: none;
+                border-radius: 0;
+                width: 100vw;
+                height: 100vh;
+            }
+            #portrait-overlay { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="portrait-overlay">
+    <div class="overlay-msg">📱 बेहतर अनुभव के लिए कृपया अपने डिवाइस को Landscape Mode में घुमाएँ।</div>
+    <div class="overlay-btns">
+        <button class="btn btn-confirm" onclick="confirmLandscape()">Confirm</button>
+        <button class="btn btn-cancel" onclick="cancelAction()">Cancel</button>
+    </div>
+</div>
+
+<div class="notebook">
+    <!-- PAGE 1 -->
+    <div class="page">
+        <div class="spiral-binding">
+            <!-- 16 coils for binding -->
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+        </div>
+        <div class="content">
+            <div class="section-title">
+                Q.1 Answer all questions as directed.<br>
+                (निर्देशानुसार सभी प्रश्नों के उत्तर दें)
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">a) .................... is a vector quantity.</div>
+                <div class="o-text">(Mass/Speed//<span class="correct">Force</span>/Time)</div>
+                <div class="q-text">.................... एक सदिश राशि है।</div>
+                <div class="o-text">(द्रव्यमान/गति/<span class="correct">बल</span>/समय)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">b) The SI unit of force is....................</div>
+                <div class="o-text">(<span class="correct">Newton</span>/Dyne/Joule/watt)</div>
+                <div class="q-text">बल की SI इकाई .................... है।</div>
+                <div class="o-text">(<span class="correct">न्यूटन</span>/डाइन/जूल/वाट)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">c) Lami’s theorem is applicable for:</div>
+                <div class="o-text">(<span class="correct">Three coplanar, concurrent forces in equilibrium</span>/Two coplanar forces in equilibrium/Any number of forces/Parallel forces)</div>
+                <div class="q-text">लॉमी का प्रमेय निम्न के लिए लागू होता है:</div>
+                <div class="o-text">(<span class="correct">संतुलन में तीन सहसमतलीय, संगामी बल</span>/संतुलन में दो सहसमतलीय बल/बलों की कोई भी संख्या/समांतर बल)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">d) Beam reaction for simply supported beam subjected to vertical loads is obtained using....................</div>
+                <div class="o-text">(Triangle law/Parallelogram law/<span class="correct">Conditions of equilibrium</span>/Lami’s theorem)</div>
+                <div class="q-text">ऊर्ध्वाधर भार के अधीन सरलाधारित बीम के लिए बीम अभिक्रिया .................... का उपयोग करके प्राप्त की जाती है।</div>
+                <div class="o-text">(त्रिभुज नियम/समांतर चतुर्भुज नियम/<span class="correct">संतुलन की स्थितियाँ</span>/लॉमी प्रमेय)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">e) Limiting friction is always....................</div>
+                <div class="o-text">(Less than normal reaction/Greater than normal reaction/<span class="correct">Equal to normal reaction × coefficient of friction</span>/Independent of normal reaction)</div>
+                <div class="q-text">सीमांत घर्षण सदैव.................... होता है।</div>
+                <div class="o-text">(सामान्य अभिक्रिया से कम/सामान्य अभिक्रिया से अधिक/<span class="correct">सामान्य अभिक्रिया × घर्षण गुणांक</span>/सामान्य अभिक्रिया से स्वतंत्र)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">f) The angle of friction is the angle between.................... and ....................</div>
+                <div class="o-text">(<span class="correct">Normal reaction and resultant force</span>/Force applied and frictional force/Inclined plane and horizontal/None of these)</div>
+                <div class="q-text">घर्षण कोण .................... और.................... के बीच का कोण होता है।</div>
+                <div class="o-text">(<span class="correct">अभिलंब प्रतिक्रिया और परिणामी बल</span>/लगाया गया बल और घर्षण बल/आनत तल और क्षैतिज तल/इनमें से कोई नहीं)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">g) The unit of Moment of Inertia is....................</div>
+                <div class="o-text">(N·m / kg·m / <span class="correct">kg·m²</span> / m²)</div>
+                <div class="q-text">जड़त्व आघूर्ण की इकाई .................... है।</div>
+                <div class="o-text">(N·m / kg·m / <span class="correct">kg·m²</span> / m²)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">h) The centroid of a triangle lies at....................</div>
+                <div class="o-text">(<span class="correct">Intersection of medians</span>/Intersection of altitudes /Intersection of diagonals)</div>
+                <div class="q-text">त्रिभुज का केन्द्रक .................... पर स्थित होता है।</div>
+                <div class="o-text">(<span class="correct">माध्यिकाओं का प्रतिछेदन</span>/शीर्षलंबों का प्रतिछेदन/विकर्णों का प्रतिछेदन)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">i) The efficiency of an ideal machine is....................</div>
+                <div class="o-text">(0% / 50% / <span class="correct">100%</span>)</div>
+                <div class="q-text">एक आदर्श मशीन की दक्षता .................... होती है।</div>
+                <div class="o-text">(0% / 50% / <span class="correct">100%</span>)</div>
+            </div>
+            
+            <div class="mcq">
+                <div class="q-text">j) The ratio of a distance moved by effort to the distance moved by load is defined as ....................</div>
+                <div class="o-text">(<span class="correct">Velocity Ratio</span>/Load Ratio/Effort Ratio)</div>
+                <div class="q-text">प्रयास द्वारा तय की गई दूरी और भार द्वारा तय की गई दूरी के अनुपात को .................... के रूप में परिभाषित किया जाता है।</div>
+                <div class="o-text">(<span class="correct">वेग अनुपात</span>/भार अनुपात/प्रयास अनुपात)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page">
+        <div class="spiral-binding">
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+        </div>
+        <div class="content">
+            <div class="mcq">
+                <div class="q-text">a) .................... is a scalar quantity.</div>
+                <div class="o-text">(force/<span class="correct">mass</span>/velocity/displacement)</div>
+                <div class="q-text">.................... एक अदिश राशि है।</div>
+                <div class="o-text">(बल/<span class="correct">द्रव्यमान</span>/वेग/विस्थापन)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">b) 1 Newton is equal to ....................</div>
+                <div class="o-text">(10⁸ dyne/<span class="correct">10⁵ dyne</span>/10⁷ dyne/10⁴ dyne)</div>
+                <div class="q-text">1 न्यूटन .................... के बराबर होता है।</div>
+                <div class="o-text">(10⁸ डाइन/<span class="correct">10⁵ डाइन</span>/10⁷ डाइन/10⁴ डाइन)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">c) The resultant of two forces P & Q acting at an angle θ is equal to....................</div>
+                <div class="o-text">(<span class="correct highlight">√(P² + Q² + 2PQ cos θ)</span> / √(P² + Q² + 2PQ sin θ) / √(P² + Q² − 2PQ cos θ) / √(P² + Q² − 2PQ sin θ))</div>
+                <div class="q-text">θ कोण पर कार्य करने वाले दो बलों P और Q का परिणाम .................... के बराबर होता है।</div>
+                <div class="o-text">(<span class="correct highlight">√(P² + Q² + 2PQ cos θ)</span> / √(P² + Q² + 2PQ sin θ) / √(P² + Q² − 2PQ cos θ) / √(P² + Q² − 2PQ sin θ))</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">d) A beam which is fixed at one end and free at the other end, is known as fixed beam.</div>
+                <div class="o-text">(True/<span class="correct">False</span>)</div>
+                <div class="q-text">एक बीम जो एक छोर पर स्थिर और दूसरे छोर पर मुक्त होती है, उसे स्थिर बीम के रूप में जाना जाता है।</div>
+                <div class="o-text">(सही/<span class="correct">गलत</span>)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">e) S.I unit of couple is....................</div>
+                <div class="o-text">(<span class="correct">N-m</span> / dyne-cm/ kgf-m n/ none of the these)</div>
+                <div class="q-text">बलयुग्म की S.I इकाई .................... होती है।</div>
+                <div class="o-text">(<span class="correct">N-m</span> / dyne-cm/ kgf-m n / इनमें से कोई नहीं)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">f) Limiting friction is ............ than sliding friction.</div>
+                <div class="o-text">(<span class="correct">greater</span>/ less/ equal /none of these)</div>
+                <div class="q-text">फिसलने वाले घर्षण की तुलना में सीमांत घर्षण ............ होता है।</div>
+                <div class="o-text">(<span class="correct">अधिक</span>/कम/बराबर/इनमें से कोई नहीं)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">g) The centre of gravity of a hemisphere is at a distance of ........ from its base measured along the vertical radius r.</div>
+                <div class="o-text">(<span class="correct highlight">3r/8</span>, 2r/7, 4r/5, 5r/9)</div>
+                <div class="q-text">एक गोलार्ध का गुरुत्वाकर्षण केंद्र उसके आधार से ऊर्ध्वाधर त्रिज्या r के अनुदिश मापी गई दूरी ............ पर होती है।</div>
+                <div class="o-text">(<span class="correct highlight">3r/8</span>, 2r/7, 4r/5, 5r/9)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">h) ............ gives relation between coefficient of friction and angle of friction.</div>
+                <div class="o-text">(μ = sin θ, μ = cos θ, <span class="correct highlight">μ = tan θ</span>, μ = sec θ)</div>
+                <div class="q-text">.................... घर्षण के गुणांक और घर्षण के कोण के बीच संबंध देता है।</div>
+                <div class="o-text">(μ = sin θ, μ = cos θ, <span class="correct highlight">μ = tan θ</span>, μ = sec θ)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">i) In a lifting machine the distance moved by effort is 400 mm and distance moved by load is 25 mm then the velocity ratio is....</div>
+                <div class="o-text">(15/18/20/<span class="correct">16</span>)</div>
+                <div class="q-text">एक लिफ्टिंग मशीन में प्रयास द्वारा तय की गई दूरी 400 मिमी है और लोड द्वारा तय की गई दूरी 25 मिमी है तो वेग अनुपात .......................... होगा।</div>
+                <div class="o-text">(15/18/20/<span class="correct">16</span>)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">j) The condition for reversibility of a machine is that its efficiency must be greater than 50%.</div>
+                <div class="o-text">(<span class="correct">True</span> / False)</div>
+                <div class="q-text">मशीन की प्रतिवर्तिता के लिए शर्त यह है कि इसकी दक्षता 50% से अधिक होनी चाहिए।</div>
+                <div class="o-text">(<span class="correct">सत्य</span>/असत्य)</div>
+            </div>
+            
+            <div class="section-title">
+                Q.1 Answer all questions as directed.<br>
+                (निर्देशानुसार सभी प्रश्नों के उत्तर दें)
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">a) Four forces P, 2P, 3P and 4P act along the sides, takes in order, of a square. The resultant force is. ....................</div>
+                <div class="o-text">(Zero, <span class="correct">2√2 P</span>, 2P)</div>
+                <div class="q-text">चार बल P, 2P, 3P और 4P एक वर्ग के क्रम में भुजाओं के अनुदिश कार्य करते हैं। परिणामी बल .................... होगा।</div>
+                <div class="o-text">(Zero, <span class="correct">2√2 P</span>, 2P)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page">
+        <div class="spiral-binding">
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+        </div>
+        <div class="content">
+            <div class="mcq">
+                <div class="q-text">b) ........................ is the SI unit of force?</div>
+                <div class="o-text">(Kg m, Kg m², Kg m²/s, <span class="correct">Kg m/s²</span>)</div>
+                <div class="q-text">........................ बल की SI इकाई है।</div>
+                <div class="o-text">(Kg m, Kg m², Kg m²/s, <span class="correct">Kg m/s²</span>)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">c) ........................ is statically indeterminate beam.</div>
+                <div class="o-text">(Cantilever beam/ Simply supported beam/ <span class="correct">Continuous beam</span>)</div>
+                <div class="q-text">........................ स्थिर रूप से अनिश्चित बीम है।</div>
+                <div class="o-text">(Cantilever beam/ Simply supported beam/ <span class="correct">Continuous beam</span>)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">d) Point load is applied over an area rather than at a single point.</div>
+                <div class="o-text">(True/<span class="correct">False</span>)</div>
+                <div class="q-text">संकेंद्रित भार एक बिंदु के बजाय एक क्षेत्र पर लागू किया जाता है।</div>
+                <div class="o-text">(सत्य/<span class="correct">असत्य</span>)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">e) Area of contact does not affect frictional force.</div>
+                <div class="o-text">(<span class="correct">True</span>/False)</div>
+                <div class="q-text">संपर्क का क्षेत्रफल घर्षण बल को प्रभावित नहीं करता है।</div>
+                <div class="o-text">(<span class="correct">सत्य</span>/असत्य)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">f) The maximum value of static friction when the body is at the verge of starting motion is known as........................</div>
+                <div class="o-text">(Static friction/ <span class="correct">Limiting friction</span>/ Impending motion)</div>
+                <div class="q-text">जब पिंड गति प्रारंभ करने के कगार पर होता है तो स्थैतिक घर्षण का अधिकतम मान ........................ कहलाता है।</div>
+                <div class="o-text">(स्थैतिक घर्षण/ <span class="correct">लिमिटिंग घर्षण</span>/ आसन्न गति)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">g) Intersection of medians is the centroid of a triangle.</div>
+                <div class="o-text">(<span class="correct">True</span>/False)</div>
+                <div class="q-text">माध्यिकाओं का प्रतिछेदन एक त्रिभुज का केन्द्रक है।</div>
+                <div class="o-text">(<span class="correct">True</span>/False)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">h) The centre of gravity of a solid hemisphere of radius r lies at a distance of........................ from base.</div>
+                <div class="o-text">(8r/3, 3r/4, <span class="correct highlight">3r/8</span>, 4r/3)</div>
+                <div class="q-text">त्रिज्या r वाले ठोस गोलार्द्ध का गुरुत्व केंद्र आधार से ........................ दूरी पर स्थित होता है।</div>
+                <div class="o-text">(8r/3, 3r/4, <span class="correct highlight">3r/8</span>, 4r/3)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">i) The velocity ratio of a third system of pulleys with four pulleys is........................</div>
+                <div class="o-text">(8, 11, <span class="correct">15</span>, 16)</div>
+                <div class="q-text">चार चिरनी वाली पुली की तीसरी प्रणाली का वेग अनुपात ........................ होता है।</div>
+                <div class="o-text">(8, 11, <span class="correct">15</span>, 16)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">j) Efficiency of an ideal machine is equal to 50%.</div>
+                <div class="o-text">(True/<span class="correct">False</span>)</div>
+                <div class="q-text">एक आदर्श मशीन की दक्षता 50% के बराबर होती है।</div>
+                <div class="o-text">(सत्य/<span class="correct">असत्य</span>)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">a) Four forces P, 2P, 3P and 4P act along the sides, takes in order, of a square. The resultant force is. ....................</div>
+                <div class="o-text">(Zero, <span class="correct">2√2 P</span>, 2P)</div>
+                <div class="q-text">चार बल P, 2P, 3P और 4P एक वर्ग के क्रम में भुजाओं के अनुदिश कार्य करते हैं। परिणामी बल .................... होगा।</div>
+                <div class="o-text">(Zero, <span class="correct">2√2 P</span>, 2P)</div>
+            </div>
+            
+            <div class="mcq">
+                <div class="q-text">b) ........................ is the SI unit of force?</div>
+                <div class="o-text">(Kg m, Kg m², Kg m²/s, <span class="correct">Kg m/s²</span>)</div>
+                <div class="q-text">........................ बल की SI इकाई है।</div>
+                <div class="o-text">(Kg m, Kg m², Kg m²/s, <span class="correct">Kg m/s²</span>)</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PAGE 4 -->
+    <div class="page">
+        <div class="spiral-binding">
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+        </div>
+        <div class="content">
+            <div class="mcq">
+                <div class="q-text">c) ........................ is statically indeterminate beam.</div>
+                <div class="o-text">(Cantilever beam/ Simply supported beam/ <span class="correct">Continuous beam</span>)</div>
+                <div class="q-text">........................ स्थिर रूप से अनिश्चित बीम है।</div>
+                <div class="o-text">(Cantilever beam/ Simply supported beam/ <span class="correct">Continuous beam</span>)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">d) Point load is applied over an area rather than at a single point.</div>
+                <div class="o-text">(True/<span class="correct">False</span>)</div>
+                <div class="q-text">संकेंद्रित भार एक बिंदु के बजाय एक क्षेत्र पर लागू किया जाता है।</div>
+                <div class="o-text">(सत्य/<span class="correct">असत्य</span>)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">e) Area of contact does not affect frictional force.</div>
+                <div class="o-text">(<span class="correct">True</span>/False)</div>
+                <div class="q-text">संपर्क का क्षेत्रफल घर्षण बल को प्रभावित नहीं करता है।</div>
+                <div class="o-text">(<span class="correct">सत्य</span>/असत्य)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">f) The maximum value of static friction when the body is at the verge of starting motion is known as........................</div>
+                <div class="o-text">(Static friction/ <span class="correct">Limiting friction</span>/ Impending motion)</div>
+                <div class="q-text">जब पिंड गति प्रारंभ करने के कगार पर होता है तो स्थैतिक घर्षण का अधिकतम मान ........................ कहलाता है।</div>
+                <div class="o-text">(स्थैतिक घर्षण/ <span class="correct">लिमिटिंग घर्षण</span>/ आसन्न गति)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">g) Intersection of medians is the centroid of a triangle.</div>
+                <div class="o-text">(<span class="correct">True</span>/False)</div>
+                <div class="q-text">माध्यिकाओं का प्रतिछेदन एक त्रिभुज का केन्द्रक है।</div>
+                <div class="o-text">(<span class="correct">True</span>/False)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">h) The centre of gravity of a solid hemisphere of radius r lies at a distance of........................ from base.</div>
+                <div class="o-text">(8r/3, 3r/4, <span class="correct highlight">3r/8</span>, 4r/3)</div>
+                <div class="q-text">त्रिज्या r वाले ठोस गोलार्द्ध का गुरुत्व केंद्र आधार से ........................ दूरी पर स्थित होता है।</div>
+                <div class="o-text">(8r/3, 3r/4, <span class="correct highlight">3r/8</span>, 4r/3)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">i) The velocity ratio of a third system of pulleys with four pulleys is........................</div>
+                <div class="o-text">(8, 11, <span class="correct">15</span>, 16)</div>
+                <div class="q-text">चार चिरनी वाली पुली की तीसरी प्रणाली का वेग अनुपात ........................ होता है।</div>
+                <div class="o-text">(8, 11, <span class="correct">15</span>, 16)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">j) Efficiency of an ideal machine is equal to 50%.</div>
+                <div class="o-text">(True/<span class="correct">False</span>)</div>
+                <div class="q-text">एक आदर्श मशीन की दक्षता 50% के बराबर होती है।</div>
+                <div class="o-text">(सत्य/<span class="correct">असत्य</span>)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">a) ................................... states that a force can be split into orthogonal components along any chosen axes.</div>
+                <div class="o-text">(Varignon's Theorem/ Principle of Transmissibility/ <span class="correct">Resolution of a Force</span>)</div>
+                <div class="q-text">................................... बताता है कि किसी भी चुने हुए अक्षों के साथ एक बल को ऑर्थोगोनल घटकों में विभाजित किया जा सकता है।</div>
+                <div class="o-text">(वैरिग्नन प्रमेय/ संप्रेषणीयता का सिद्धांत/ <span class="correct">बल का विभेदन</span>)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">b) ................................... allows rotation but prevents translation in a beam structure.</div>
+                <div class="o-text">(Fixed support/ <span class="correct">Hinged support</span>/ Roller support)</div>
+                <div class="q-text">................................... रोटेशन की अनुमति देता है लेकिन बीम संरचना में ट्रांसलेशन को रोकता है।</div>
+                <div class="o-text">(फिक्स्ड सपोर्ट/ <span class="correct">हिंज सपोर्ट</span>/ रोलर सपोर्ट)</div>
+            </div>
+            
+            <div class="mcq">
+                <div class="q-text">c) A cubical block rests on an inclined plane of μ = 1/√3, the angle of inclination when the block just slides down the inclined plane will be....................</div>
+                <div class="o-text">(45°/50°/<span class="correct">30°</span>/20°)</div>
+                <div class="q-text">एक घनाकार ब्लॉक μ = 1/√3 के एक झुके हुए तल पर टिकी हुई है, जब ब्लॉक झुके हुए तल से नीचे की ओर फिसलता है तो झुकाव का कोण .................... होगा।</div>
+                <div class="o-text">(45°/50°/<span class="correct">30°</span>/20°)</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PAGE 5 -->
+    <div class="page">
+        <div class="spiral-binding">
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+        </div>
+        <div class="content">
+            <div class="mcq">
+                <div class="q-text">d) A beam of length 8 meters is simply supported at both ends. A point load of 20 kN is applied at a distance of 4 meters from the left support. The reaction at the left support will be....................</div>
+                <div class="o-text">(5 kN/ <span class="correct">10 kN</span>/ 15 kN/ 20 kN)</div>
+                <div class="q-text">8 मीटर लंबाई की एक बीम दोनों सिरों पर सरल सपोर्ट है। बाएं सपोर्ट से 4 मीटर की दूरी पर 20 kN का एक बिंदु भार लगाया जाता है। बाएं सपोर्ट पर प्रतिक्रिया.................... होगी।</div>
+                <div class="o-text">(5 kN/ <span class="correct">10 kN</span>/ 15 kN/ 20 kN)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">e) In a simple lifting machine, if the effort required is 50 N and the load lifted is 500 N, the mechanical advantage will be....................</div>
+                <div class="o-text">(0.1/ 1/ <span class="correct">10</span>/ 100)</div>
+                <div class="q-text">एक साधारण उठाने की मशीन में, यदि आवश्यक प्रयास 50 N है और उठाया गया भार 500 N है, तो यांत्रिक लाभ .................... होगा।</div>
+                <div class="o-text">(0.1/ 1/ <span class="correct">10</span>/ 100)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">f) Match the following solids with their centers of gravity:</div>
+                <div class="o-text" style="display:flex;">
+                    <div style="flex:1;">Solid<br>i. Hemisphere<br>ii. Cone</div>
+                    <div style="flex:1;">Center of Gravity<br>a. <span class="correct highlight">h/4</span><br>b. R/2<br>c. <span class="correct highlight">3R/8</span></div>
+                </div>
+                <div class="q-text" style="margin-top:5px;">निम्नलिखित ठोसों को उनके गुरुत्वाकर्षण केंद्रों के साथ सुमेलित कीजिए:</div>
+                <div class="o-text" style="display:flex;">
+                    <div style="flex:1;">ठोस<br>i. गोलार्द्ध<br>ii. शंकु</div>
+                    <div style="flex:1;">गुरुत्वाकर्षण का केंद्र<br>a. <span class="correct highlight">h/4</span><br>b. R/2<br>c. <span class="correct highlight">3R/8</span></div>
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">g) The condition for reversibility of a machine is that its efficiency must be greater than 50%.</div>
+                <div class="o-text">(<span class="correct">True</span>/False)</div>
+                <div class="q-text">मशीन की उत्क्रमणीयता के लिए शर्त यह है कि इसकी दक्षता 50% से अधिक होनी चाहिए।</div>
+                <div class="o-text">(<span class="correct">True</span>/False)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">h) The Line of action of concurrent force meets at..........................</div>
+                <div class="o-text">(a plane/ <span class="correct">a single point</span>/ two points/ perpendicular plane)</div>
+                <div class="q-text">समवर्ती बल की कार्यवाही रेखा .......................... पर मिलती है।</div>
+                <div class="o-text">(एक समतल/ <span class="correct">एक एकल बिंदु</span>/ दो बिंदु/ लंबवत तल)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">i) When the surfaces of two objects come into touch and are at rest relative to each other, .................... will occur.</div>
+                <div class="o-text">(<span class="correct">Static friction</span>/ Sliding friction/ Rolling friction)</div>
+                <div class="q-text">जब दो वस्तुओं की सतह संपर्क में आती है और एक दूसरे के सापेक्ष आराम पर होती है, तो .................... घटित होगी।</div>
+                <div class="o-text">(<span class="correct">स्थैतिक घर्षण</span>/ सर्पी घर्षण/ लोटनिक घर्षण)</div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">j) Indeterminate structures have number of unknown quantities .................... available conditions of equilibrium.</div>
+                <div class="o-text">(equal to/ less than/ <span class="correct">more than</span>)</div>
+                <div class="q-text">निर्धारित संरचनाओं में संतुलन की उपलब्ध स्थितियों के .................... अज्ञात मात्राओं की संख्या होती है।</div>
+                <div class="o-text">(बराबर/ से कम/ <span class="correct">से अधिक</span>)</div>
+            </div>
+            
+            <div class="mcq">
+                <div class="q-text">i. A coplanar force system is one in which all forces________<br>
+                (एक समतलीय बल प्रणाली वह है जिसमें सभी बल ________)</div>
+                <div class="o-text">
+                <span class="correct">(a) Act in the same plane (एक ही स्तर पर कार्य करता है)</span><br>
+                (b) Act in all three dimensions (सभी तीन आयामों में कार्य करता है)<br>
+                (c) Both (a) and (b) (a) और (b) दोनों)<br>
+                (d) None of these (इनमें से कोई नहीं)
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PAGE 6 -->
+    <div class="page">
+        <div class="spiral-binding">
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+        </div>
+        <div class="content">
+            <div class="mcq">
+                <div class="q-text">ii. The moment of a force about a point is also known as________<br>
+                (किसी बिंदु के चारों ओर बल के आघूर्ण को ________ के रूप में भी जाना जाता है।)</div>
+                <div class="o-text">
+                <span class="correct">(a) Torque (टॉर्क)</span><br>
+                (b) Tension (तनाव)<br>
+                (c) Thrust (थ्रस्ट)<br>
+                (d) Torsion (टॉर्शन)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">iii. When resolving a force into orthogonal components, the components are usually________<br>
+                (किसी बल को ऑर्थोगोनल घटकों में विभेदित करते समय, घटक आमतौर पर ________ होते हैं।)</div>
+                <div class="o-text">
+                (a) Parallel (समानांतर)<br>
+                <span class="correct">(b) Perpendicular (अभिलम्ब)</span><br>
+                (c) Collinear (समरेख)<br>
+                (d) Equal (बराबर)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">iv. Lami's Theorem is applicable to a system of forces that are________<br>
+                (लामी का प्रमेय बलों की एक प्रणाली पर लागू होता है जो ________ होता है।)</div>
+                <div class="o-text">
+                (a) Parallel (समानांतर)<br>
+                <span class="correct">(b) Concurrent (समवर्ती)</span><br>
+                (c) Collinear (समरेख)<br>
+                (d) Non-coplanar (गैर समतलीय)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">v. Hinged supports offers vertical and _____reaction.<br>
+                (हिन्ज सपोर्ट ऊर्ध्वाधर और _____प्रतिक्रिया प्रदान करता है।)</div>
+                <div class="o-text">
+                <span class="correct">(a) Horizontal (क्षैतिज)</span><br>
+                (b) Moment (आघूर्ण)<br>
+                (c) Rotation (घूर्णन)<br>
+                (d) Couple (युगल)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">vi. In a cantilever beam subjected to a point load at the free end, the reaction at the support is ________<br>
+                (मुक्त सिरे पर एक बिंदु भार के अधीन कैंटीलीवर बीम में, सपोर्ट पर प्रतिक्रिया ________ होती है।)</div>
+                <div class="o-text">
+                (a) Zero (शून्य)<br>
+                <span class="correct">(b) Equal to the point load (बिंदु भार के बराबर)</span><br>
+                (c) Half of the point load (बिंदु भार का आधा)<br>
+                (d) Cannot be determined (तय नहीं किया जा सकता)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">vii. Limiting friction of a body depends on________<br>
+                (किसी पिंड का सीमांत घर्षण ________ पर निर्भर करता है।)</div>
+                <div class="o-text">
+                (a) Area of contact of surfaces (सतहों के संपर्क का क्षेत्र)<br>
+                (b) The volume of the smaller body on larger surface (बड़ी सतह पर छोटे पिंड का आयतन)<br>
+                <span class="correct">(c) Nature of surfaces (सतहों की प्रकृति)</span><br>
+                (d) The periphery of the contact surfaces (संपर्क सतहों की परिधि)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">viii. The coefficient of friction between the point of contact of two bodies is 1/√3, then angle of friction will be________.<br>
+                (दो पिंडों के संपर्क बिंदु के बीच घर्षण का गुणांक 1/√3 है, तो घर्षण का कोण ________ होगा।)</div>
+                <div class="o-text">
+                (a) 90°<br>
+                (b) 60°<br>
+                (c) 45°<br>
+                <span class="correct">(d) 30°</span>
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">ix. ________is the scalar quantity.<br>
+                (________ अदिश राशि है।)</div>
+                <div class="o-text">
+                (a) Acceleration (त्वरण)<br>
+                (b) Force (बल)<br>
+                (c) Velocity (वेग)<br>
+                <span class="correct">(d) Mass (द्रव्यमान)</span>
+                </div>
+            </div>
+            
+            <div class="mcq">
+                <div class="q-text">x. Velocity ratio of third system of pully having four pulleys will be ________.<br>
+                (चार पुली वाली तीसरी प्रणाली का वेग अनुपात ............ होगा।)</div>
+                <div class="o-text">
+                (a) 8<br>
+                (b) 11<br>
+                <span class="correct">(c) 15</span><br>
+                (d) 16
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PAGE 7 -->
+    <div class="page">
+        <div class="spiral-binding">
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+            <div class="coil-wrapper"><div class="coil"></div><div class="hole"></div></div>
+        </div>
+        <div class="content">
+            <div class="mcq">
+                <div class="q-text">xi. The velocity ratio of a simple screw jack with L as the length and P as the pitch of screw, is________<br>
+                (लंबाई L और स्क्रू की पिच P के साथ एक साधारण स्क्रू जैक का वेग अनुपात ________ होता है।)</div>
+                <div class="o-text">
+                (a) 2P/πL<br>
+                <span class="correct highlight">(b) 2πL/p</span><br>
+                (c) P/πL<br>
+                (d) None of these (इनमें से कोई नहीं)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">xii. A couple is formed by________.<br>
+                (एक युग्म ________ से बनता है।)</div>
+                <div class="o-text">
+                (a) Two equal and parallel forces (दो समान और समानांतर बल)<br>
+                <span class="correct">(b) Two equal and opposite forces (दो समान और विपरीत बल)</span><br>
+                (c) Both (a) and (b) (दोनों (ए) और (बी))<br>
+                (d) None of these (इनमें से कोई नहीं)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">xiii. A machine is said to be non-reversible when its efficiency is________.<br>
+                (एक मशीन को गैर-प्रतिवर्ती तब कहा जाता है जब उसकी दक्षता ________ होता है।)</div>
+                <div class="o-text">
+                (a) Greater than 50% (50% से अधिक)<br>
+                <span class="correct">(b) Less than 50% (50% से कम)</span><br>
+                (c) Both (a) and (b) (दोनों (ए) और (बी))<br>
+                (d) None of these (इनमें से कोई नहीं)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">xiv. Centroid of semicircle of radius R from its base is at a distance of________<br>
+                (त्रिज्या R वाले अर्धवृत्त का केंद्रक उसके आधार से ________ की दूरी पर है।)</div>
+                <div class="o-text">
+                (a) 2R/3π<br>
+                (b) 3R/4π<br>
+                (c) 2R/5π<br>
+                <span class="correct highlight">(d) 4R/3π</span>
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">xv. A beam supported on more than two supports is called________<br>
+                (दो से अधिक सपोर्ट पर समर्थित बीम को ________ कहा जाता है।)</div>
+                <div class="o-text">
+                (a) Fixed beam (स्थिर बीम)<br>
+                <span class="correct">(b) Continuous beam (सतत बीम)</span><br>
+                (c) Cantilever Beam (कैंटीलीवर बीम)<br>
+                (d) Simply Supported Beam (सिम्पली सपोर्टेड बीम)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">xvi. The number of reaction components possible at roller support for a general loading is________<br>
+                (सामान्य लोडिंग के लिए रोलर सपोर्ट पर संभावित प्रतिक्रिया घटकों की संख्या ________ होती है।)</div>
+                <div class="o-text">
+                <span class="correct">(a) One (एक)</span><br>
+                (b) Two (दो)<br>
+                (c) Three (तीन)<br>
+                (d) Four (चार)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">xvii. If the angle of friction is zero, then the body will experience a force which has ________<br>
+                (यदि घर्षण का कोण शून्य है, तो पदार्थ पर एक बल का अनुभव होगा जिसमें ________ होगा।)</div>
+                <div class="o-text">
+                <span class="correct">(a) Zero friction force (शून्य घर्षण बल)</span><br>
+                (b) Infinite friction force (अनंत घर्षण बल)<br>
+                (c) In the direction of motion (गति की दिशा में)<br>
+                (d) None of these (इनमें से कोई नहीं)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">xviii. The component of a force P at right angle to its direction will be________<br>
+                (एक बल P का उसकी दिशा के समकोण पर घटक ________ होगा।)</div>
+                <div class="o-text">
+                (a) 0.50 P<br>
+                (b) 0.33P<br>
+                (c) 0.87P<br>
+                <span class="correct">(d) Zero (शून्य)</span>
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">xix. Static friction is________than dynamic friction.<br>
+                (स्थैतिक घर्षण गतिशील घर्षण से ________ होता है।)</div>
+                <div class="o-text">
+                (a) Less (कम)<br>
+                <span class="correct">(b) Greater (अधिक)</span><br>
+                (c) Equal (बराबर)<br>
+                (d) All of the above (उपरोक्त सभी)
+                </div>
+            </div>
+
+            <div class="mcq">
+                <div class="q-text">xx. The parallel axis theorem uses the________ of the distance.<br>
+                (समानांतर अक्ष प्रमेय दूरी के ________ का उपयोग करता है।)</div>
+                <div class="o-text">
+                (a) Square root (वर्गमूल)<br>
+                <span class="correct highlight">(b) Square (वर्ग)</span><br>
+                (c) Cube root (घनमूल)<br>
+                (d) Cube (घन)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmLandscape() {
+        let elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen().then(() => {
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('landscape').catch(err => {
+                        console.warn("Screen orientation lock failed: ", err);
+                    });
+                }
+            }).catch(err => {
+                console.warn("Fullscreen request failed: ", err);
+            });
+        }
+    }
+
+    function cancelAction() {
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.close();
+        }
+    }
+</script>
+
+</body>
+</html>
