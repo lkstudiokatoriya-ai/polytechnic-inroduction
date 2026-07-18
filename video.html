@@ -850,21 +850,23 @@
          * OFFICIAL YOUTUBE IFRAME API INTEGRATION
          * Handles rendering, responsive scaling, autoplay and auto-next functionality.
          */
-        function onYouTubeIframeAPIReady() {
-            window.ytApiReady = true;
-            // If the user somehow loaded directly into a player route
-            if (state.view === 'player' && state.activeVideo) {
-                const v = videos.find(vid => vid.id === state.activeVideo);
-                if (v) initYouTubePlayer(v.youtubeId);
-            }
-        }
+        
 
         function initYouTubePlayer(youtubeId) {
-            // Safety check for API load time
-            if (!window.ytApiReady || typeof YT === 'undefined' || !YT.Player) {
-                setTimeout(() => initYouTubePlayer(youtubeId), 150);
-                return;
-            }
+    const container = document.getElementById("yt-player-container");
+
+    container.innerHTML = `
+        <iframe
+            width="100%"
+            height="100%"
+            src="https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&playsinline=1"
+            title="YouTube Video Player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+        </iframe>
+    `;
+        }
 
             // Clean instantiation
             if (state.ytPlayer) {
