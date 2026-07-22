@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#020617">
+    <meta name="description" content="Premium Study Material for POLYTECHNIC HUB">
+    <title>Study Material | POLYTECHNIC HUB</title>
+    
+    <!-- PWA Basic Tags -->
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            /* Colors */
+            --bg-dark: #020617;
+            --bg-light: #0f172a;
+            --primary: #0ea5e9;
+            --primary-glow: rgba(14, 165, 233, 0.4);
+            --secondary: #3b82f6;
+            --accent: #22d3ee;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(30, 41, 59, 0.4);
+            --glass-bg-hover: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            
+            /* Metrics */
+            --radius-lg: 1.25rem;
+            --radius-md: 0.75rem;
+            --radius-sm: 0.5rem;
+            --nav-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(14, 165, 233, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(59, 130, 246, 0.08), transparent 25%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        /* Typography */
+        h1, h2, h3, h4, h5 { font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; }
+        a { text-decoration: none; color: inherit; }
+        button { font-family: inherit; cursor: pointer; border: none; outline: none; background: none; }
+
+        /* Utilities */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .glass:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .flex { display: flex; }
+        .flex-col { display: flex; flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .gap-1 { gap: 0.25rem; } .gap-2 { gap: 0.5rem; } .gap-3 { gap: 0.75rem; } .gap-4 { gap: 1rem; } .gap-6 { gap: 1.5rem; }
+        .text-sm { font-size: 0.875rem; } .text-xs { font-size: 0.75rem; } .text-lg { font-size: 1.125rem; } .text-xl { font-size: 1.25rem; }
+        .font-semibold { font-weight: 600; } .font-bold { font-weight: 700; }
+        .text-muted { color: var(--text-muted); }
+        .text-primary { color: var(--primary); }
+        .w-full { width: 100%; } .h-full { height: 100%; }
+        .hidden { display: none !important; }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+        .btn-icon:hover { background: rgba(255, 255, 255, 0.15); transform: scale(1.05); }
+
+        /* Ripple Effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple-anim 600ms linear;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        @keyframes ripple-anim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--nav-height);
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+        }
+        
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header-left, .header-right { display: flex; align-items: center; gap: 1rem; }
+        .logo-text { font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; }
+
+        /* Main Content Padding */
+        .main-content {
+            padding-top: calc(var(--nav-height) + 2rem);
+            padding-bottom: 4rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.4)), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .hero-content { flex: 1; z-index: 2; }
+        .hero-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(14, 165, 233, 0.2);
+            border: 1px solid rgba(14, 165, 233, 0.4);
+            border-radius: 20px;
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .hero p { color: var(--text-muted); margin-bottom: 1.5rem; max-width: 600px; }
+        
+        .hero-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #cbd5e1; }
+
+        /* Search & Filters */
+        .search-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .chips-container {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+        .chips-container::-webkit-scrollbar { display: none; }
+        
+        .chip {
+            padding: 0.5rem 1.25rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            white-space: nowrap;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .chip:hover { background: rgba(255, 255, 255, 0.1); }
+        .chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 2px 10px rgba(14, 165, 233, 0.4);
+        }
+
+        /* Progress Section */
+        .progress-section {
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        .progress-bar-container { flex: 1; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: 45%; border-radius: 4px; transition: width 1s ease-in-out; }
+        .progress-text { min-width: 100px; text-align: right; }
+
+        /* Grid Layout */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Cards */
+        .lesson-card {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            group: hover;
+        }
+        .lesson-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        
+        .card-thumbnail-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            overflow: hidden;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+        .card-thumbnail {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .lesson-card:hover .card-thumbnail { transform: scale(1.05); }
+        
+        .card-duration {
+            position: absolute;
+            bottom: 0.5rem; right: 0.5rem;
+            background: rgba(0,0,0,0.8);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .lesson-card:hover .play-overlay { opacity: 1; }
+        .play-btn-circle {
+            width: 50px; height: 50px;
+            background: rgba(14, 165, 233, 0.9);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            transform: scale(0.8); transition: transform 0.3s ease;
+        }
+        .lesson-card:hover .play-btn-circle { transform: scale(1); }
+
+        .card-content { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+        .card-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--accent); margin-bottom: 0.5rem; }
+        .card-title { font-size: 1.1rem; margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+        .card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); }
+        .teacher-info { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: var(--text-muted); }
+        
+        .card-actions { display: flex; gap: 0.5rem; }
+        .action-btn { padding: 0.4rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.05); color: white; transition: all 0.2s; }
+        .action-btn:hover { background: rgba(255,255,255,0.15); }
+        .action-btn.pdf-btn:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        /* Player View */
+        .player-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .media-section { display: flex; flex-direction: column; gap: 1rem; }
+        .media-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background: #000;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid var(--glass-border);
+        }
+        .media-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%; border: none;
+        }
+
+        .media-tabs {
+            display: flex;
+            background: rgba(255,255,255,0.05);
+            padding: 0.25rem;
+            border-radius: var(--radius-md);
+            width: fit-content;
+        }
+        .media-tab {
+            padding: 0.5rem 1.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .media-tab.active { background: var(--primary); color: white; box-shadow: 0 2px 10px rgba(14,165,233,0.3); }
+
+        .video-details { padding: 1.5rem; }
+        .video-title { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .video-meta-bar { display: flex; flex-wrap: wrap; gap: 1.5rem; color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .video-desc { font-size: 0.95rem; color: #cbd5e1; line-height: 1.6; }
+
+        .player-actions { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; }
+
+        /* Sidebar in Player */
+        .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+        .sidebar-section { padding: 1.25rem; }
+        .sidebar-title { font-size: 1.1rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        
+        .related-list { display: flex; flex-direction: column; gap: 1rem; }
+        .related-item { display: flex; gap: 1rem; cursor: pointer; border-radius: var(--radius-sm); transition: background 0.2s; padding: 0.5rem; margin:-0.5rem; }
+        .related-item:hover { background: rgba(255,255,255,0.05); }
+        .related-thumb { width: 120px; aspect-ratio: 16/9; border-radius: 4px; object-fit: cover; }
+        .related-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .related-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.25rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .related-meta { font-size: 0.7rem; color: var(--text-muted); }
+
+        /* Comments */
+        .comment-input-area { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .comment-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .comment-input { flex: 1; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.2); color: white; padding: 0.5rem 0; font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s; }
+        .comment-input:focus { outline: none; border-bottom-color: var(--primary); }
+        .comment-list { display: flex; flex-direction: column; gap: 1.5rem; }
+        .comment-item { display: flex; gap: 1rem; }
+        .comment-body { flex: 1; }
+        .comment-header { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.25rem; }
+        .comment-name { font-size: 0.9rem; font-weight: 600; }
+        .comment-time { font-size: 0.75rem; color: var(--text-muted); }
+        .comment-text { font-size: 0.9rem; color: #cbd5e1; }
+
+        /* Empty State */
+        .empty-state {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 4rem 2rem; text-align: center; color: var(--text-muted);
+        }
+        .empty-state svg { width: 100px; height: 100px; color: rgba(255,255,255,0.1); margin-bottom: 1.5rem; }
+
+        /* Footer */
+        .footer {
+            background: rgba(2, 6, 23, 0.9);
+            border-top: 1px solid var(--glass-border);
+            padding: 3rem 1rem 1rem;
+            margin-top: 4rem;
+        }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto 2rem; }
+        .footer-col h3 { margin-bottom: 1rem; font-size: 1.1rem; }
+        .footer-links { display: flex; flex-direction: column; gap: 0.5rem; }
+        .footer-links a { color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--primary); }
+        .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
+        .social-links a { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .social-links a:hover { background: var(--primary); color: white; transform: translateY(-3px); }
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; color: var(--text-muted); }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+        @keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .player-container { grid-template-columns: 1fr; }
+            .hero { flex-direction: column; text-align: center; padding: 2rem; }
+            .hero-stats { justify-content: center; flex-wrap: wrap; }
+            .progress-section { flex-direction: column; gap: 1rem; text-align: center; }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .header-right .btn span { display: none; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+            .media-wrapper { padding-top: 60%; } /* Slightly taller on mobile */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-left">
+                <button id="btn-back" class="btn-icon hidden" onclick="closePlayer()">
+                    <i data-lucide="arrow-left"></i>
+                </button>
+                <div class="logo flex items-center gap-2">
+                    <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 6px; border-radius: 8px;">
+                        <i data-lucide="graduation-cap" color="white" size="24"></i>
+                    </div>
+                    <span class="logo-text gradient-text">POLYTECHNIC HUB</span>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <h3 id="header-title" class="hidden" style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 1rem; display: none;">Study Material</h3>
+                <button class="btn-icon"><i data-lucide="search"></i></button>
+                <button class="btn-icon"><i data-lucide="bell"></i></button>
+                <button class="btn-icon" style="background: rgba(14,165,233,0.2); color: var(--primary);">
+                    <i data-lucide="user"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- DASHBOARD VIEW -->
+    <main id="dashboard-view" class="main-content">
+        <div class="container">
+            
+            <!-- Hero Banner -->
+            <section class="hero fade-in">
+                <div class="hero-content">
+                    <span class="hero-badge">Diploma Curriculum 2024</span>
+                    <h1>Master Your <span class="gradient-text">Engineering</span> Subjects</h1>
+                    <p>Access premium video lectures, detailed PDF notes, and complete syllabus coverage designed specifically for polytechnic students.</p>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-item"><i data-lucide="book-open" size="18" class="text-primary"></i> 6 Branches</div>
+                        <div class="stat-item"><i data-lucide="video" size="18" class="text-primary"></i> 120+ Videos</div>
+                        <div class="stat-item"><i data-lucide="file-text" size="18" class="text-primary"></i> 150+ PDFs</div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="createRipple(event)">
+                        <i data-lucide="play-circle"></i> Continue Learning
+                    </button>
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section class="progress-section glass fade-in" style="animation-delay: 0.1s;">
+                <div class="flex items-center gap-4 w-full">
+                    <div style="padding: 12px; background: rgba(14,165,233,0.1); border-radius: 50%; color: var(--primary);">
+                        <i data-lucide="trending-up" size="28"></i>
+                    </div>
+                    <div class="flex-col w-full">
+                        <div class="flex justify-between items-center w-full mb-2">
+                            <h3 class="text-lg">Your Overall Progress</h3>
+                            <span class="font-bold text-primary">45%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-muted mt-2">
+                            <span>12 Lessons Completed</span>
+                            <span>15 Remaining</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Search & Filters -->
+            <section class="fade-in" style="animation-delay: 0.2s;">
+                <div class="search-container">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by video title, subject, chapter, or topic...">
+                </div>
+
+                <div class="chips-container" id="categoryChips">
+                    <div class="chip active" data-filter="All">All</div>
+                    <div class="chip" data-filter="Mathematics">Mathematics</div>
+                    <div class="chip" data-filter="Physics">Physics</div>
+                    <div class="chip" data-filter="Chemistry">Chemistry</div>
+                    <div class="chip" data-filter="Computer Science">Computer Science</div>
+                    <div class="chip" data-filter="Electrical">Electrical</div>
+                    <div class="chip" data-filter="Civil">Civil</div>
+                </div>
+            </section>
+
+            <!-- Lesson Grid -->
+            <section>
+                <div class="flex justify-between items-center mb-4 fade-in" style="animation-delay: 0.3s;">
+                    <h2>Recent Lessons</h2>
+                    <button class="text-primary text-sm flex items-center gap-1">View All <i data-lucide="chevron-right" size="16"></i></button>
+                </div>
+                
+                <div class="grid" id="lessonGrid">
+                    <!-- Cards will be injected here via JS -->
+                </div>
+            </section>
+            
+        </div>
+    </main>
+
+    <!-- PLAYER VIEW -->
+    <main id="player-view" class="main-content hidden">
+        <div class="container">
+            <div class="player-container">
+                
+                <!-- Left Column: Media & Info -->
+                <div class="main-column">
+                    <div class="media-section fade-in">
+                        
+                        <!-- Media Tabs -->
+                        <div class="media-tabs">
+                            <div class="media-tab active" id="tab-video" onclick="switchMedia('video')">
+                                <i data-lucide="video" size="18"></i> Watch Video
+                            </div>
+                            <div class="media-tab" id="tab-pdf" onclick="switchMedia('pdf')">
+                                <i data-lucide="file-text" size="18"></i> View PDF Notes
+                            </div>
+                        </div>
+
+                        <!-- Media Containers -->
+                        <div class="media-wrapper" id="video-container">
+                            <iframe id="youtube-player" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+                        
+                        <div class="media-wrapper hidden" id="pdf-container" style="padding-top: 120%; /* Taller for PDF */">
+                            <iframe id="pdf-viewer" src="" style="background: white;"></iframe>
+                        </div>
+
+                        <!-- Player Controls / Actions -->
+                        <div class="flex justify-between items-center mt-2 flex-wrap gap-4">
+                            <div class="flex gap-2">
+                                <button class="btn btn-secondary" onclick="navigateLesson('prev')" id="btn-prev">
+                                    <i data-lucide="skip-back" size="18"></i> Prev
+                                </button>
+                                <button class="btn btn-secondary" onclick="navigateLesson('next')" id="btn-next">
+                                    Next <i data-lucide="skip-forward" size="18"></i>
+                                </button>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="btn btn-secondary" onclick="downloadPDF()"><i data-lucide="download" size="18"></i> Notes</button>
+                                <button class="btn btn-secondary" onclick="shareLesson()"><i data-lucide="share-2" size="18"></i></button>
+                                <button class="btn btn-secondary" onclick="toggleBookmark(this)"><i data-lucide="bookmark" size="18"></i></button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Video Details -->
+                    <div class="glass video-details mt-6 fade-in" style="animation-delay: 0.1s;">
+                        <div class="hero-badge mb-2" id="player-badge">Subject • Chapter</div>
+                        <h1 class="video-title" id="player-title">Lesson Title</h1>
+                        
+                        <div class="video-meta-bar">
+                            <div class="flex items-center gap-1"><i data-lucide="user" size="16"></i> <span id="player-teacher">Teacher Name</span></div>
+                            <div class="flex items-center gap-1"><i data-lucide="calendar" size="16"></i> <span id="player-date">Date</span></div>
+                            <div class="flex items-center gap-1"><i data-lucide="eye" size="16"></i> <span id="player-views">0 Views</span></div>
+                            <div class="flex items-center gap-1"><i data-lucide="clock" size="16"></i> <span id="player-duration">00:00</span></div>
+                        </div>
+                        
+                        <h3 class="mb-2 font-semibold">Description</h3>
+                        <p class="video-desc" id="player-desc">Lesson description goes here.</p>
+                        
+                        <div class="mt-6">
+                            <button class="btn btn-primary w-full" onclick="markCompleted(this)">
+                                <i data-lucide="check-circle"></i> Mark as Completed
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="glass sidebar-section mt-6 fade-in" style="animation-delay: 0.2s;">
+                        <h3 class="sidebar-title">Discussion (12)</h3>
+                        
+                        <div class="comment-input-area">
+                            <div class="comment-avatar">Y</div>
+                            <div class="flex-col w-full gap-2">
+                                <input type="text" class="comment-input" placeholder="Ask a question or share your thoughts...">
+                                <div class="flex justify-end mt-2">
+                                    <button class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Comment</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comment-list">
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #334155;">R</div>
+                                <div class="comment-body">
+                                    <div class="comment-header">
+                                        <span class="comment-name">Rahul Kumar</span>
+                                        <span class="comment-time">2 hours ago</span>
+                                    </div>
+                                    <p class="comment-text">Sir, this explanation was crystal clear! Can you please upload the next part soon?</p>
+                                    <button class="text-primary text-xs mt-1 font-semibold flex items-center gap-1"><i data-lucide="message-square" size="12"></i> Reply</button>
+                                </div>
+                            </div>
+                            <div class="comment-item">
+                                <div class="comment-avatar" style="background: #475569;">S</div>
+                                <div class="comment-body">
+                                    <div class="comment-header">
+                                        <span class="comment-name">Sneha Singh</span>
+                                        <span class="comment-time">1 day ago</span>
+                                    </div>
+                                    <p class="comment-text">The PDF notes are very helpful for revision. Thank you.</p>
+                                    <button class="text-primary text-xs mt-1 font-semibold flex items-center gap-1"><i data-lucide="message-square" size="12"></i> Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Sidebar -->
+                <div class="sidebar fade-in" style="animation-delay: 0.3s;">
+                    <div class="glass sidebar-section">
+                        <h3 class="sidebar-title flex items-center gap-2"><i data-lucide="list-video"></i> Related Lessons</h3>
+                        <div class="related-list" id="related-list">
+                            <!-- Related videos injected via JS -->
+                        </div>
+                    </div>
+                    
+                    <div class="glass sidebar-section" style="background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(59,130,246,0.1)); border-color: rgba(14,165,233,0.3);">
+                        <div class="flex items-center gap-3 mb-3">
+                            <i data-lucide="help-circle" class="text-primary" size="24"></i>
+                            <h3 class="font-bold">Need Help?</h3>
+                        </div>
+                        <p class="text-sm text-muted mb-4">Join our Telegram group to clear your doubts instantly.</p>
+                        <button class="btn btn-primary w-full text-sm" style="background: #0088cc; box-shadow: none;">
+                            Join Telegram
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo flex items-center gap-2 mb-4">
+                        <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 6px; border-radius: 8px;">
+                            <i data-lucide="graduation-cap" color="white" size="24"></i>
+                        </div>
+                        <span class="logo-text gradient-text">POLYTECHNIC HUB</span>
+                    </div>
+                    <p class="text-muted text-sm mb-4">Empowering diploma students with premium education, comprehensive notes, and expert guidance.</p>
+                    <div class="social-links">
+                        <a href="#"><i data-lucide="youtube" size="18"></i></a>
+                        <a href="#"><i data-lucide="send" size="18"></i></a>
+                        <a href="#"><i data-lucide="instagram" size="18"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <div class="footer-links">
+                        <a href="#">Home</a>
+                        <a href="#">Study Material</a>
+                        <a href="#">Previous Year Papers</a>
+                        <a href="#">Syllabus</a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3>Support</h3>
+                    <div class="footer-links">
+                        <a href="#">Contact Us</a>
+                        <a href="#">FAQ</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 POLYTECHNIC HUB. All rights reserved. Developed with ❤️</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data and Logic -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- DATA STRUCTURE ---
+        // Editable from this single JavaScript array
+        const lessonData = [
+            {
+                id: 1,
+                title: "Introduction to Matrices & Types",
+                description: "Learn the basics of Matrices, order of a matrix, and various types like row, column, square, diagonal, and scalar matrices with examples.",
+                subject: "Mathematics",
+                chapter: "Unit 1: Algebra",
+                topic: "Matrices",
+                duration: "24:15",
+                teacher: "LK STUDY STUDIO",
+                date: "Oct 12, 2023",
+                views: "12.5K",
+                youtube: "https://www.youtube.com/watch?v=kYJjvtG3Xkk", // Replaced with sample video ID for placeholder
+                pdf: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+            },
+            {
+                id: 2,
+                title: "Ohm's Law and Basic Circuits",
+                description: "Deep dive into Ohm's law, resistance, voltage, current, and how to solve basic series and parallel circuit problems.",
+                subject: "Electrical",
+                chapter: "Unit 2: DC Circuits",
+                topic: "Ohm's Law",
+                duration: "18:40",
+                teacher: "Er. Ramesh Singh",
+                date: "Oct 15, 2023",
+                views: "8.2K",
+                youtube: "LXb3EKWsInQ", // Can pass just ID
+                pdf: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+            },
+            {
+                id: 3,
+                title: "C Programming Structure & Variables",
+                description: "Understand the basic structure of a C program, `#include`, `main()` function, and how to declare and use variables.",
+                subject: "Computer Science",
+                chapter: "Unit 1: Intro to C",
+                topic: "Variables",
+                duration: "32:10",
+                teacher: "Tech Code Vault",
+                date: "Nov 02, 2023",
+                views: "22.1K",
+                youtube: "https://youtu.be/KJgsSFOSQv0",
+                pdf: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+            },
+            {
+                id: 4,
+                title: "Engineering Mechanics: Force Systems",
+                description: "Introduction to coplanar and non-coplanar force systems, resolution of forces, and conditions of equilibrium.",
+                subject: "Mechanical",
+                chapter: "Unit 1: Fundamentals",
+                topic: "Force Systems",
+                duration: "45:00",
+                teacher: "Mech Master",
+                date: "Nov 10, 2023",
+                views: "5.4K",
+                youtube: "dQw4w9WgXcQ",
+                pdf: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+            },
+            {
+                id: 5,
+                title: "Semiconductor Physics Basics",
+                description: "Intrinsic and extrinsic semiconductors, P-N junction formation, depletion region, and barrier potential explained simply.",
+                subject: "Electronics",
+                chapter: "Unit 1: Semiconductors",
+                topic: "P-N Junction",
+                duration: "28:30",
+                teacher: "Electro Hub",
+                date: "Nov 18, 2023",
+                views: "15.3K",
+                youtube: "p7zbFEkL6Hw",
+                pdf: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+            },
+            {
+                id: 6,
+                title: "Building Materials: Types of Cement",
+                description: "Properties of cement, manufacturing process, and various types of cement used in civil engineering construction.",
+                subject: "Civil",
+                chapter: "Unit 2: Cement",
+                topic: "Materials",
+                duration: "21:15",
+                teacher: "Civil Insight",
+                date: "Dec 01, 2023",
+                views: "9.8K",
+                youtube: "W-jOTv6T61I",
+                pdf: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+            }
+        ];
+
+        // --- UTILITY FUNCTIONS ---
+
+        // Extract YouTube ID from various URL formats or return string if it's already an ID
+        function getYouTubeID(url) {
+            let id = url;
+            if (url.includes('youtube.com/watch?v=')) {
+                id = url.split('v=')[1];
+                const ampersand = id.indexOf('&');
+                if (ampersand !== -1) id = id.substring(0, ampersand);
+            } else if (url.includes('youtu.be/')) {
+                id = url.split('youtu.be/')[1];
+                const query = id.indexOf('?');
+                if (query !== -1) id = id.substring(0, query);
+            }
+            return id;
+        }
+
+        // Generate Thumbnail URL
+        function getThumbnail(youtubeUrl) {
+            const id = getYouTubeID(youtubeUrl);
+            return `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
+        }
+
+        // Ripple Effect
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - button.offsetLeft - radius}px`;
+            circle.style.top = `${event.clientY - button.offsetTop - radius}px`;
+            circle.classList.add("ripple");
+            const ripple = button.getElementsByClassName("ripple")[0];
+            if (ripple) ripple.remove();
+            button.appendChild(circle);
+        }
+
+        // --- STATE MANAGEMENT ---
+        let currentCategory = "All";
+        let searchQuery = "";
+        let currentLessonId = null;
+
+        // --- RENDER LOGIC ---
+
+        function renderLessons() {
+            const grid = document.getElementById('lessonGrid');
+            grid.innerHTML = '';
+
+            // Filter data
+            const filteredData = lessonData.filter(lesson => {
+                const matchCategory = currentCategory === "All" || lesson.subject === currentCategory;
+                const searchLower = searchQuery.toLowerCase();
+                const matchSearch = lesson.title.toLowerCase().includes(searchLower) ||
+                                    lesson.subject.toLowerCase().includes(searchLower) ||
+                                    lesson.chapter.toLowerCase().includes(searchLower) ||
+                                    lesson.topic.toLowerCase().includes(searchLower);
+                return matchCategory && matchSearch;
+            });
+
+            if (filteredData.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <i data-lucide="package-open" size="64"></i>
+                        <h3>No Study Material Available</h3>
+                        <p class="text-sm mt-2">Try adjusting your filters or search query.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            // Generate Cards
+            filteredData.forEach((lesson, index) => {
+                const thumbUrl = getThumbnail(lesson.youtube);
+                const delay = index * 0.1;
+                
+                const cardHTML = `
+                    <div class="glass lesson-card fade-in" style="animation-delay: ${delay}s" onclick="openPlayer(${lesson.id})">
+                        <div class="card-thumbnail-wrapper">
+                            <img src="${thumbUrl}" alt="${lesson.title}" class="card-thumbnail" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'">
+                            <div class="card-duration">${lesson.duration}</div>
+                            <div class="play-overlay">
+                                <div class="play-btn-circle"><i data-lucide="play" fill="white" size="24"></i></div>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-meta">
+                                <span>${lesson.subject}</span>
+                                <span>${lesson.topic}</span>
+                            </div>
+                            <h3 class="card-title">${lesson.title}</h3>
+                            <p class="card-desc">${lesson.description}</p>
+                            
+                            <div class="card-footer">
+                                <div class="teacher-info">
+                                    <div style="width:24px; height:24px; border-radius:50%; background:var(--primary); display:flex; align-items:center; justify-content:center; color:white; font-size:10px; font-weight:bold;">
+                                        ${lesson.teacher.charAt(0)}
+                                    </div>
+                                    <span>${lesson.teacher}</span>
+                                </div>
+                                <div class="card-actions" onclick="event.stopPropagation()">
+                                    <button class="action-btn pdf-btn" title="View PDF" onclick="openPlayer(${lesson.id}, 'pdf')">
+                                        <i data-lucide="file-text" size="16"></i>
+                                    </button>
+                                    <button class="action-btn" title="Play Video" onclick="openPlayer(${lesson.id}, 'video')">
+                                        <i data-lucide="play" size="16"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHTML;
+            });
+            
+            lucide.createIcons();
+        }
+
+        // --- FILTERING ---
+        
+        // Search Input
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderLessons();
+        });
+
+        // Category Chips
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', (e) => {
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCategory = e.target.getAttribute('data-filter');
+                renderLessons();
+            });
+        });
+
+
+        // --- PLAYER LOGIC ---
+
+        function openPlayer(id, mode = 'video') {
+            currentLessonId = id;
+            const lesson = lessonData.find(l => l.id === id);
+            if (!lesson) return;
+
+            // Hide Dashboard, Show Player
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('player-view').classList.remove('hidden');
+            
+            // Header adjustments
+            document.getElementById('btn-back').classList.remove('hidden');
+            document.querySelector('.header .logo').classList.add('hidden');
+            document.getElementById('header-title').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Populate Data
+            document.getElementById('player-title').textContent = lesson.title;
+            document.getElementById('player-desc').textContent = lesson.description;
+            document.getElementById('player-badge').textContent = `${lesson.subject} • ${lesson.chapter}`;
+            document.getElementById('player-teacher').textContent = lesson.teacher;
+            document.getElementById('player-date').textContent = lesson.date;
+            document.getElementById('player-views').textContent = lesson.views;
+            document.getElementById('player-duration').textContent = lesson.duration;
+
+            // Set Iframes
+            const ytId = getYouTubeID(lesson.youtube);
+            document.getElementById('youtube-player').src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+            document.getElementById('pdf-viewer').src = `${lesson.pdf}#toolbar=0`;
+
+            // Switch Media Tab
+            switchMedia(mode);
+
+            // Render Related
+            renderRelated(lesson.subject, lesson.id);
+        }
+
+        function closePlayer() {
+            // Stop Video
+            document.getElementById('youtube-player').src = "";
+            document.getElementById('pdf-viewer').src = "";
+
+            // UI Toggle
+            document.getElementById('player-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            
+            // Header adjustments
+            document.getElementById('btn-back').classList.add('hidden');
+            document.querySelector('.header .logo').classList.remove('hidden');
+            document.getElementById('header-title').style.display = 'none';
+        }
+
+        function switchMedia(type) {
+            const vidTab = document.getElementById('tab-video');
+            const pdfTab = document.getElementById('tab-pdf');
+            const vidContainer = document.getElementById('video-container');
+            const pdfContainer = document.getElementById('pdf-container');
+
+            if (type === 'video') {
+                vidTab.classList.add('active');
+                pdfTab.classList.remove('active');
+                vidContainer.classList.remove('hidden');
+                pdfContainer.classList.add('hidden');
+            } else {
+                pdfTab.classList.add('active');
+                vidTab.classList.remove('active');
+                pdfContainer.classList.remove('hidden');
+                vidContainer.classList.add('hidden');
+            }
+        }
+
+        function renderRelated(subject, currentId) {
+            const relatedList = document.getElementById('related-list');
+            relatedList.innerHTML = '';
+            
+            const related = lessonData.filter(l => l.subject === subject && l.id !== currentId).slice(0, 3);
+            
+            if(related.length === 0) {
+                relatedList.innerHTML = '<p class="text-muted text-sm text-center py-4">No related lessons found.</p>';
+                return;
+            }
+
+            related.forEach(lesson => {
+                const thumbUrl = getThumbnail(lesson.youtube);
+                const html = `
+                    <div class="related-item" onclick="openPlayer(${lesson.id})">
+                        <img src="${thumbUrl}" class="related-thumb" alt="${lesson.title}" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=300&q=80'">
+                        <div class="related-info">
+                            <h4 class="related-title">${lesson.title}</h4>
+                            <span class="related-meta">${lesson.chapter}</span>
+                        </div>
+                    </div>
+                `;
+                relatedList.innerHTML += html;
+            });
+        }
+
+        // Navigation (Prev/Next)
+        function navigateLesson(direction) {
+            const currentIndex = lessonData.findIndex(l => l.id === currentLessonId);
+            if (direction === 'next' && currentIndex < lessonData.length - 1) {
+                openPlayer(lessonData[currentIndex + 1].id);
+            } else if (direction === 'prev' && currentIndex > 0) {
+                openPlayer(lessonData[currentIndex - 1].id);
+            }
+        }
+
+        // Actions
+        function downloadPDF() {
+            const lesson = lessonData.find(l => l.id === currentLessonId);
+            if(lesson && lesson.pdf) {
+                // In a real app, you would trigger download. Here we just open in new tab.
+                window.open(lesson.pdf, '_blank');
+            }
+        }
+
+        function shareLesson() {
+            const lesson = lessonData.find(l => l.id === currentLessonId);
+            if (navigator.share && lesson) {
+                navigator.share({
+                    title: lesson.title,
+                    text: `Check out this lesson on ${lesson.subject} at POLYTECHNIC HUB!`,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                alert("Share feature copied link to clipboard!");
+            }
+        }
+
+        function toggleBookmark(btn) {
+            const icon = btn.querySelector('i');
+            if (icon.getAttribute('fill') === 'none' || !icon.getAttribute('fill')) {
+                icon.setAttribute('fill', 'currentColor');
+                icon.style.color = 'var(--primary)';
+            } else {
+                icon.setAttribute('fill', 'none');
+                icon.style.color = 'white';
+            }
+        }
+
+        function markCompleted(btn) {
+            btn.innerHTML = `<i data-lucide="check-circle" fill="white"></i> Completed`;
+            btn.style.background = '#10b981'; // Green color
+            btn.style.boxShadow = '0 4px 15px rgba(16, 185, 129, 0.4)';
+            lucide.createIcons();
+        }
+
+        // INITIALIZE
+        window.addEventListener('DOMContentLoaded', () => {
+            renderLessons();
+        });
+
+    </script>
+</body>
+</html>
