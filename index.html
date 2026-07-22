@@ -470,6 +470,291 @@ padding:14px;
 }
 
 }
+        /*================ GO TO STUDY MATERIAL BUTTON =================*/
+
+.study-btn{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    width:calc(100% - 30px);
+    margin:22px auto;
+    padding:20px 24px;
+    border-radius:28px;
+    text-decoration:none;
+    color:#fff;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:.5px;
+    overflow:hidden;
+    background:linear-gradient(135deg,#00E5FF,#0066FF,#7B2EFF);
+    background-size:300% 300%;
+    animation:gradientMove 6s ease infinite;
+    box-shadow:
+        0 12px 30px rgba(0,212,255,.35),
+        inset 0 1px 1px rgba(255,255,255,.25);
+    transition:.4s ease;
+}
+
+.study-btn::before{
+    content:"";
+    position:absolute;
+    inset:2px;
+    border-radius:26px;
+    background:rgba(8,15,30,.18);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    z-index:0;
+}
+
+.study-btn::after{
+    content:"";
+    position:absolute;
+    top:-60%;
+    left:-120%;
+    width:80%;
+    height:220%;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.75),
+        transparent
+    );
+    transform:rotate(25deg);
+    transition:1s;
+}
+
+.study-btn:hover::after{
+    left:150%;
+}
+
+.study-btn:hover{
+    transform:translateY(-6px) scale(1.03);
+    box-shadow:
+        0 20px 45px rgba(0,212,255,.45),
+        0 0 30px rgba(123,46,255,.35);
+}
+
+.study-btn>*{
+    position:relative;
+    z-index:2;
+}
+
+.study-btn i:first-child{
+    width:60px;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:18px;
+    background:rgba(255,255,255,.15);
+    font-size:28px;
+    backdrop-filter:blur(10px);
+}
+
+.study-btn span{
+    flex:1;
+    text-align:left;
+    font-size:18px;
+    font-weight:800;
+}
+
+.study-btn i:last-child{
+    width:48px;
+    height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#fff;
+    color:#0066ff;
+    font-size:20px;
+    transition:.35s;
+}
+
+.study-btn:hover i:last-child{
+    transform:translateX(8px) rotate(-10deg);
+}
+
+@keyframes gradientMove{
+    0%{
+        background-position:0% 50%;
+    }
+    50%{
+        background-position:100% 50%;
+    }
+    100%{
+        background-position:0% 50%;
+    }
+}
+
+@media(max-width:768px){
+    .study-btn{
+        width:calc(100% - 24px);
+        padding:18px 20px;
+        border-radius:24px;
+    }
+
+    .study-btn i:first-child{
+        width:52px;
+        height:52px;
+        font-size:24px;
+    }
+
+    .study-btn span{
+        font-size:16px;
+    }
+
+    .study-btn i:last-child{
+        width:42px;
+        height:42px;
+        font-size:18px;
+    }
+}
+        /*================ GO TO STUDY MATERIAL BUTTON =================*/
+
+.study-btn{
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    width:calc(100% - 30px);
+    margin:22px auto;
+    padding:20px 24px;
+    border-radius:28px;
+    text-decoration:none;
+    color:#fff;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:.5px;
+    overflow:hidden;
+    background:linear-gradient(135deg,#00E5FF,#0066FF,#7B2EFF);
+    background-size:300% 300%;
+    animation:gradientMove 6s ease infinite;
+    box-shadow:
+        0 12px 30px rgba(0,212,255,.35),
+        inset 0 1px 1px rgba(255,255,255,.25);
+    transition:.4s ease;
+}
+
+.study-btn::before{
+    content:"";
+    position:absolute;
+    inset:2px;
+    border-radius:26px;
+    background:rgba(8,15,30,.18);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    z-index:0;
+}
+
+.study-btn::after{
+    content:"";
+    position:absolute;
+    top:-60%;
+    left:-120%;
+    width:80%;
+    height:220%;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.75),
+        transparent
+    );
+    transform:rotate(25deg);
+    transition:1s;
+}
+
+.study-btn:hover::after{
+    left:150%;
+}
+
+.study-btn:hover{
+    transform:translateY(-6px) scale(1.03);
+    box-shadow:
+        0 20px 45px rgba(0,212,255,.45),
+        0 0 30px rgba(123,46,255,.35);
+}
+
+.study-btn>*{
+    position:relative;
+    z-index:2;
+}
+
+.study-btn i:first-child{
+    width:60px;
+    height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:18px;
+    background:rgba(255,255,255,.15);
+    font-size:28px;
+    backdrop-filter:blur(10px);
+}
+
+.study-btn span{
+    flex:1;
+    text-align:left;
+    font-size:18px;
+    font-weight:800;
+}
+
+.study-btn i:last-child{
+    width:48px;
+    height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#fff;
+    color:#0066ff;
+    font-size:20px;
+    transition:.35s;
+}
+
+.study-btn:hover i:last-child{
+    transform:translateX(8px) rotate(-10deg);
+}
+
+@keyframes gradientMove{
+    0%{
+        background-position:0% 50%;
+    }
+    50%{
+        background-position:100% 50%;
+    }
+    100%{
+        background-position:0% 50%;
+    }
+}
+
+@media(max-width:768px){
+    .study-btn{
+        width:calc(100% - 24px);
+        padding:18px 20px;
+        border-radius:24px;
+    }
+
+    .study-btn i:first-child{
+        width:52px;
+        height:52px;
+        font-size:24px;
+    }
+
+    .study-btn span{
+        font-size:16px;
+    }
+
+    .study-btn i:last-child{
+        width:42px;
+        height:42px;
+        font-size:18px;
+    }
+}
+        
 
         /* ================= HERO SECTION ================= */
         .hero {
@@ -1202,25 +1487,11 @@ padding:14px;
     </div>
 <section class="portal-menu">
 
-    <a href="index.html">🏠 Home</a>
-
-    <a href="computer_science_engineering_hub.html">
-        💻 Computer Science
+    <a href="study_material.html" class="study-btn">
+    <i class="fa-solid fa-graduation-cap"></i>
+    <span>Go to Study Material</span>
+    <i class="fa-solid fa-arrow-right"></i>
     </a>
-
-    <a href="electrical_engineering_hub.html">
-        ⚡ Electrical Engineering
-    </a>
-
-    <a href="civil_engineering_hub.html">🏗️ Civil Engineering</a>
-
-    <a href="mechanical_engineering_hub.html">⚙️ Mechanical Engineering</a>
-
-    <a href="electronic.html"> Electronics Engineering</a>
-
-    <a href="quiz_hub.html">📝 Quiz And Notes</a>
-    <a href="video.html"> 🎥Videos</a>
-    <a href="about.html"> About</a>
 
 </section>
 
