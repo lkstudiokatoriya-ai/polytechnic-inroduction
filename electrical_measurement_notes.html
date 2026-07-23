@@ -1,0 +1,2632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Electrical Measurement & Instrumentation Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --ink-red: #c62828;
+        --ink-blue: #0d47a1;
+        --ink-dark: #1a1a2e;
+        --highlighter: rgba(255, 235, 59, 0.6);
+        --paper-bg: #fdfdfb;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 20px;
+        background-color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: 'Kalam', cursive;
+        color: var(--ink-dark);
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    .notebook-page {
+        width: 210mm;
+        min-height: 297mm;
+        background-color: var(--paper-bg);
+        background-image: linear-gradient(135deg, #fdfdfb 0%, #f4f4f0 100%);
+        margin-bottom: 30px;
+        padding: 20mm 15mm 20mm 35mm; /* Left padding accommodates binding */
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        border-radius: 2px 10px 10px 2px;
+        overflow: visible;
+        page-break-after: always;
+        transform-origin: top center;
+    }
+
+    /* Realistic Spiral Binding */
+    .binding {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 25px;
+        background-image: 
+            radial-gradient(circle at 15px 25px, #dcdcdc 5px, #888 6px, transparent 7px), 
+            linear-gradient(to bottom, transparent 23px, #555 23px, #ccc 25px, #333 27px, transparent 27px);
+        background-size: 25px 45px;
+        background-repeat: repeat-y;
+        border-right: 1px solid rgba(0,0,0,0.05);
+        z-index: 10;
+    }
+
+    /* Typography Styles */
+    h1, h2, h3, h4, .heading {
+        color: var(--ink-red);
+        font-weight: 700;
+        margin: 15px 0 10px 0;
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+
+    h1 { font-size: 26px; text-align: center; text-decoration: underline; }
+    h2 { font-size: 22px; text-align: center; }
+    h3 { font-size: 20px; }
+    h4 { font-size: 18px; margin-bottom: 5px; }
+
+    p {
+        margin: 8px 0;
+        color: var(--ink-blue);
+    }
+
+    .dark-text { color: var(--ink-dark); }
+    .blue-text { color: var(--ink-blue); }
+    .red-text { color: var(--ink-red); }
+
+    ul {
+        margin: 5px 0 15px 20px;
+        padding: 0;
+        list-style-type: none;
+        color: var(--ink-blue);
+    }
+    
+    ul li::before {
+        content: "•";
+        color: var(--ink-dark);
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+    }
+
+    /* Highlighting */
+    mark, .highlight {
+        background-color: var(--highlighter);
+        color: var(--ink-dark);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-weight: bold;
+        display: inline-block;
+    }
+
+    /* Hand-drawn UI Elements */
+    .callout {
+        border: 2px solid var(--ink-red);
+        border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+        padding: 15px;
+        margin: 15px 0;
+        background-color: rgba(255,255,255,0.4);
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .callout-title {
+        color: var(--ink-red);
+        font-weight: bold;
+        font-size: 18px;
+        text-decoration: underline;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    /* Diagrams & Flowcharts */
+    .diagram-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px 0;
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .hand-box {
+        border: 2px solid var(--ink-dark);
+        border-radius: 2px 255px 3px 25px / 255px 5px 225px 3px;
+        padding: 10px 20px;
+        margin: 5px;
+        text-align: center;
+        min-width: 200px;
+        background-color: transparent;
+        color: var(--ink-blue);
+        font-weight: bold;
+    }
+
+    .arrow-down {
+        font-size: 24px;
+        color: var(--ink-dark);
+        margin: 2px 0;
+        transform: rotate(2deg);
+    }
+
+    .horizontal-flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .arrow-right {
+        font-size: 24px;
+        color: var(--ink-dark);
+    }
+
+    /* specific helpers */
+    .center { text-align: center; }
+    .protect { break-inside: avoid; page-break-inside: avoid; }
+    hr.hand-line {
+        border: none;
+        border-top: 2px dashed var(--ink-dark);
+        margin: 20px 0;
+    }
+
+    .page-number {
+        position: absolute;
+        top: 15mm;
+        right: 15mm;
+        font-weight: bold;
+        color: var(--ink-red);
+        text-decoration: underline;
+    }
+
+    .formula-box {
+        border: 2px solid var(--ink-blue);
+        border-radius: 10px 255px 10px 255px / 255px 10px 255px 10px;
+        padding: 10px;
+        margin: 15px auto;
+        display: inline-block;
+        background-color: rgba(255, 235, 59, 0.2);
+    }
+
+    /* Scale for smaller screens */
+    @media screen and (max-width: 220mm) {
+        body { padding: 10px; }
+        .notebook-page {
+            width: 100%;
+            min-height: auto;
+            transform: scale(0.95);
+        }
+    }
+
+    /* Print settings */
+    @media print {
+        body { 
+            background: none; 
+            padding: 0;
+            display: block;
+        }
+        .notebook-page {
+            margin: 0;
+            box-shadow: none;
+            width: 210mm;
+            min-height: 297mm;
+            page-break-after: always;
+        }
+    }
+</style>
+</head>
+<body>
+
+<!-- PAGE 1 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    
+    <h1 class="center">ELECTRICAL MEASUREMENT<br>& INSTRUMENTATION</h1>
+    <h2 class="center">UNIT – 1</h2>
+    <h2 class="center">INTRODUCTION TO MEASUREMENT & GENERALIZED MEASUREMENT SYSTEM</h2>
+    <h3 class="center blue-text">(Handwritten Class Notes)</h3>
+    <br>
+    
+    <div class="protect" style="margin-left: 20px; font-size: 18px;">
+        <p><span class="red-text">Course :</span> Diploma in Electrical Engineering</p>
+        <p><span class="red-text">Semester :</span> III</p>
+        <p><span class="red-text">Subject :</span> Electrical Measurement & Instrumentation</p>
+        <p><span class="red-text">Prepared By :</span> Lalan Kumar</p>
+        <hr style="border-top: 1px solid var(--ink-dark); margin-right: 50%;">
+        <p><span class="red-text">Name :</span> Lalan Kumar</p>
+        <hr style="border-top: 1px solid var(--ink-dark); margin-right: 50%;">
+        <p><span class="red-text">Roll No. :</span> EE-22</p>
+        <hr style="border-top: 1px solid var(--ink-dark); margin-right: 50%;">
+        <p><span class="red-text">College :</span> GOVERNMENT POLYTECHNIC BANKA</p>
+        <hr style="border-top: 1px solid var(--ink-dark); margin-right: 50%;">
+    </div>
+
+    <hr class="hand-line">
+
+    <div class="callout center protect">
+        <span class="callout-title">Most Important Quotes</span>
+        <p>"Measurement is the foundation of Science and Engineering."</p>
+        <p>"Without Measurement, no Engineering work can be performed accurately."</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="center">CHAPTER – 1</h2>
+    <h2 class="center">INTRODUCTION TO MEASUREMENT</h2>
+
+    <h3 class="heading">Measurement (मापन)</h3>
+    <h4 class="heading">Definition</h4>
+    <p>Measurement is the process of comparing an unknown physical quantity with a known standard quantity.</p>
+    <p>मापन (Measurement) वह प्रक्रिया है जिसमें किसी अज्ञात भौतिक राशि (Unknown Physical Quantity) की तुलना किसी ज्ञात मानक राशि (Known Standard Quantity) से की जाती है।</p>
+
+    <h4 class="heading protect">Physical Quantity (भौतिक राशि)</h4>
+    <p class="protect">जिस राशि को मापा जा सकता है, उसे Physical Quantity कहते हैं。</p>
+    <div class="protect">
+        <p class="red-text" style="text-decoration: underline;">Examples:</p>
+        <ul>
+            <li>Voltage (V)</li>
+            <li>Current (A)</li>
+            <li>Resistance (Ω)</li>
+            <li>Power (W)</li>
+            <li>Energy (J)</li>
+            <li>Temperature (°C)</li>
+            <li>Pressure (Pa)</li>
+            <li>Frequency (Hz)</li>
+        </ul>
+    </div>
+
+    <h4 class="heading protect">Standard Quantity (मानक राशि)</h4>
+    <p class="protect">जिस निश्चित एवं स्वीकृत मान के आधार पर किसी भौतिक राशि की तुलना की जाती है, उसे Standard Quantity कहते हैं।</p>
+    <div class="protect">
+        <p class="red-text" style="text-decoration: underline;">Examples:</p>
+        <ul>
+            <li><mark>1 Metre (m)</mark></li>
+            <li><mark>1 Kilogram (kg)</mark></li>
+            <li><mark>1 Second (s)</mark></li>
+            <li><mark>1 Ampere (A)</mark></li>
+            <li><mark>1 Volt (V)</mark></li>
+        </ul>
+    </div>
+
+    <h4 class="heading protect">Need of Measurement (मापन की आवश्यकता)</h4>
+    <ul class="protect">
+        <li>किसी भी Electrical Quantity का सही मान ज्ञात करने के लिए।</li>
+        <li>Electrical उपकरणों की Testing के लिए।</li>
+        <li>Fault Finding के लिए।</li>
+        <li>Maintenance के लिए।</li>
+        <li>Quality Control के लिए।</li>
+        <li>Research एवं Engineering Design के लिए।</li>
+        <li>सुरक्षित (Safe) Operation के लिए।</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Example</span>
+        <p>यदि किसी Battery का Voltage ज्ञात नहीं है, तो Voltmeter की सहायता से उसका Voltage मापा जाता है। इसी प्रक्रिया को Measurement कहते हैं।</p>
+    </div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 2</div>
+
+    <h2 class="heading center">GENERALIZED MEASUREMENT SYSTEM</h2>
+    
+    <h4 class="heading">Definition</h4>
+    <p>A Generalized Measurement System is a system that measures a physical quantity and converts it into a readable form.</p>
+    <p>Generalized Measurement System वह प्रणाली है जो किसी Physical Quantity को मापकर उसे ऐसे रूप में परिवर्तित करती है जिसे आसानी से पढ़ा और समझा जा सके।</p>
+
+    <h4 class="heading protect">Main Elements of Generalized Measurement System</h4>
+    <ul class="protect">
+        <li>1. Sensor (Primary Sensing Element)</li>
+        <li>2. Variable Conversion Element</li>
+        <li>3. Variable Manipulation Element</li>
+        <li>4. Data Transmission Element</li>
+        <li>5. Data Presentation Element</li>
+    </ul>
+
+    <h4 class="heading center protect">Complete Block Diagram</h4>
+    
+    <div class="diagram-container protect">
+        <p class="blue-text" style="font-weight: bold; margin-bottom: 5px;">Physical Quantity</p>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Sensor</div>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Variable Conversion<br>Element</div>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Variable Manipulation<br>Element</div>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Data Transmission<br>Element</div>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Data Presentation<br>Element</div>
+        <div class="arrow-down">↓</div>
+        <p class="blue-text" style="font-weight: bold; margin-top: 5px;">Output</p>
+    </div>
+
+    <h4 class="heading protect">Working</h4>
+    <p class="protect">जब किसी Physical Quantity (जैसे Voltage, Current, Temperature आदि) को मापा जाता है, तब सबसे पहले Sensor उसे Detect करता है। इसके बाद Signal Variable Conversion Element में परिवर्तित होता है, फिर Variable Manipulation Element द्वारा आवश्यकतानुसार संशोधित (Modify) किया जाता है। इसके बाद Signal Data Transmission Element के द्वारा आगे भेजा जाता है तथा अंत में Data Presentation Element उसे Display या Record करता है, जिसे Output कहते हैं।</p>
+</div>
+
+<!-- PAGE 3 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 3</div>
+
+    <h2 class="heading center">SENSOR<br><span style="font-size: 18px;">(Primary Sensing Element)</span></h2>
+
+    <h4 class="heading">Definition</h4>
+    <p>A Sensor is the first element of a Generalized Measurement System. It senses the Physical Quantity and converts it into a suitable signal.</p>
+    <p>Sensor Generalized Measurement System का पहला Element होता है। यह किसी Physical Quantity को महसूस (Sense) करता है तथा उसे एक उपयुक्त Signal में परिवर्तित करता है।</p>
+
+    <h4 class="heading protect">Working</h4>
+    <p class="protect">जब किसी Physical Quantity जैसे Voltage, Current, Temperature, Pressure या Speed को मापा जाता है, तो सबसे पहले Sensor उस Quantity को Detect करता है। इसके बाद Sensor प्राप्त जानकारी को अगले Element (Variable Conversion Element) तक भेज देता है।</p>
+
+    <h4 class="heading center protect">Block Diagram</h4>
+    <div class="diagram-container protect">
+        <p class="blue-text" style="font-weight: bold; margin-bottom: 5px;">Physical Quantity</p>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">SENSOR</div>
+        <div class="arrow-down">↓</div>
+        <p class="blue-text" style="font-weight: bold; margin-top: 5px;">Output Signal</p>
+    </div>
+
+    <h4 class="heading protect">Examples</h4>
+    <ul class="protect">
+        <li>Thermocouple → Temperature</li>
+        <li>LDR (Light Dependent Resistor) → Light</li>
+        <li>Microphone → Sound</li>
+        <li>Strain Gauge → Force / Pressure</li>
+        <li>Tachometer Sensor → Speed</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>जब हम Digital Thermometer से शरीर का तापमान मापते हैं, तब सबसे पहले उसका Sensor शरीर की Heat को Detect करता है। इसके बाद वही Signal Display तक पहुँचता है और Temperature दिखाई देता है।</p>
+    </div>
+
+    <h4 class="heading protect">Functions of Sensor</h4>
+    <ul class="protect">
+        <li>Detect Physical Quantity.</li>
+        <li>Convert Physical Quantity into Signal.</li>
+        <li>Send Signal to the Next Element.</li>
+        <li>Start the Measurement Process.</li>
+    </ul>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Points</span>
+        <ul>
+            <li>Sensor हमेशा Generalized Measurement System का पहला Element होता है।</li>
+            <li>बिना Sensor के Measurement Process शुरू नहीं हो सकती।</li>
+            <li>Sensor Physical Quantity को महसूस करता है, Display नहीं करता।</li>
+        </ul>
+    </div>
+</div>
+
+<!-- PAGE 4 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 4</div>
+
+    <h2 class="heading center">VARIABLE CONVERSION ELEMENT</h2>
+
+    <h4 class="heading">Definition</h4>
+    <p>Variable Conversion Element is the second element of the Generalized Measurement System. It converts one form of signal into another form without changing the information contained in the signal.</p>
+    <p>Variable Conversion Element Generalized Measurement System का दूसरा Element है। यह Signal की Information को बदले बिना उसके एक रूप को दूसरे रूप में परिवर्तित करता है。</p>
+
+    <h4 class="heading protect">Working</h4>
+    <p class="protect">Sensor से प्राप्त Signal हमेशा आगे के Circuit के लिए उपयुक्त नहीं होता। इसलिए Variable Conversion Element उस Signal को आवश्यक रूप में Convert करता है ताकि अगला Element उसे आसानी से Process कर सके।</p>
+
+    <h4 class="heading center protect">Block Diagram</h4>
+    <div class="diagram-container protect">
+        <p class="blue-text" style="font-weight: bold; margin-bottom: 5px;">Sensor Output</p>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Variable Conversion<br>Element</div>
+        <div class="arrow-down">↓</div>
+        <p class="blue-text" style="font-weight: bold; margin-top: 5px;">Converted Signal</p>
+    </div>
+
+    <h4 class="heading protect">Examples</h4>
+    <ul class="protect">
+        <li>Mechanical → Electrical</li>
+        <li>Temperature → Voltage</li>
+        <li>Pressure → Electrical Signal</li>
+        <li>Light → Electrical Signal</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>Thermocouple Temperature को सीधे Display नहीं कर सकता। पहले वह Temperature को Electrical Voltage में Convert करता है। यही कार्य Variable Conversion Element करता है।</p>
+    </div>
+
+    <h4 class="heading protect">Functions</h4>
+    <ul class="protect">
+        <li>Change one form of Signal into another.</li>
+        <li>Keep the Information unchanged.</li>
+        <li>Make the Signal suitable for further processing.</li>
+        <li>Improve compatibility with the next stage.</li>
+    </ul>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Points</span>
+        <ul>
+            <li>यह Generalized Measurement System का दूसरा Element है।</li>
+            <li>केवल Signal का Form बदलता है।</li>
+            <li>Signal की Information नहीं बदलती।</li>
+            <li>इसके बाद Signal Variable Manipulation Element में जाता है।</li>
+        </ul>
+    </div>
+</div>
+
+<!-- PAGE 5 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 5</div>
+
+    <h2 class="heading center">VARIABLE MANIPULATION ELEMENT</h2>
+
+    <h4 class="heading">Definition</h4>
+    <p>Variable Manipulation Element is the third element of the Generalized Measurement System. It modifies or processes the signal without changing the basic information contained in it.</p>
+    <p>Variable Manipulation Element Generalized Measurement System का तीसरा Element है। यह Signal की मूल Information को बदले बिना उसे आवश्यकतानुसार Modify, Amplify, Filter या Process करता है।</p>
+
+    <h4 class="heading protect">Working</h4>
+    <p class="protect">Variable Conversion Element से प्राप्त Signal कई बार बहुत कमजोर (Weak) या Noise युक्त होता है। ऐसी स्थिति में Variable Manipulation Element उस Signal को मजबूत (Amplify), Filter या आवश्यक रूप से Process करता है, ताकि आगे के Elements उसे आसानी से उपयोग कर सकें।</p>
+
+    <h4 class="heading center protect">Block Diagram</h4>
+    <div class="diagram-container protect">
+        <p class="blue-text" style="font-weight: bold; margin-bottom: 5px;">Converted Signal</p>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Variable Manipulation<br>Element</div>
+        <div class="arrow-down">↓</div>
+        <p class="blue-text" style="font-weight: bold; margin-top: 5px;">Processed Signal</p>
+    </div>
+
+    <h4 class="heading protect">Examples</h4>
+    <ul class="protect">
+        <li>Amplifier</li>
+        <li>Filter</li>
+        <li>Signal Conditioner</li>
+        <li>Modulator</li>
+        <li>Demodulator</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>Microphone से प्राप्त Audio Signal बहुत कमजोर होता है। Amplifier उस Signal को मजबूत बनाता है, लेकिन आवाज (Information) वही रहती है। यह Variable Manipulation Element का उदाहरण है।</p>
+    </div>
+
+    <h4 class="heading protect">Functions</h4>
+    <ul class="protect">
+        <li>Amplify the Signal.</li>
+        <li>Filter Unwanted Noise.</li>
+        <li>Modify the Signal.</li>
+        <li>Prepare the Signal for Transmission.</li>
+    </ul>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Points</span>
+        <ul>
+            <li>यह Generalized Measurement System का तीसरा Element है।</li>
+            <li>Signal की Information नहीं बदलती।</li>
+            <li>केवल Signal की Quality एवं Strength में सुधार किया जाता है।</li>
+            <li>इसके बाद Signal Data Transmission Element में भेजा जाता है।</li>
+        </ul>
+    </div>
+</div>
+
+<!-- PAGE 6 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 6</div>
+
+    <h2 class="heading center">DATA TRANSMISSION ELEMENT</h2>
+
+    <h4 class="heading">Definition</h4>
+    <p>Data Transmission Element is the fourth element of the Generalized Measurement System. It transfers the processed signal from one place to another without changing the information.</p>
+    <p>Data Transmission Element Generalized Measurement System का चौथा Element है। यह Processed Signal को उसकी Information बदले बिना एक स्थान से दूसरे स्थान तक पहुँचाता है।</p>
+
+    <h4 class="heading protect">Working</h4>
+    <p class="protect">जब Signal Variable Manipulation Element से Process होकर निकलता है, तब उसे Display या Control Room तक पहुँचाने की आवश्यकता होती है। यह कार्य Data Transmission Element करता है।</p>
+
+    <h4 class="heading center protect">Block Diagram</h4>
+    <div class="diagram-container protect">
+        <p class="blue-text" style="font-weight: bold; margin-bottom: 5px;">Processed Signal</p>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Data Transmission<br>Element</div>
+        <div class="arrow-down">↓</div>
+        <p class="blue-text" style="font-weight: bold; margin-top: 5px;">Signal to Next Stage</p>
+    </div>
+
+    <h4 class="heading protect">Examples</h4>
+    <ul class="protect">
+        <li>Copper Wire</li>
+        <li>Coaxial Cable</li>
+        <li>Optical Fiber</li>
+        <li>Telephone Line</li>
+        <li>Radio Link</li>
+        <li>Wi-Fi</li>
+        <li>Bluetooth</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>Power Station में Voltage और Current की Reading Control Room तक Cable या Optical Fiber द्वारा भेजी जाती है। यह Data Transmission Element का उदाहरण है。</p>
+    </div>
+
+    <h4 class="heading protect">Functions</h4>
+    <ul class="protect">
+        <li>Transfer Signal.</li>
+        <li>Maintain Signal Information.</li>
+        <li>Send Signal over Short or Long Distance.</li>
+        <li>Connect Different Parts of Measurement System.</li>
+    </ul>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Points</span>
+        <ul>
+            <li>यह Generalized Measurement System का चौथा Element है।</li>
+            <li>यह केवल Signal को Transfer करता है।</li>
+            <li>Signal की Information नहीं बदलती।</li>
+            <li>इसके बाद Signal Data Presentation Element में पहुँचता है।</li>
+        </ul>
+    </div>
+</div>
+
+<!-- PAGE 7 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 7</div>
+
+    <h2 class="heading center">DATA PRESENTATION ELEMENT</h2>
+
+    <h4 class="heading">Definition</h4>
+    <p>Data Presentation Element is the fifth and final element of the Generalized Measurement System. It presents the measured value in a readable form.</p>
+    <p>Data Presentation Element Generalized Measurement System का पाँचवाँ एवं अंतिम Element है। यह मापे गए मान (Measured Value) को ऐसे रूप में प्रस्तुत करता है जिसे उपयोगकर्ता आसानी से पढ़ और समझ सके।</p>
+
+    <h4 class="heading protect">Working</h4>
+    <p class="protect">जब Signal Data Transmission Element से आता है, तब Data Presentation Element उसे Display, Record या Print के रूप में प्रस्तुत करता है। यही अंतिम Output होता है।</p>
+
+    <h4 class="heading center protect">Block Diagram</h4>
+    <div class="diagram-container protect">
+        <p class="blue-text" style="font-weight: bold; margin-bottom: 5px;">Received Signal</p>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Data Presentation<br>Element</div>
+        <div class="arrow-down">↓</div>
+        <p class="blue-text" style="font-weight: bold; margin-top: 5px;">Display / Record / Print</p>
+    </div>
+
+    <h4 class="heading protect">Examples</h4>
+    <ul class="protect">
+        <li>Analog Meter</li>
+        <li>Digital Meter</li>
+        <li>LCD Display</li>
+        <li>LED Display</li>
+        <li>CRO (Cathode Ray Oscilloscope)</li>
+        <li>Printer</li>
+        <li>Computer Monitor</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>Digital Multimeter से Voltage मापने पर स्क्रीन पर "230 V" दिखाई देता है। यह Display Data Presentation Element का कार्य है।</p>
+    </div>
+
+    <h4 class="heading protect">Functions</h4>
+    <ul class="protect">
+        <li>Display the Measured Value.</li>
+        <li>Record the Measurement.</li>
+        <li>Print the Measurement.</li>
+        <li>Provide Final Output to the User.</li>
+    </ul>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Points</span>
+        <ul>
+            <li>यह Generalized Measurement System का अंतिम Element है।</li>
+            <li>इसी Element पर Final Output प्राप्त होता है।</li>
+            <li>यह Signal को Display, Record या Print करता है।</li>
+            <li>इसके बाद Measurement Process पूर्ण हो जाता है।</li>
+        </ul>
+    </div>
+</div>
+
+<!-- PAGE 8 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 8</div>
+
+    <h2 class="heading center">COMPLETE MEASUREMENT SYSTEM</h2>
+
+    <h4 class="heading">Definition</h4>
+    <p>A Generalized Measurement System consists of five basic elements. These elements work together to measure a Physical Quantity and provide the final output in a readable form.</p>
+    <p>Generalized Measurement System पाँच मुख्य Elements से मिलकर बना होता है। ये सभी Elements मिलकर किसी Physical Quantity का Measurement करते हैं तथा उसका Final Output उपयोगकर्ता को प्रदान करते हैं।</p>
+
+    <h4 class="heading center protect">Complete Block Diagram</h4>
+    <div class="diagram-container protect" style="transform: scale(0.9); transform-origin: top;">
+        <p class="blue-text" style="font-weight: bold; margin-bottom: 5px;">Physical Quantity</p>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Sensor</div>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Variable Conversion Element</div>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Variable Manipulation Element</div>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Data Transmission Element</div>
+        <div class="arrow-down">↓</div>
+        <div class="hand-box">Data Presentation Element</div>
+        <div class="arrow-down">↓</div>
+        <p class="blue-text" style="font-weight: bold; margin-top: 5px;">Final Output</p>
+    </div>
+
+    <h4 class="heading protect">Working of Complete Measurement System</h4>
+    <p class="protect"><span class="red-text">Step–1 :</span> Sensor Physical Quantity को Detect करता है।</p>
+    <p class="protect"><span class="red-text">Step–2 :</span> Variable Conversion Element Signal को आवश्यक रूप में Convert करता है。</p>
+    <p class="protect"><span class="red-text">Step–3 :</span> Variable Manipulation Element Signal को Amplify, Filter या Modify करता है।</p>
+    <p class="protect"><span class="red-text">Step–4 :</span> Data Transmission Element Signal को एक स्थान से दूसरे स्थान तक भेजता है।</p>
+    <p class="protect"><span class="red-text">Step–5 :</span> Data Presentation Element अंतिम Result को Display, Record या Print करता है।</p>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>Digital Thermometer में Sensor शरीर का Temperature Detect करता है। इसके बाद Signal Convert और Process होता है। अंत में LCD Screen पर Temperature दिखाई देता है। यही Complete Generalized Measurement System का वास्तविक उदाहरण है।</p>
+    </div>
+</div>
+
+<!-- PAGE 9 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 9</div>
+
+    <h2 class="heading center">Deflecting Torque (Td)</h2>
+
+    <h4 class="heading">Definition</h4>
+    <p>Deflecting Torque is the torque which moves the pointer from its zero position to indicate the measured value on the scale.</p>
+    <p>Deflecting Torque वह Torque है जो Pointer को Zero Position से घुमाकर Scale पर Measured Value को प्रदर्शित करता है।</p>
+
+    <h4 class="heading protect">Working</h4>
+    <p class="protect">जब किसी Measuring Instrument में Current या Voltage प्रवाहित होता है, तब Instrument के अंदर एक Force उत्पन्न होता है। यह Force Pointer को Zero Position से घुमाना शुरू करता है। Pointer जितना घूमता है, उतनी ही Measurement Scale पर दिखाई देती है। इसी घुमाने वाले Torque को Deflecting Torque कहते हैं।</p>
+
+    <h4 class="heading center protect">Direction of Deflecting Torque</h4>
+    <div class="diagram-container protect">
+        <p class="blue-text">Zero Position</p>
+        <div class="arrow-down">↓</div>
+        <p class="blue-text">(Pointer)</p>
+        <div style="font-size: 30px; font-weight: bold; color: var(--ink-red);">↻</div>
+        <p class="blue-text">Deflecting Torque</p>
+        <div class="arrow-down">↓</div>
+        <p class="blue-text" style="font-weight: bold;"><mark>Measured Value</mark></p>
+    </div>
+
+    <h4 class="heading protect">Methods of Producing Deflecting Torque</h4>
+    <ul class="protect">
+        <li>Magnetic Effect</li>
+        <li>Electrostatic Effect</li>
+        <li>Electromagnetic Induction</li>
+        <li>Thermal Effect</li>
+    </ul>
+
+    <h4 class="heading protect">Functions</h4>
+    <ul class="protect">
+        <li>Pointer को Zero Position से Move कराना।</li>
+        <li>Measured Quantity को Scale पर Indicate करना।</li>
+        <li>Instrument में Deflection उत्पन्न करना।</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>जब Ammeter से Current मापा जाता है, तब Current के प्रभाव से Pointer Zero Position से घूमकर किसी निश्चित मान पर रुकता है। यह घूमना Deflecting Torque के कारण होता है।</p>
+    </div>
+
+</div>
+
+<!-- PAGE 10 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 10</div>
+
+    <h4 class="heading">Deflecting Torque की विशेषताएँ (Characteristics)</h4>
+    <ul>
+        <li>यह Instrument में सबसे पहला कार्य करने वाला Torque होता है।</li>
+        <li>इसका मुख्य कार्य Pointer को घुमाना होता है।</li>
+        <li>Deflecting Torque के बिना Pointer अपनी Zero Position से Move नहीं करेगा।</li>
+        <li>Deflecting Torque का मान Measured Quantity के समानुपाती (Proportional) होता है।</li>
+        <li>जितना अधिक Current या Voltage होगा, उतना अधिक Deflecting Torque उत्पन्न होगा।</li>
+    </ul>
+
+    <h4 class="heading protect">Conditions of a Good Deflecting Torque</h4>
+    <ul class="protect">
+        <li>Pointer का Movement Smooth होना चाहिए।</li>
+        <li>Deflection स्पष्ट एवं आसानी से दिखाई देना चाहिए।</li>
+        <li>Deflecting Torque पर्याप्त होना चाहिए ताकि Pointer आसानी से घूम सके।</li>
+        <li>Torque स्थिर एवं विश्वसनीय (Reliable) होना चाहिए।</li>
+    </ul>
+
+    <h4 class="heading protect">Advantages</h4>
+    <ul class="protect">
+        <li>Measurement करना आसान बनाता है।</li>
+        <li>Scale पर सही Reading प्राप्त होती है।</li>
+        <li>Pointer को आवश्यक दिशा में घुमाता है।</li>
+    </ul>
+
+    <h4 class="heading protect">Disadvantages</h4>
+    <ul class="protect">
+        <li>केवल Deflecting Torque होने पर Pointer लगातार घूमता रहेगा।</li>
+        <li>सही Reading प्राप्त करने के लिए Controlling Torque तथा Damping Torque का होना आवश्यक है।</li>
+    </ul>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>केवल Deflecting Torque से कोई भी Measuring Instrument सही कार्य नहीं कर सकता। Accurate Measurement के लिए Deflecting Torque, Controlling Torque तथा Damping Torque तीनों का एक साथ कार्य करना आवश्यक होता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Controlling Torque (Tc)</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Controlling Torque is the torque which opposes the Deflecting Torque and controls the movement of the pointer. It brings the pointer to a final steady position.</p>
+    <p>Controlling Torque वह Torque है जो Deflecting Torque का विरोध करता है तथा Pointer की गति को नियंत्रित करता है। यह Pointer को अंतिम स्थिर स्थिति (Final Steady Position) पर लाता है।</p>
+</div>
+
+<!-- PAGE 11 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 11</div>
+
+    <h4 class="heading">Working (Controlling Torque)</h4>
+    <p>जब Deflecting Torque के कारण Pointer घूमना शुरू करता है, तब Controlling Torque विपरीत दिशा में कार्य करता है। दोनों Torque बराबर होने पर Pointer एक निश्चित स्थान पर रुक जाता है और सही Reading प्राप्त होती है।</p>
+
+    <h4 class="heading protect center">Condition of Equilibrium</h4>
+    <div class="formula-box center protect" style="font-size: 20px; font-weight: bold;">
+        <span class="red-text">Deflecting Torque (Td)</span> = <span class="blue-text">Controlling Torque (Tc)</span>
+    </div>
+    <p class="center protect">तब Pointer स्थिर हो जाता है और सही Reading दिखाता है।</p>
+
+    <h4 class="heading protect center">Direction of Controlling Torque</h4>
+    <div class="diagram-container protect">
+        <p class="red-text" style="font-weight: bold;">Deflecting Torque</p>
+        <div style="font-size: 30px; font-weight: bold; color: var(--ink-red);">↻</div>
+        <p class="blue-text">(Pointer)</p>
+        <div style="font-size: 30px; font-weight: bold; color: var(--ink-blue);">↺</div>
+        <p class="blue-text" style="font-weight: bold;">Controlling Torque</p>
+    </div>
+
+    <h4 class="heading protect">Methods of Producing Controlling Torque</h4>
+    <ul class="protect">
+        <li>Spring Control</li>
+        <li>Gravity Control</li>
+    </ul>
+
+    <h4 class="heading protect">Functions</h4>
+    <ul class="protect">
+        <li>Pointer की गति को नियंत्रित करना।</li>
+        <li>Pointer को निश्चित स्थान पर रोकना।</li>
+        <li>सही Reading प्राप्त करना।</li>
+        <li>Reading लेने के बाद Pointer को Zero Position पर वापस लाना।</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>Ammeter में Current बढ़ने पर Pointer घूमता है, लेकिन Spring उसे नियंत्रित करता है। जब दोनों Torque बराबर हो जाते हैं, तब Pointer वहीं रुक जाता है और सही Reading दिखाई देती है।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Controlling Torque</h4>
+    <ul class="protect">
+        <li>यह हमेशा Deflecting Torque के विपरीत दिशा में कार्य करता है।</li>
+        <li>यह Pointer को अनावश्यक रूप से अधिक घूमने से रोकता है।</li>
+        <li>Deflecting Torque तथा Controlling Torque बराबर होने पर Pointer स्थिर हो जाता है।</li>
+    </ul>
+</div>
+
+<!-- PAGE 12 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 12</div>
+    
+    <ul class="protect" style="margin-top: 0;">
+        <li>यह Instrument की Accuracy बढ़ाने में महत्वपूर्ण भूमिका निभाता है।</li>
+        <li>Reading लेने के बाद Pointer को Zero Position पर वापस लाने में सहायता करता है।</li>
+    </ul>
+
+    <h4 class="heading protect">Requirements of a Good Controlling Torque</h4>
+    <ul class="protect">
+        <li>Controlling Torque पर्याप्त होना चाहिए।</li>
+        <li>Pointer को जल्दी एवं सही स्थान पर रोकना चाहिए।</li>
+        <li>यह स्थिर (Stable) एवं विश्वसनीय (Reliable) होना चाहिए।</li>
+        <li>Temperature परिवर्तन से इसका प्रभाव कम होना चाहिए।</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>Pointer को सही Position पर रोकता है।</li>
+                <li>Accurate Measurement प्राप्त करने में सहायता करता है।</li>
+                <li>Pointer को Zero Position पर वापस लाता है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>यदि Controlling Torque न हो, तो Pointer लगातार घूमता रहेगा।</li>
+                <li>Instrument सही Reading नहीं दिखा पाएगा।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Deflecting Torque Pointer को घुमाता है, जबकि Controlling Torque उसी Pointer को निश्चित स्थान पर रोकता है। इसलिए दोनों Torque का एक साथ होना आवश्यक है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Damping Torque (Td)</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Damping Torque is the torque which reduces the oscillation of the pointer and makes it come to rest quickly at its final steady position.</p>
+    <p>Damping Torque वह Torque है जो Pointer के दोलन (Oscillation) को कम करता है तथा उसे शीघ्र ही अंतिम स्थिर स्थिति (Final Steady Position) पर पहुँचा देता है।</p>
+
+    <h4 class="heading protect">Working</h4>
+    <p class="protect">जब Deflecting Torque के कारण Pointer घूमता है और Controlling Torque उसे रोकने का प्रयास करता है, तब Pointer कई बार आगे-पीछे हिलता रहता है। इस आगे-पीछे की गति (Oscillation) को समाप्त करके Pointer को जल्दी स्थिर करना Damping Torque का कार्य है।</p>
+</div>
+
+<!-- PAGE 13 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 13</div>
+
+    <h4 class="heading protect">Need of Damping Torque</h4>
+    <ul class="protect">
+        <li>Pointer के Oscillation को रोकने के लिए।</li>
+        <li>Reading जल्दी प्राप्त करने के लिए।</li>
+        <li>Accurate Measurement प्राप्त करने के लिए।</li>
+        <li>Pointer को Final Position पर शीघ्र स्थिर करने के लिए।</li>
+    </ul>
+
+    <h4 class="heading center protect">Direction of Damping Torque</h4>
+    <div class="diagram-container protect">
+        <p class="red-text" style="font-weight: bold;">Deflecting Torque</p>
+        <div style="font-size: 30px; font-weight: bold; color: var(--ink-red);">↻</div>
+        <p class="blue-text">(Pointer)</p>
+        <p class="blue-text" style="font-weight: bold; font-style: italic;">↔ Oscillation</p>
+        <div style="font-size: 30px; font-weight: bold; color: var(--ink-blue);">↺</div>
+        <p class="blue-text" style="font-weight: bold;">Damping Torque</p>
+        <div class="arrow-down">↓</div>
+        <p class="blue-text" style="font-weight: bold; text-decoration: underline;"><mark>Final Steady Position</mark></p>
+    </div>
+
+    <h4 class="heading protect">Methods of Producing Damping Torque</h4>
+    <ul class="protect">
+        <li>Air Friction Damping</li>
+        <li>Fluid Friction Damping</li>
+        <li>Eddy Current Damping</li>
+    </ul>
+
+    <h4 class="heading protect">Functions</h4>
+    <ul class="protect">
+        <li>Pointer के Oscillation को समाप्त करना।</li>
+        <li>Pointer को जल्दी स्थिर करना।</li>
+        <li>Accurate Reading प्राप्त करने में सहायता करना।</li>
+        <li>Measurement का समय कम करना।</li>
+    </ul>
+
+    <h4 class="heading protect">Characteristics of Damping Torque</h4>
+    <ul class="protect">
+        <li>यह Pointer के Oscillation को कम करता है।</li>
+        <li>यह Pointer को बिना अधिक समय लिए Final Position पर स्थिर करता है।</li>
+        <li>यह Deflecting Torque एवं Controlling Torque के साथ मिलकर कार्य करता है।</li>
+        <li>Damping Torque के कारण Reading जल्दी प्राप्त होती है।</li>
+        <li>यह Instrument की Accuracy एवं Speed दोनों को बढ़ाता है।</li>
+    </ul>
+
+    <h4 class="heading protect">Requirements of a Good Damping Torque</h4>
+    <ul class="protect">
+        <li>Oscillation को शीघ्र समाप्त करना चाहिए।</li>
+        <li>Pointer को Over Damping या Under Damping नहीं करना चाहिए।</li>
+        <li>Pointer को सीधे Final Steady Position पर पहुँचाना चाहिए।</li>
+    </ul>
+</div>
+
+<!-- PAGE 14 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 14</div>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>Reading जल्दी प्राप्त होती है।</li>
+                <li>Pointer स्थिर रहता है।</li>
+                <li>Accurate Measurement प्राप्त होता है।</li>
+                <li>Instrument का Response बेहतर हो जाता है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>यदि Damping Torque न हो, तो Pointer लंबे समय तक आगे-पीछे हिलता रहेगा।</li>
+                <li>Reading लेने में अधिक समय लगेगा।</li>
+                <li>Accurate Reading प्राप्त करना कठिन होगा।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p><span class="red-text">Deflecting Torque</span> → Pointer को घुमाता है।</p>
+        <p><span class="red-text">Controlling Torque</span> → Pointer को सही स्थान पर रोकता है।</p>
+        <p><span class="red-text">Damping Torque</span> → Pointer के Oscillation को समाप्त करके उसे जल्दी Final Position पर स्थिर करता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Static Characteristics of Measuring Instrument</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Static Characteristics are those characteristics of a measuring instrument which are observed when the measured quantity does not change with time.</p>
+    <p>जब मापी जाने वाली राशि (Measured Quantity) समय के साथ नहीं बदलती है, तब Instrument के जो गुण (Characteristics) देखे जाते हैं, उन्हें Static Characteristics कहते हैं।</p>
+
+    <h4 class="heading protect">Need of Static Characteristics</h4>
+    <ul class="protect">
+        <li>Instrument की Performance जानने के लिए।</li>
+        <li>Accuracy का पता लगाने के लिए।</li>
+        <li>Instrument की Reliability जाँचने के लिए।</li>
+        <li>Measurement Error को कम करने के लिए।</li>
+    </ul>
+
+    <h4 class="heading protect">Main Static Characteristics</h4>
+    <div class="horizontal-flow protect">
+        <ul style="flex: 1;">
+            <li>Accuracy</li>
+            <li>Precision</li>
+            <li>Resolution</li>
+        </ul>
+        <ul style="flex: 1;">
+            <li>Tolerance</li>
+            <li>Sensitivity</li>
+            <li>Repeatability</li>
+        </ul>
+    </div>
+</div>
+
+<!-- PAGE 15 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 15</div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि किसी Battery का Voltage लगातार 12 Volt है और हम उसी Voltage को Voltmeter से मापते हैं, तो Instrument के Accuracy, Precision, Resolution आदि का अध्ययन Static Characteristics के अंतर्गत किया जाता है।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Points</span>
+        <ul>
+            <li>Static Characteristics का उपयोग केवल Constant Quantity के Measurement में किया जाता है।</li>
+            <li>यह Instrument की Quality एवं Performance को दर्शाता है।</li>
+            <li>अच्छे Measuring Instrument में सभी Static Characteristics अच्छे होने चाहिए।</li>
+        </ul>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Accuracy</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Accuracy is the degree of closeness of the measured value to the true value of the measured quantity.</p>
+    <p>Accuracy वह गुण है जो बताता है कि किसी Instrument द्वारा मापा गया मान (Measured Value), वास्तविक मान (True Value) के कितना निकट है।</p>
+
+    <div class="formula-box center protect">
+        <span class="red-text" style="font-weight: bold; font-size: 18px;">Accuracy = Measured Value ≈ True Value</span>
+    </div>
+    <p class="center">(जितना अधिक Measured Value, True Value के निकट होगा, उतनी अधिक Accuracy होगी।)</p>
+
+    <div class="callout protect">
+        <span class="callout-title">Example</span>
+        <p><mark>True Value = 100 V</mark></p>
+        <p><b>Case 1:</b> Measured Value = 100 V ➔ Accuracy = 100% (लगभग)</p>
+        <p><b>Case 2:</b> Measured Value = 99.8 V ➔ Accuracy = बहुत अच्छी</p>
+        <p><b>Case 3:</b> Measured Value = 95 V ➔ Accuracy = कम</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Accuracy</h4>
+    <ul class="protect">
+        <li>Accuracy सही Measurement को दर्शाती है।</li>
+        <li>Accuracy True Value पर आधारित होती है।</li>
+        <li>High Accuracy का अर्थ है कि Error बहुत कम है।</li>
+        <li>Accuracy Instrument की Quality का महत्वपूर्ण संकेतक है।</li>
+    </ul>
+
+    <h4 class="heading protect">Factors Affecting Accuracy</h4>
+    <ul class="protect">
+        <li>Instrumental Error</li>
+        <li>Human Error</li>
+        <li>Environmental Error</li>
+        <li>Calibration Error</li>
+    </ul>
+</div>
+
+<!-- PAGE 16 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 16</div>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>सही एवं विश्वसनीय Measurement प्राप्त होता है।</li>
+                <li>Error कम होता है।</li>
+                <li>Instrument की Performance बेहतर होती है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>High Accuracy वाले Instruments महंगे होते हैं।</li>
+                <li>समय-समय पर Calibration आवश्यक होता है।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि Digital Voltmeter 230 V Supply को 229.9 V दिखाता है, तो उसकी Accuracy बहुत अच्छी मानी जाएगी क्योंकि Measured Value, True Value के बहुत निकट है।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Accuracy का अर्थ केवल "सही Measurement" से है। किसी Instrument का Accurate होना यह आवश्यक नहीं कि वह हमेशा Precise भी हो। Accuracy और Precision दोनों अलग-अलग Characteristics हैं।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Precision</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Precision is the ability of a measuring instrument to give the same or nearly the same reading again and again for the same measured quantity under the same conditions.</p>
+    <p>Precision वह गुण है जो बताता है कि समान परिस्थितियों (Same Conditions) में एक ही राशि (Measured Quantity) को बार-बार मापने पर Instrument समान या लगभग समान Reading देता है।</p>
+
+    <div class="callout protect">
+        <span class="callout-title">Example</span>
+        <p><mark>True Value = 100 V</mark></p>
+        <p>Measurement 1 = 98.2 V<br>
+           Measurement 2 = 98.1 V<br>
+           Measurement 3 = 98.2 V<br>
+           Measurement 4 = 98.1 V</p>
+        <p>सभी Reading लगभग समान हैं, इसलिए Instrument की Precision अच्छी है, भले ही Reading True Value से थोड़ी अलग हो।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Precision</h4>
+    <ul class="protect">
+        <li>बार-बार Measurement करने पर समान Reading प्राप्त होती है।</li>
+        <li>Precision Repeatability को दर्शाती है।</li>
+        <li>Precision का संबंध Reading की Consistency से होता है।</li>
+        <li>High Precision का अर्थ है कि सभी Reading एक-दूसरे के बहुत निकट हैं।</li>
+    </ul>
+</div>
+
+<!-- PAGE 17 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 17</div>
+
+    <h4 class="heading protect">Factors Affecting Precision</h4>
+    <ul class="protect">
+        <li>Instrument की Quality</li>
+        <li>Mechanical Wear</li>
+        <li>Environmental Conditions</li>
+        <li>Observer Error</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>बार-बार लगभग समान Reading प्राप्त होती है।</li>
+                <li>Instrument की Reliability बढ़ती है।</li>
+                <li>Experimental Results अधिक Consistent होते हैं।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>High Precision होने पर भी Reading True Value से दूर हो सकती है।</li>
+                <li>Precision अकेले Accurate Measurement की गारंटी नहीं देता।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि Digital Thermometer हर बार किसी व्यक्ति का Temperature 37.2°C ही दिखाता है, तो उसकी Precision बहुत अच्छी है। लेकिन यदि वास्तविक Temperature 37.8°C है, तो Instrument Precise तो है, पर Accurate नहीं है।</p>
+    </div>
+
+    <h4 class="heading protect">Difference Between Accuracy and Precision</h4>
+    <div class="horizontal-flow protect" style="align-items: flex-start;">
+        <div style="flex: 1; border: 1px solid var(--ink-dark); padding: 10px; margin: 5px; border-radius: 5px;">
+            <h4 class="heading center" style="margin-top:0;">Accuracy</h4>
+            <ul>
+                <li>True Value के कितना निकट है।</li>
+                <li>Correctness को दर्शाता है।</li>
+                <li>Error कम होने पर Accuracy अधिक होती है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1; border: 1px solid var(--ink-dark); padding: 10px; margin: 5px; border-radius: 5px;">
+            <h4 class="heading center" style="margin-top:0;">Precision</h4>
+            <ul>
+                <li>बार-बार समान Reading देना।</li>
+                <li>Consistency को दर्शाता है।</li>
+                <li>Reading एक-दूसरे के निकट होने पर Precision अधिक होती है।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Accuracy और Precision एक-दूसरे से अलग Characteristics हैं।</p>
+        <ul>
+            <li>Instrument Accurate हो सकता है लेकिन Precise नहीं।</li>
+            <li>Instrument Precise हो सकता है लेकिन Accurate नहीं।</li>
+            <li>सबसे अच्छा Measuring Instrument वही होता है जो Accurate भी हो और Precise भी।</li>
+        </ul>
+    </div>
+</div>
+
+<!-- PAGE 18 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 18</div>
+
+    <h2 class="heading center protect">Resolution</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Resolution is the smallest change in the measured quantity that can be detected or indicated by a measuring instrument.</p>
+    <p>Resolution वह गुण है जो बताता है कि कोई Measuring Instrument मापी जाने वाली राशि (Measured Quantity) में होने वाले सबसे छोटे परिवर्तन (Smallest Change) को पहचान या प्रदर्शित (Indicate) कर सकता है।</p>
+
+    <div class="callout protect">
+        <span class="callout-title">Example</span>
+        <p>यदि किसी Digital Voltmeter का Display 0.01 V तक Reading दिखाता है, तो उसकी Resolution = <mark>0.01 V</mark> होगी।</p>
+        <p>इसी प्रकार यदि किसी Scale पर सबसे छोटा Division 1 mm है, तो उसकी Resolution <mark>1 mm</mark> होगी।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Resolution</h4>
+    <ul class="protect">
+        <li>यह Instrument की Smallest Detectable Change को दर्शाती है।</li>
+        <li>Resolution जितनी छोटी होगी, Instrument उतना अधिक सूक्ष्म (Sensitive) Measurement कर सकेगा।</li>
+        <li>High Resolution का अर्थ है कि Instrument बहुत छोटे परिवर्तन को भी दिखा सकता है।</li>
+        <li>Resolution Instrument की Quality का महत्वपूर्ण गुण है।</li>
+    </ul>
+
+    <h4 class="heading protect">Factors Affecting Resolution</h4>
+    <ul class="protect">
+        <li>Scale Division</li>
+        <li>Display Digits</li>
+        <li>Instrument Design</li>
+        <li>Sensor Quality</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>बहुत छोटे परिवर्तन को मापा जा सकता है।</li>
+                <li>Measurement अधिक Detailed होता है।</li>
+                <li>Scientific एवं Laboratory Measurements में अधिक उपयोगी होता है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>High Resolution वाले Instruments महंगे होते हैं।</li>
+                <li>High Resolution होने का अर्थ यह नहीं कि Instrument Accurate भी होगा।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>एक Digital Multimeter 12.34 V तथा दूसरा 12.3456 V तक Reading दिखाता है। दूसरे Multimeter की Resolution अधिक है, क्योंकि वह Voltage में बहुत छोटे परिवर्तन को भी प्रदर्शित कर सकता है।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Resolution का संबंध Instrument द्वारा दिखाई जा सकने वाले सबसे छोटे परिवर्तन से है।</p>
+        <p class="center" style="font-weight: bold; font-size: 18px;"><mark>High Resolution ≠ High Accuracy</mark></p>
+        <p>किसी Instrument की Resolution अधिक हो सकती है, लेकिन यदि उसकी Reading True Value के निकट नहीं है, तो उसकी Accuracy कम हो सकती है।</p>
+    </div>
+</div>
+
+<!-- PAGE 19 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 19</div>
+
+    <h2 class="heading center protect">Tolerance</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Tolerance is the maximum permissible variation or allowable deviation of the measured value from the specified or true value.</p>
+    <p>Tolerance वह अधिकतम स्वीकार्य (Maximum Permissible) विचलन (Deviation) है, जिसके भीतर Instrument की Reading सही मानी जाती है।</p>
+
+    <div class="formula-box center protect">
+        <span class="red-text" style="font-weight: bold; font-size: 18px;">Tolerance = ± Specified Percentage of Full Scale</span><br>
+        or<br>
+        <span class="red-text" style="font-weight: bold; font-size: 18px;">Tolerance = ± Allowable Error</span>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Example 1</span>
+        <p>A Voltmeter has a Full Scale Value = 100 V<br>
+        Tolerance = ±2%<br>
+        Allowable Error = ±2 V</p>
+        <p>इसका अर्थ है कि Instrument की Reading 98 V से 102 V के बीच हो, तो वह स्वीकार्य (Acceptable) मानी जाएगी।</p>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Example 2</span>
+        <p>A Resistance = 100 Ω<br>
+        Tolerance = ±5%<br>
+        Actual Resistance = 95 Ω to 105 Ω</p>
+        <p>यह Resistance सही (Acceptable) मानी जाएगी।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Tolerance</h4>
+    <ul class="protect">
+        <li>यह Instrument की Acceptable Error Limit को दर्शाती है।</li>
+        <li>Tolerance सामान्यतः Percentage (%) में व्यक्त की जाती है।</li>
+        <li>Manufacturing के समय प्रत्येक Instrument की Tolerance निर्धारित की जाती है।</li>
+        <li>Tolerance जितनी कम होगी, Instrument उतना अधिक Quality वाला माना जाएगा।</li>
+    </ul>
+
+    <h4 class="heading protect">Factors Affecting Tolerance</h4>
+    <ul class="protect">
+        <li>Manufacturing Process</li>
+        <li>Quality of Materials</li>
+        <li>Calibration</li>
+        <li>Temperature and Environment</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>Instrument की Acceptable Working Range ज्ञात होती है।</li>
+                <li>Quality Control में सहायता मिलती है।</li>
+                <li>Instrument का चयन करना आसान होता है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>अधिक Tolerance होने पर Measurement Error भी अधिक हो सकता है।</li>
+                <li>Low Accuracy वाले Instruments में Tolerance अधिक होती है।</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE 20 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 20</div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि LED Bulb पर 230 V ±10% लिखा है, तो इसका अर्थ है कि Bulb लगभग 207 V से 253 V तक सही प्रकार से कार्य करेगा।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Tolerance और Accuracy अलग-अलग Terms हैं।</p>
+        <ul>
+            <li>Accuracy बताती है कि Reading True Value के कितनी निकट है।</li>
+            <li>Tolerance बताती है कि अधिकतम कितनी Error स्वीकार्य (Allowable) है।</li>
+        </ul>
+        <p>कम Tolerance वाला Instrument सामान्यतः अधिक विश्वसनीय (Reliable) माना जाता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Sensitivity</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Sensitivity is the ability of a measuring instrument to produce a large change in output for a small change in the input.</p>
+    <p>Sensitivity वह गुण है जो बताता है कि Input में बहुत छोटे परिवर्तन (Small Change) होने पर Instrument के Output या Pointer में कितना परिवर्तन होता है।</p>
+
+    <div class="formula-box center protect">
+        <span class="red-text" style="font-weight: bold; font-size: 18px;">Sensitivity = Change in Output / Change in Input</span><br>
+        <br>
+        <span class="red-text" style="font-weight: bold; font-size: 18px;">Sensitivity = ΔOutput / ΔInput</span>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Example 1</span>
+        <p>यदि किसी Voltmeter में Voltage 1 V बढ़ाने पर Pointer 10 Divisions चलता है, तो<br>
+        Sensitivity = 10 Divisions / 1 V = <mark>10 Divisions/V</mark></p>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Example 2</span>
+        <p>यदि एक Thermometer में 1°C बढ़ने पर Liquid Column 2 mm ऊपर जाता है, तो उसकी Sensitivity = <mark>2 mm/°C</mark> होगी。</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Sensitivity</h4>
+    <ul class="protect">
+        <li>Input में छोटे परिवर्तन को आसानी से Detect कर सकता है।</li>
+        <li>High Sensitivity वाले Instrument का Pointer अधिक Deflection देता है।</li>
+        <li>Sensitivity Instrument की Response क्षमता को दर्शाती है।</li>
+        <li>Laboratory एवं Scientific Instruments में अधिक Sensitivity आवश्यक होती है।</li>
+    </ul>
+</div>
+
+<!-- PAGE 21 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 21</div>
+
+    <h4 class="heading protect">Factors Affecting Sensitivity</h4>
+    <ul class="protect">
+        <li>Instrument Design</li>
+        <li>Quality of Sensor</li>
+        <li>Friction in Moving Parts</li>
+        <li>Amplification Circuit</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>छोटे-से-छोटे परिवर्तन को मापा जा सकता है।</li>
+                <li>Measurement अधिक स्पष्ट एवं सूक्ष्म होता है।</li>
+                <li>Instrument का Response तेज होता है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>अत्यधिक Sensitivity होने पर Noise का प्रभाव भी बढ़ सकता है।</li>
+                <li>High Sensitivity वाले Instruments की Cost अधिक होती है।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>एक Digital Weighing Machine 0.001 kg तक Weight में परिवर्तन दिखा देती है, इसलिए उसकी Sensitivity अधिक मानी जाती है।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Sensitivity और Resolution अलग-अलग हैं।</p>
+        <ul>
+            <li>Sensitivity बताती है कि Input बदलने पर Output कितना बदलता है।</li>
+            <li>Resolution बताती है कि Instrument सबसे छोटा कौन-सा परिवर्तन Detect कर सकता है।</li>
+        </ul>
+        <p>High Sensitivity का अर्थ हमेशा High Accuracy नहीं होता। कोई Instrument बहुत Sensitive हो सकता है, लेकिन यदि उसकी Reading True Value के निकट नहीं है, तो उसकी Accuracy कम होगी।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Repeatability</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Repeatability is the ability of a measuring instrument to produce the same or nearly the same reading when the same quantity is measured repeatedly under the same conditions.</p>
+    <p>Repeatability वह गुण है जो बताता है कि समान परिस्थितियों (Same Conditions) में एक ही Measured Quantity को बार-बार मापने पर Instrument समान या लगभग समान Reading देता है।</p>
+
+    <h4 class="heading protect">Conditions for Repeatability</h4>
+    <p class="protect">Repeatability प्राप्त करने के लिए निम्न परिस्थितियाँ समान होनी चाहिए—</p>
+    <ul class="protect">
+        <li>Same Instrument</li>
+        <li>Same Observer</li>
+        <li>Same Method of Measurement</li>
+        <li>Same Environmental Conditions</li>
+        <li>Same Input Value</li>
+    </ul>
+</div>
+
+<!-- PAGE 22 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 22</div>
+
+    <div class="callout protect">
+        <span class="callout-title">Example</span>
+        <p><mark>True Value = 50 V</mark></p>
+        <p>1st Reading = 50.1 V<br>
+           2nd Reading = 50.0 V<br>
+           3rd Reading = 50.1 V<br>
+           4th Reading = 50.0 V</p>
+        <p>सभी Readings लगभग समान हैं, इसलिए Instrument की Repeatability अच्छी है।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Repeatability</h4>
+    <ul class="protect">
+        <li>समान परिस्थितियों में लगभग समान Reading प्राप्त होती है।</li>
+        <li>Instrument की Reliability को दर्शाती है।</li>
+        <li>Measurement में Consistency बनाए रखती है।</li>
+        <li>अच्छी Repeatability होने पर Measurement पर विश्वास (Confidence) बढ़ता है।</li>
+    </ul>
+
+    <h4 class="heading protect">Factors Affecting Repeatability</h4>
+    <ul class="protect">
+        <li>Instrument Condition</li>
+        <li>Mechanical Friction</li>
+        <li>Environmental Changes</li>
+        <li>Human Error</li>
+        <li>Calibration</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>बार-बार लगभग समान Reading प्राप्त होती है।</li>
+                <li>Instrument की विश्वसनीयता (Reliability) बढ़ती है।</li>
+                <li>Experimental Error कम होता है।</li>
+                <li>Quality Control में उपयोगी होती है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>अच्छी Repeatability होने पर भी Reading Accurate होना आवश्यक नहीं है।</li>
+                <li>यदि Instrument सही Calibrated नहीं है, तो सभी Readings समान होने पर भी गलत हो सकती हैं।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि Digital Weighing Machine पर 2 kg का Weight पाँच बार रखने पर हर बार 2.00 kg या 2.01 kg Reading आती है, तो उसकी Repeatability बहुत अच्छी मानी जाएगी।</p>
+    </div>
+
+    <h4 class="heading protect">Difference Between Precision and Repeatability</h4>
+    <div class="horizontal-flow protect" style="align-items: flex-start;">
+        <div style="flex: 1; border: 1px solid var(--ink-dark); padding: 10px; margin: 5px; border-radius: 5px;">
+            <h4 class="heading center" style="margin-top:0;">Precision</h4>
+            <ul>
+                <li>Readings एक-दूसरे के बहुत निकट होती हैं।</li>
+                <li>Consistency को दर्शाती है।</li>
+                <li>True Value से निकट होना आवश्यक नहीं।</li>
+            </ul>
+        </div>
+        <div style="flex: 1; border: 1px solid var(--ink-dark); padding: 10px; margin: 5px; border-radius: 5px;">
+            <h4 class="heading center" style="margin-top:0;">Repeatability</h4>
+            <ul>
+                <li>समान परिस्थितियों में बार-बार लगभग समान Reading प्राप्त होती है।</li>
+                <li>Instrument की Reliability को दर्शाती है।</li>
+                <li>Same Instrument, Same Method और Same Conditions आवश्यक हैं।</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE 23 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 23</div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Repeatability एक अच्छे Measuring Instrument का महत्वपूर्ण गुण है। यदि किसी Instrument की Repeatability अच्छी है, तो वह समान परिस्थितियों में बार-बार लगभग एक जैसी Reading देगा, जिससे Measurement अधिक विश्वसनीय (Reliable) बन जाता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Errors in Measuring Instruments</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Error is the difference between the True Value and the Measured Value of a quantity.</p>
+    <p>Error वह अंतर (Difference) है जो किसी राशि के वास्तविक मान (True Value) और मापे गए मान (Measured Value) के बीच होता है।</p>
+
+    <div class="formula-box center protect">
+        <span class="red-text" style="font-weight: bold; font-size: 18px;">Error = True Value − Measured Value</span><br>
+        or<br>
+        <span class="red-text" style="font-weight: bold; font-size: 18px;">Error = Measured Value − True Value</span>
+    </div>
+    <p class="center">(Note: Error का Sign (+) या (−) परिस्थिति के अनुसार हो सकता है। सामान्यतः Magnitude का उपयोग किया जाता है।)</p>
+
+    <div class="callout protect">
+        <span class="callout-title">Example</span>
+        <p>True Value = 100 V<br>
+        Measured Value = 98 V<br>
+        <mark>Error = 100 − 98 = 2 V</mark></p>
+        <p>यदि Measured Value = 102 V<br>
+        <mark>Error = 102 − 100 = +2 V</mark></p>
+    </div>
+
+    <h4 class="heading protect">Need to Study Errors</h4>
+    <ul class="protect">
+        <li>Measurement की Accuracy जानने के लिए।</li>
+        <li>Instrument की Performance जाँचने के लिए।</li>
+        <li>Error को कम करने के लिए।</li>
+        <li>सही Instrument का चयन करने के लिए।</li>
+    </ul>
+
+    <h4 class="heading protect">Causes of Errors</h4>
+    <ul class="protect">
+        <li>Instrumental Defects</li>
+        <li>Human Mistakes</li>
+        <li>Environmental Conditions</li>
+        <li>Improper Calibration</li>
+        <li>Wrong Method of Measurement</li>
+    </ul>
+
+    <h4 class="heading protect">Classification of Errors</h4>
+    <p class="protect">Errors को मुख्यतः तीन भागों में बाँटा जाता है—</p>
+    <ul class="protect">
+        <li>1. Gross Errors (मानवीय त्रुटियाँ)</li>
+        <li>2. Systematic Errors (व्यवस्थित त्रुटियाँ)</li>
+        <li>3. Random Errors (आकस्मिक त्रुटियाँ)</li>
+    </ul>
+    <p class="protect">Systematic Errors को आगे चार भागों में बाँटा जाता है—</p>
+    <ul class="protect">
+        <li>Instrumental Errors</li>
+        <li>Environmental Errors</li>
+        <li>Observational Errors</li>
+        <li>Theoretical Errors</li>
+    </ul>
+</div>
+
+<!-- PAGE 24 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 24</div>
+
+    <h4 class="heading protect">Characteristics of Errors</h4>
+    <ul class="protect">
+        <li>प्रत्येक Measurement में कुछ न कुछ Error उपस्थित हो सकता है।</li>
+        <li>Error को पूरी तरह समाप्त नहीं किया जा सकता, लेकिन इसे कम किया जा सकता है।</li>
+        <li>अच्छे Instrument में Error बहुत कम होता है।</li>
+    </ul>
+
+    <h4 class="heading protect">Methods to Reduce Errors</h4>
+    <ul class="protect">
+        <li>Proper Calibration करना।</li>
+        <li>सही Instrument का चयन करना।</li>
+        <li>Instrument का नियमित Maintenance करना।</li>
+        <li>Measurement सही Method से करना।</li>
+        <li>Temperature, Humidity तथा अन्य Environmental Conditions का ध्यान रखना।</li>
+    </ul>
+
+    <h4 class="heading protect">Advantages of Error Analysis</h4>
+    <ul class="protect">
+        <li>Instrument की Accuracy बढ़ती है।</li>
+        <li>Reliable Measurement प्राप्त होती है।</li>
+        <li>Quality Control में सहायता मिलती है।</li>
+        <li>Fault Finding आसान हो जाती है।</li>
+    </ul>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>कोई भी Measuring Instrument 100% Error-Free नहीं होता। प्रत्येक Instrument में कुछ न कुछ Error अवश्य होता है। Engineering का उद्देश्य Error को न्यूनतम (Minimum) करना होता है, ताकि Measurement अधिक Accurate और Reliable हो सके।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Gross Errors (Human Errors)</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Gross Errors are the errors caused by human mistakes during the measurement process.</p>
+    <p>Gross Errors वे त्रुटियाँ हैं जो Measurement के समय व्यक्ति (Observer) की गलती के कारण उत्पन्न होती हैं।</p>
+
+    <h4 class="heading protect">Causes of Gross Errors</h4>
+    <ul class="protect">
+        <li>Reading को गलत पढ़ना (Wrong Reading)</li>
+        <li>Scale को गलत समझना</li>
+        <li>Reading लिखते समय गलती करना</li>
+        <li>Wrong Range का चयन करना</li>
+        <li>Instrument का गलत Connection करना</li>
+        <li>Carelessness (लापरवाही)</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Examples</span>
+        <p><b>Example 1:</b> A Voltmeter की सही Reading 220 V है, लेकिन Observer ने गलती से 202 V लिख दिया। यह Gross Error है।</p>
+        <p><b>Example 2:</b> Ammeter का Range 0–5 A है, लेकिन Observer ने 0–10 A मानकर Reading ले ली। यह भी Gross Error है।</p>
+    </div>
+</div>
+
+<!-- PAGE 25 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 25</div>
+
+    <h4 class="heading protect">Characteristics of Gross Errors</h4>
+    <ul class="protect">
+        <li>यह पूरी तरह Human Mistake के कारण होता है।</li>
+        <li>इनका कोई निश्चित Pattern नहीं होता।</li>
+        <li>सावधानी बरतने पर इन्हें लगभग समाप्त किया जा सकता है।</li>
+        <li>ये Measurement की Accuracy को बहुत प्रभावित करते हैं।</li>
+    </ul>
+
+    <h4 class="heading protect">Effects of Gross Errors</h4>
+    <ul class="protect">
+        <li>Measurement गलत हो जाता है।</li>
+        <li>Instrument के Result पर विश्वास कम हो जाता है।</li>
+        <li>Experimental Result गलत हो सकता है।</li>
+        <li>Engineering Calculations में बड़ी गलती हो सकती है।</li>
+    </ul>
+
+    <h4 class="heading protect">Methods to Reduce Gross Errors</h4>
+    <ul class="protect">
+        <li>Reading लेते समय पूरा ध्यान रखें।</li>
+        <li>Instrument का सही Range चुनें।</li>
+        <li>Reading दो या तीन बार Verify करें।</li>
+        <li>Proper Training प्राप्त करें।</li>
+        <li>Automatic या Digital Instruments का उपयोग करें।</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>Gross Errors का कोई Advantage नहीं होता।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>Measurement पूरी तरह गलत हो सकता है।</li>
+                <li>Time और Money दोनों की हानि हो सकती है।</li>
+                <li>Decision गलत हो सकता है।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि Electrician Multimeter से Voltage मापते समय AC के स्थान पर DC Mode चुन ले, तो प्राप्त Reading गलत होगी। यह Gross Error का एक सामान्य उदाहरण है।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Gross Error पूरी तरह Human Error है। इसे सावधानी (Carefulness), Practice तथा Proper Training द्वारा लगभग समाप्त किया जा सकता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Systematic Errors</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Systematic Errors are those errors which occur in a fixed pattern and can be predicted or corrected.</p>
+    <p>Systematic Errors वे त्रुटियाँ हैं जो एक निश्चित नियम (Fixed Pattern) के अनुसार उत्पन्न होती हैं। इनका कारण ज्ञात किया जा सकता है तथा इन्हें सुधारा (Correct) भी जा सकता है।</p>
+</div>
+
+<!-- PAGE 26 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 26</div>
+
+    <h4 class="heading protect">Causes of Systematic Errors</h4>
+    <ul class="protect">
+        <li>Instrument की खराबी</li>
+        <li>Environmental Conditions</li>
+        <li>Observer की आदत</li>
+        <li>Theoretical Assumptions</li>
+    </ul>
+
+    <h4 class="heading protect">Classification of Systematic Errors</h4>
+    <p class="protect">Systematic Errors चार प्रकार के होते हैं—</p>
+    <ul class="protect">
+        <li>1. Instrumental Errors</li>
+        <li>2. Environmental Errors</li>
+        <li>3. Observational Errors</li>
+        <li>4. Theoretical Errors</li>
+    </ul>
+
+    <h4 class="heading protect">Characteristics of Systematic Errors</h4>
+    <ul class="protect">
+        <li>यह निश्चित Pattern का पालन करते हैं।</li>
+        <li>बार-बार लगभग समान प्रकार की Error उत्पन्न होती है।</li>
+        <li>इनका कारण ज्ञात किया जा सकता है।</li>
+        <li>उचित Correction द्वारा इन्हें कम या समाप्त किया जा सकता है।</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Examples</span>
+        <p><b>Example 1:</b> यदि किसी Voltmeter की Zero Setting गलत है, तो वह प्रत्येक Reading में 2 V अधिक दिखाता है। यह Systematic Error है।</p>
+        <p><b>Example 2:</b> यदि Temperature अधिक होने के कारण सभी Readings प्रभावित हो रही हैं, तो यह भी Systematic Error है।</p>
+    </div>
+
+    <h4 class="heading protect">Methods to Reduce Systematic Errors</h4>
+    <ul class="protect">
+        <li>Instrument का Proper Calibration करें।</li>
+        <li>Zero Adjustment करें।</li>
+        <li>Standard Instrument से तुलना करें।</li>
+        <li>Temperature एवं Humidity को नियंत्रित रखें।</li>
+        <li>Correct Measurement Technique अपनाएँ।</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>इनका कारण ज्ञात किया जा सकता है।</li>
+                <li>इन्हें Correct करना संभव होता है।</li>
+                <li>Calibration द्वारा Accuracy बढ़ाई जा सकती है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>यदि समय पर पहचान न हो, तो सभी Readings गलत हो सकती हैं।</li>
+                <li>Engineering Calculations में लगातार Error उत्पन्न हो सकता है।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि Digital Weighing Machine हर बार वास्तविक Weight से 0.5 kg अधिक दिखाती है, तो यह Systematic Error है क्योंकि प्रत्येक Reading में समान Error आ रही है।</p>
+    </div>
+</div>
+
+<!-- PAGE 27 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 27</div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Systematic Error हमेशा एक निश्चित कारण से उत्पन्न होता है। इसलिए इसका कारण पहचानकर Calibration, Adjustment या Correction द्वारा इसे काफी हद तक समाप्त किया जा सकता है。</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Instrumental Errors</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Instrumental Errors are the errors caused due to imperfections or faults in the measuring instrument.</p>
+    <p>Instrumental Errors वे त्रुटियाँ हैं जो Measuring Instrument की खराबी (Fault), घिसाव (Wear), गलत Adjustment या गलत Calibration के कारण उत्पन्न होती हैं।</p>
+
+    <h4 class="heading protect">Causes of Instrumental Errors</h4>
+    <ul class="protect">
+        <li>Improper Calibration</li>
+        <li>Zero Error</li>
+        <li>Wear and Tear of Moving Parts</li>
+        <li>Ageing of Instrument</li>
+        <li>Friction in Moving Parts</li>
+        <li>Loose Connection</li>
+        <li>Manufacturing Defects</li>
+        <li>Hysteresis Effect</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Examples</span>
+        <p><b>Example 1:</b> यदि किसी Ammeter का Pointer Zero पर न होकर 0.2 A पर रुका है, तो प्रत्येक Reading में Error आएगा। यह Instrumental Error है।</p>
+        <p><b>Example 2:</b> यदि Voltmeter की Calibration सही नहीं है और वह हर बार 5 V अधिक Reading दिखाता है, तो यह भी Instrumental Error है।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Instrumental Errors</h4>
+    <ul class="protect">
+        <li>Instrument की खराबी के कारण उत्पन्न होते हैं।</li>
+        <li>बार-बार लगभग समान प्रकार की Error देते हैं।</li>
+        <li>Calibration द्वारा इन्हें कम किया जा सकता है।</li>
+        <li>यह Systematic Error का एक प्रकार है।</li>
+    </ul>
+
+    <h4 class="heading protect">Effects of Instrumental Errors</h4>
+    <ul class="protect">
+        <li>Measurement की Accuracy कम हो जाती है।</li>
+        <li>सभी Readings प्रभावित होती हैं।</li>
+        <li>Experimental Result गलत हो सकता है।</li>
+        <li>Engineering Calculations में Error आ सकता है।</li>
+    </ul>
+
+    <h4 class="heading protect">Methods to Reduce Instrumental Errors</h4>
+    <ul class="protect">
+        <li>Instrument का समय-समय पर Calibration करें।</li>
+        <li>प्रत्येक Measurement से पहले Zero Adjustment करें।</li>
+        <li>Standard Instrument से Comparison करें。</li>
+        <li>पुराने एवं खराब Instruments को Replace करें।</li>
+        <li>नियमित Maintenance करें।</li>
+    </ul>
+</div>
+
+<!-- PAGE 28 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 28</div>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>इनका कारण आसानी से पता लगाया जा सकता है।</li>
+                <li>Calibration एवं Maintenance द्वारा इन्हें कम किया जा सकता है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>सभी Measurements गलत हो सकते हैं।</li>
+                <li>Accuracy एवं Reliability कम हो जाती है।</li>
+                <li>गलत Decision लिए जा सकते हैं।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि किसी Digital Multimeter की Battery कमजोर हो जाती है और वह प्रत्येक Reading गलत दिखाने लगता है, तो यह Instrumental Error कहलाता है।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Instrumental Error मुख्य रूप से Instrument की Condition पर निर्भर करता है। यदि Instrument अच्छी तरह Calibrated, Properly Maintained तथा सही Working Condition में हो, तो इस प्रकार की Error को काफी हद तक कम किया जा सकता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Environmental Errors</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Environmental Errors are the errors caused due to changes in the surrounding environmental conditions such as temperature, humidity, pressure, magnetic field and vibration.</p>
+    <p>Environmental Errors वे त्रुटियाँ हैं जो आसपास के वातावरण (Environment) में परिवर्तन होने के कारण उत्पन्न होती हैं। जैसे— Temperature, Humidity, Pressure, Magnetic Field तथा Vibration आदि।</p>
+
+    <h4 class="heading protect">Causes of Environmental Errors</h4>
+    <ul class="protect">
+        <li>High Temperature</li>
+        <li>Low or High Humidity</li>
+        <li>Atmospheric Pressure</li>
+        <li>External Magnetic Field</li>
+        <li>External Electric Field</li>
+        <li>Dust and Moisture</li>
+        <li>Mechanical Vibration</li>
+        <li>Light and Heat Radiation</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Examples</span>
+        <p><b>Example 1:</b> यदि किसी Ammeter के पास एक शक्तिशाली Magnet रख दिया जाए, तो उसकी Reading बदल सकती है। यह Environmental Error है।</p>
+        <p><b>Example 2:</b> यदि Temperature अधिक होने के कारण Resistance बढ़ जाए और Instrument की Reading बदल जाए, तो यह Environmental Error कहलाता है।</p>
+    </div>
+</div>
+
+<!-- PAGE 29 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 29</div>
+
+    <h4 class="heading protect">Characteristics of Environmental Errors</h4>
+    <ul class="protect">
+        <li>यह बाहरी वातावरण के कारण उत्पन्न होते हैं।</li>
+        <li>Instrument सही होने पर भी Error आ सकता है।</li>
+        <li>Environmental Conditions बदलने पर Error का मान भी बदल सकता है।</li>
+        <li>इन्हें नियंत्रित (Control) किया जा सकता है।</li>
+    </ul>
+
+    <h4 class="heading protect">Effects of Environmental Errors</h4>
+    <ul class="protect">
+        <li>Measurement की Accuracy कम हो जाती है।</li>
+        <li>Instrument की Performance प्रभावित होती है।</li>
+        <li>Experimental Result गलत हो सकता है।</li>
+        <li>Sensitive Instruments अधिक प्रभावित होते हैं।</li>
+    </ul>
+
+    <h4 class="heading protect">Methods to Reduce Environmental Errors</h4>
+    <ul class="protect">
+        <li>Instrument को उचित Temperature पर रखें।</li>
+        <li>Humidity Control करें।</li>
+        <li>Magnetic Shielding का उपयोग करें।</li>
+        <li>Vibration-Free Table पर Instrument रखें।</li>
+        <li>Dust एवं Moisture से Instrument की सुरक्षा करें।</li>
+        <li>Proper Earthing करें।</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>Environmental Condition को नियंत्रित करके Error को काफी कम किया जा सकता है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>सभी Measurements प्रभावित हो सकते हैं।</li>
+                <li>Laboratory एवं Industrial Measurements में Accuracy कम हो सकती है।</li>
+                <li>Sensitive Instruments में Error अधिक होता है।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि Laboratory में Air Conditioner बंद होने से Temperature बढ़ जाता है और उसी कारण Electronic Balance की Reading बदल जाती है, तो यह Environmental Error का उदाहरण है।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Environmental Error का मुख्य कारण Instrument नहीं, बल्कि उसके आसपास का वातावरण होता है। इसलिए Accurate Measurement के लिए हमेशा Controlled Environment में Measurement करना उत्तम माना जाता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Observational Errors</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Observational Errors are the errors caused due to mistakes made by the observer while taking or recording the measurement.</p>
+</div>
+
+<!-- PAGE 30 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 30</div>
+    
+    <p class="protect">Observational Errors वे त्रुटियाँ हैं जो Measurement के समय Observer द्वारा Reading लेने, देखने या लिखने में की गई गलतियों के कारण उत्पन्न होती हैं।</p>
+
+    <h4 class="heading protect">Causes of Observational Errors</h4>
+    <ul class="protect">
+        <li>Parallax Error</li>
+        <li>Wrong Reading of Scale</li>
+        <li>Incorrect Position of Eye</li>
+        <li>Wrong Recording of Reading</li>
+        <li>Improper Use of Instrument</li>
+        <li>Lack of Experience</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Examples</span>
+        <p><b>Example 1:</b> यदि Analog Voltmeter की Reading लेते समय Observer की आँख Pointer के ठीक सामने न होकर दाएँ या बाएँ हो, तो गलत Reading प्राप्त होगी। इसे Parallax Error कहते हैं।</p>
+        <p><b>Example 2:</b> यदि Ammeter की सही Reading 4.8 A है, लेकिन Observer ने गलती से 4.3 A लिख दिया, तो यह Observational Error है।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Observational Errors</h4>
+    <ul class="protect">
+        <li>यह Observer की गलती के कारण उत्पन्न होते हैं।</li>
+        <li>Instrument सही होने पर भी Error हो सकता है।</li>
+        <li>सावधानी रखने पर इन्हें काफी हद तक कम किया जा सकता है।</li>
+        <li>Analog Instruments में यह Error अधिक देखने को मिलता है।</li>
+    </ul>
+
+    <h4 class="heading protect">Effects of Observational Errors</h4>
+    <ul class="protect">
+        <li>Measurement की Accuracy कम हो जाती है।</li>
+        <li>Experimental Result गलत हो सकता है।</li>
+        <li>Engineering Calculations प्रभावित हो सकती हैं।</li>
+        <li>Decision लेने में गलती हो सकती है।</li>
+    </ul>
+
+    <h4 class="heading protect">Methods to Reduce Observational Errors</h4>
+    <ul class="protect">
+        <li>Reading लेते समय आँख को Pointer के ठीक सामने रखें।</li>
+        <li>Mirror Scale Instrument का उपयोग करें।</li>
+        <li>Reading को दो या तीन बार Verify करें।</li>
+        <li>Proper Training प्राप्त करें।</li>
+        <li>जहाँ संभव हो Digital Instrument का उपयोग करें।</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>Proper Practice एवं सावधानी से इस Error को लगभग समाप्त किया जा सकता है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>गलत Reading प्राप्त होती है।</li>
+                <li>Time एवं Resources की हानि हो सकती है।</li>
+                <li>Measurement की Reliability कम हो जाती है।</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE 31 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 31</div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि किसी छात्र ने Analog Ammeter की Reading लेते समय Pointer को तिरछे (Side Angle) से देखा और 3.5 A की जगह 3.8 A लिख दिया, तो यह Observational Error का उदाहरण है।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Observational Error मुख्य रूप से Observer की गलती के कारण होता है। सही Technique, सही Eye Position तथा पर्याप्त Practice द्वारा इस प्रकार की Error को आसानी से कम किया जा सकता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Theoretical Errors</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Theoretical Errors are the errors caused due to incorrect assumptions, approximations or imperfect theories used during measurement.</p>
+    <p>Theoretical Errors वे त्रुटियाँ हैं जो Measurement के समय गलत मान्यताओं (Assumptions), अनुमान (Approximations) अथवा अपूर्ण सिद्धांतों (Imperfect Theories) के कारण उत्पन्न होती हैं।</p>
+
+    <h4 class="heading protect">Causes of Theoretical Errors</h4>
+    <ul class="protect">
+        <li>Wrong Assumptions</li>
+        <li>Approximation in Calculation</li>
+        <li>Imperfect Mathematical Formula</li>
+        <li>Neglecting Small Quantities</li>
+        <li>Simplified Theory</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Examples</span>
+        <p><b>Example 1:</b> यदि किसी Electrical Circuit में Wire Resistance को नगण्य (Negligible) मान लिया जाए, जबकि वास्तव में उसका Resistance मौजूद हो, तो प्राप्त Result में Error आएगा। यह Theoretical Error है।</p>
+        <p><b>Example 2:</b> यदि किसी Formula में Air Resistance को नज़रअंदाज़ कर दिया जाए, जबकि उसका प्रभाव हो रहा हो, तो यह भी Theoretical Error है।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Theoretical Errors</h4>
+    <ul class="protect">
+        <li>यह Theory या Formula की सीमाओं के कारण उत्पन्न होते हैं।</li>
+        <li>Instrument सही होने पर भी Error हो सकता है।</li>
+        <li>अधिक Accurate Theory अपनाने पर इन्हें कम किया जा सकता है।</li>
+        <li>Engineering एवं Scientific Calculations में यह Error देखने को मिलता है।</li>
+    </ul>
+</div>
+
+<!-- PAGE 32 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 32</div>
+
+    <h4 class="heading protect">Effects of Theoretical Errors</h4>
+    <ul class="protect">
+        <li>Final Result गलत हो सकता है।</li>
+        <li>Design एवं Analysis प्रभावित हो सकते हैं।</li>
+        <li>Measurement की Accuracy कम हो जाती है।</li>
+        <li>Engineering Decisions गलत हो सकते हैं।</li>
+    </ul>
+
+    <h4 class="heading protect">Methods to Reduce Theoretical Errors</h4>
+    <ul class="protect">
+        <li>सही एवं Standard Formula का उपयोग करें।</li>
+        <li>अनावश्यक Assumptions से बचें।</li>
+        <li>अधिक Accurate Mathematical Model अपनाएँ।</li>
+        <li>सभी आवश्यक Factors को Calculation में शामिल करें।</li>
+        <li>Standard Theory के अनुसार Measurement करें।</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>Calculation को सरल बनाने के लिए कभी-कभी Approximation उपयोगी होती है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>Approximation अधिक होने पर Error बढ़ जाता है।</li>
+                <li>Final Result वास्तविक मान से अलग हो सकता है।</li>
+                <li>Accuracy कम हो जाती है।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि किसी Electrical Calculation में Connecting Wires का Resistance शून्य (Zero) मान लिया जाए, लेकिन वास्तव में वह 0.5 Ω हो, तो प्राप्त Result में Error आएगा। यह Theoretical Error का उदाहरण है।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Theoretical Error का मुख्य कारण Instrument नहीं, बल्कि प्रयोग की गई Theory, Formula या Assumption होता है। इसलिए अधिक Accurate Theory एवं Standard Formula का उपयोग करके इस प्रकार की Error को कम किया जा सकता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Random Errors</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Random Errors are the errors which occur due to unknown or unpredictable causes. These errors do not follow any fixed pattern and cannot be predicted exactly.</p>
+    <p>Random Errors वे त्रुटियाँ हैं जो अज्ञात (Unknown) या अनिश्चित (Unpredictable) कारणों से उत्पन्न होती हैं। इनका कोई निश्चित Pattern नहीं होता और इन्हें पहले से ठीक-ठीक अनुमानित नहीं किया जा सकता।</p>
+</div>
+
+<!-- PAGE 33 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 33</div>
+
+    <h4 class="heading protect">Causes of Random Errors</h4>
+    <ul class="protect">
+        <li>Small Changes in Temperature</li>
+        <li>Electrical Noise</li>
+        <li>Mechanical Vibration</li>
+        <li>Fluctuation in Power Supply</li>
+        <li>Human Reaction Time</li>
+        <li>Unknown External Disturbances</li>
+    </ul>
+
+    <div class="callout protect">
+        <span class="callout-title">Examples</span>
+        <p><b>Example 1:</b> यदि किसी Digital Voltmeter से एक ही Voltage को पाँच बार मापने पर Reading इस प्रकार मिले—<br>
+        220.1 V<br>219.9 V<br>220.0 V<br>220.2 V<br>219.8 V<br>
+        तो यह Random Error का उदाहरण है क्योंकि Reading हर बार थोड़ी-थोड़ी बदल रही है।</p>
+        <p><b>Example 2:</b> Electronic Balance पर एक ही वस्तु का Weight बार-बार रखने पर 500.0 g, 500.1 g, 499.9 g दिखाई देना भी Random Error है।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Random Errors</h4>
+    <ul class="protect">
+        <li>इनका कोई निश्चित Pattern नहीं होता।</li>
+        <li>इनका सही कारण पहचानना कठिन होता है।</li>
+        <li>प्रत्येक Reading में Error अलग-अलग हो सकता है।</li>
+        <li>इन्हें पूरी तरह समाप्त नहीं किया जा सकता।</li>
+    </ul>
+
+    <h4 class="heading protect">Effects of Random Errors</h4>
+    <ul class="protect">
+        <li>Measurement में थोड़ा-बहुत Variation आता है।</li>
+        <li>Accuracy एवं Precision प्रभावित हो सकती है।</li>
+        <li>Experimental Results में अंतर आ सकता है।</li>
+    </ul>
+
+    <h4 class="heading protect">Methods to Reduce Random Errors</h4>
+    <ul class="protect">
+        <li>Measurement कई बार करें।</li>
+        <li>सभी Readings का Average (Mean Value) निकालें।</li>
+        <li>High Quality Instrument का उपयोग करें।</li>
+        <li>Stable Environment में Measurement करें।</li>
+        <li>Electrical Noise एवं Vibration को कम करें।</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>कई बार Reading लेकर Average निकालने पर इनका प्रभाव काफी कम किया जा सकता है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>Exact Prediction संभव नहीं होता।</li>
+                <li>पूरी तरह समाप्त नहीं किया जा सकता।</li>
+                <li>Sensitive Measurements में Accuracy कम हो सकती है।</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE 34 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 34</div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि किसी Laboratory में Digital Thermometer हर बार Temperature 30.0°C, 30.1°C, 29.9°C दिखाता है, तो यह Random Error का उदाहरण है।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Random Error का कोई निश्चित कारण या Pattern नहीं होता। इसलिए इसे पूरी तरह समाप्त नहीं किया जा सकता, लेकिन बार-बार Measurement लेकर Average Value निकालने से इसका प्रभाव काफी कम किया जा सकता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Limiting Error</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Limiting Error is the maximum permissible error that an instrument is allowed to have according to its specified accuracy.</p>
+    <p>Limiting Error वह अधिकतम स्वीकार्य त्रुटि (Maximum Permissible Error) है, जो किसी Measuring Instrument में उसकी निर्धारित Accuracy के अनुसार अनुमत (Allowed) होती है।</p>
+
+    <div class="formula-box center protect">
+        <span class="red-text" style="font-weight: bold; font-size: 18px;">Limiting Error = (Accuracy Class × Full Scale Value) / 100</span><br>
+        or<br>
+        <span class="red-text" style="font-weight: bold; font-size: 18px;">Limiting Error = ± (Accuracy % × Full Scale Value)</span>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Example 1</span>
+        <p>A Voltmeter has:<br>
+        Full Scale Value = 300 V<br>
+        Accuracy Class = ±1%</p>
+        <p>Limiting Error = (1 × 300) / 100 = <mark>±3 V</mark></p>
+        <p>अर्थात यदि Instrument 297 V से 303 V के बीच Reading दिखाता है, तो वह उसकी Limiting Error के भीतर है।</p>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Example 2</span>
+        <p>An Ammeter has:<br>
+        Full Scale Value = 10 A<br>
+        Accuracy Class = ±2%</p>
+        <p>Limiting Error = (2 × 10) / 100 = <mark>±0.2 A</mark></p>
+        <p>अर्थात Instrument में अधिकतम ±0.2 A तक की Error स्वीकार्य होगी।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Limiting Error</h4>
+    <ul class="protect">
+        <li>यह Instrument की Maximum Allowable Error को दर्शाता है।</li>
+        <li>इसे सामान्यतः Percentage (%) of Full Scale में व्यक्त किया जाता है।</li>
+        <li>Instrument Manufacturer द्वारा निर्धारित किया जाता है।</li>
+        <li>इससे Instrument की Accuracy का अनुमान लगाया जा सकता है।</li>
+    </ul>
+</div>
+
+<!-- PAGE 35 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 35</div>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>Instrument की Quality का पता चलता है।</li>
+                <li>Maximum Error पहले से ज्ञात रहती है।</li>
+                <li>Instrument का सही चयन करने में सहायता मिलती है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>Actual Error हमेशा Limiting Error के बराबर नहीं होती।</li>
+                <li>Full Scale के छोटे Measurement पर Relative Error अधिक हो सकती है।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि किसी Digital Voltmeter पर Accuracy ±0.5% of Full Scale लिखी है और उसका Full Scale 200 V है, तो उसकी Limiting Error होगी—</p>
+        <p>= ±(0.5 × 200) / 100 = ±1 V</p>
+        <p>अर्थात Instrument की Reading में अधिकतम ±1 V तक की Error स्वीकार्य होगी।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Limiting Error Instrument में होने वाली Maximum Allowable Error है। यदि Actual Error, Limiting Error से कम या उसके बराबर है, तो Instrument को सही (Acceptable) माना जाता है।</p>
+    </div>
+
+    <hr class="hand-line">
+
+    <h2 class="heading center protect">Guaranteed Accuracy</h2>
+
+    <h4 class="heading protect">Definition</h4>
+    <p class="protect">Guaranteed Accuracy is the accuracy specified and guaranteed by the manufacturer of a measuring instrument under standard operating conditions.</p>
+    <p>Guaranteed Accuracy वह Accuracy है जिसे किसी Measuring Instrument का निर्माता (Manufacturer) निर्धारित एवं गारंटी (Guarantee) देता है। यदि Instrument को Standard Conditions में उपयोग किया जाए, तो उसकी Error इस सीमा के भीतर रहेगी।</p>
+
+    <h4 class="heading protect">Meaning</h4>
+    <p class="protect">यदि किसी Instrument पर ±1% Accuracy लिखा है, तो Manufacturer यह गारंटी देता है कि Instrument की Error, निर्धारित सीमा (Specified Limit) से अधिक नहीं होगी।</p>
+
+    <div class="formula-box center protect">
+        <span class="red-text" style="font-weight: bold; font-size: 18px;">Guaranteed Accuracy = ± (Specified Accuracy × Full Scale Value) / 100</span>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Example 1</span>
+        <p>A Voltmeter has:<br>Full Scale Value = 500 V<br>Guaranteed Accuracy = ±1%</p>
+        <p>Maximum Guaranteed Error = (1 × 500) / 100 = <mark>±5 V</mark></p>
+        <p>अर्थात Instrument की Reading में अधिकतम ±5 V तक की Error Manufacturer द्वारा Guarantee की गई है।</p>
+    </div>
+</div>
+
+<!-- PAGE 36 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 36</div>
+
+    <div class="callout protect">
+        <span class="callout-title">Example 2</span>
+        <p>An Ammeter has:<br>Full Scale Value = 20 A<br>Guaranteed Accuracy = ±2%</p>
+        <p>Maximum Guaranteed Error = (2 × 20) / 100 = <mark>±0.4 A</mark></p>
+        <p>अर्थात Manufacturer यह गारंटी देता है कि Instrument की Error ±0.4 A से अधिक नहीं होगी।</p>
+    </div>
+
+    <h4 class="heading protect">Characteristics of Guaranteed Accuracy</h4>
+    <ul class="protect">
+        <li>यह Manufacturer द्वारा निर्धारित की जाती है।</li>
+        <li>Standard Operating Conditions पर लागू होती है।</li>
+        <li>Instrument की Quality एवं Reliability को दर्शाती है।</li>
+        <li>सामान्यतः Percentage (%) of Full Scale में लिखी जाती है।</li>
+    </ul>
+
+    <div class="horizontal-flow protect">
+        <div style="flex: 1;">
+            <h4 class="heading">Advantages</h4>
+            <ul>
+                <li>Instrument खरीदने से पहले उसकी Accuracy का पता चल जाता है।</li>
+                <li>Quality की विश्वसनीय जानकारी मिलती है।</li>
+                <li>Engineering एवं Industrial Applications में सही Instrument चुनने में सहायता मिलती है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1;">
+            <h4 class="heading">Disadvantages</h4>
+            <ul>
+                <li>यह केवल Standard Conditions में ही लागू होती है।</li>
+                <li>Temperature, Humidity या Improper Use के कारण Actual Error बढ़ सकती है।</li>
+                <li>समय के साथ Wear and Tear होने पर Accuracy कम हो सकती है।</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="callout protect">
+        <span class="callout-title">Real Life Example</span>
+        <p>यदि किसी Digital Multimeter पर Accuracy ±0.5% of Full Scale लिखा है, तो Manufacturer यह गारंटी देता है कि सही उपयोग करने पर उसकी Error इस सीमा से अधिक नहीं होगी।</p>
+    </div>
+
+    <div class="callout protect" style="border-color: var(--ink-blue);">
+        <span class="callout-title" style="color: var(--ink-blue);">Important Note</span>
+        <p>Guaranteed Accuracy, Manufacturer द्वारा दी गई Accuracy की गारंटी होती है, जबकि Limiting Error उस Accuracy के आधार पर स्वीकार्य अधिकतम Error (Maximum Permissible Error) को दर्शाती है।</p>
+    </div>
+
+    <h4 class="heading protect">Difference Between Limiting Error and Guaranteed Accuracy</h4>
+    <div class="horizontal-flow protect" style="align-items: flex-start;">
+        <div style="flex: 1; border: 1px solid var(--ink-dark); padding: 10px; margin: 5px; border-radius: 5px;">
+            <h4 class="heading center" style="margin-top:0;">Limiting Error</h4>
+            <ul>
+                <li>Maximum Permissible Error होता है।</li>
+                <li>Formula द्वारा Calculate किया जाता है।</li>
+                <li>Instrument की Allowable Error Limit बताता है।</li>
+            </ul>
+        </div>
+        <div style="flex: 1; border: 1px solid var(--ink-dark); padding: 10px; margin: 5px; border-radius: 5px;">
+            <h4 class="heading center" style="margin-top:0;">Guaranteed Accuracy</h4>
+            <ul>
+                <li>Manufacturer द्वारा Guarantee की जाती है।</li>
+                <li>Instrument की Declared Accuracy बताती है।</li>
+                <li>इसी के आधार पर Limiting Error निर्धारित किया जाता है।</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- PAGE 37 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 37</div>
+
+    <h1 class="heading center protect">UNIT–1 FINAL REVISION<br><span style="font-size: 18px;">(VVI SHORT NOTES)</span></h1>
+
+    <div class="protect">
+        <h4 class="heading">1. Measurement</h4>
+        <p>Measurement is the process of comparing an unknown quantity with a known standard quantity.</p>
+        <p>मापन (Measurement) किसी अज्ञात राशि की तुलना किसी ज्ञात मानक (Standard) से करने की प्रक्रिया है।</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">2. Generalized Measurement System</h4>
+        <ul>
+            <li>Sensor</li>
+            <li>Variable Conversion Element</li>
+            <li>Variable Manipulation Element</li>
+            <li>Data Transmission Element</li>
+            <li>Data Presentation Element</li>
+        </ul>
+        <p class="red-text" style="font-weight: bold;">क्रम:</p>
+        <div class="diagram-container">
+            <p class="blue-text">Measured Quantity</p>
+            <div class="arrow-down">↓</div>
+            <p class="blue-text">Sensor</p>
+            <div class="arrow-down">↓</div>
+            <p class="blue-text">Variable Conversion Element</p>
+            <div class="arrow-down">↓</div>
+            <p class="blue-text">Variable Manipulation Element</p>
+            <div class="arrow-down">↓</div>
+            <p class="blue-text">Data Transmission Element</p>
+            <div class="arrow-down">↓</div>
+            <p class="blue-text">Data Presentation Element (Display)</p>
+        </div>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">3. Torques</h4>
+        <p><span class="red-text" style="font-weight: bold;">Deflecting Torque (Td)</span> : Pointer को घुमाता है।</p>
+        <p><span class="red-text" style="font-weight: bold;">Controlling Torque (Tc)</span> : Pointer को सही स्थान पर रोकता है।</p>
+        <p><span class="red-text" style="font-weight: bold;">Damping Torque</span> : Pointer के Oscillation को समाप्त करता है।</p>
+        <p class="blue-text" style="font-weight: bold;">Condition of Equilibrium : <mark>Td = Tc</mark></p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">4. Static Characteristics</h4>
+        <div class="horizontal-flow" style="justify-content: flex-start; gap: 20px;">
+            <ul>
+                <li>Accuracy</li>
+                <li>Precision</li>
+                <li>Resolution</li>
+            </ul>
+            <ul>
+                <li>Tolerance</li>
+                <li>Sensitivity</li>
+                <li>Repeatability</li>
+            </ul>
+        </div>
+        <hr class="hand-line">
+    </div>
+</div>
+
+<!-- PAGE 38 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 38</div>
+
+    <div class="protect">
+        <h4 class="heading">5. Accuracy</h4>
+        <p>Measured Value जितना True Value के निकट होगा, Accuracy उतनी अधिक होगी।</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">6. Precision</h4>
+        <p>बार-बार समान परिस्थितियों में लगभग समान Reading प्राप्त होना।</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">7. Resolution</h4>
+        <p>Instrument द्वारा Detect किया जाने वाला सबसे छोटा परिवर्तन।</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">8. Tolerance</h4>
+        <p>Maximum Allowable Deviation</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">9. Sensitivity</h4>
+        <p>Sensitivity = Change in Output / Change in Input</p>
+        <p>Sensitivity = ΔOutput / ΔInput</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">10. Repeatability</h4>
+        <p>Same Conditions में बार-बार लगभग समान Reading प्राप्त होना।</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">11. Errors</h4>
+        <p><mark>Error = True Value − Measured Value</mark></p>
+        <p class="red-text" style="font-weight: bold;">मुख्य प्रकार—</p>
+        <ul>
+            <li>Gross Error</li>
+            <li>Systematic Error</li>
+            <li>Random Error</li>
+        </ul>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">12. Systematic Errors के प्रकार</h4>
+        <ul>
+            <li>Instrumental Error</li>
+            <li>Environmental Error</li>
+            <li>Observational Error</li>
+            <li>Theoretical Error</li>
+        </ul>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">13. Gross Error</h4>
+        <p>Human Mistake के कारण होने वाली Error।</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">14. Instrumental Error</h4>
+        <p>Instrument की खराबी, Zero Error या Calibration के कारण होने वाली Error।</p>
+        <hr class="hand-line">
+    </div>
+</div>
+
+<!-- PAGE 39 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 39</div>
+
+    <div class="protect">
+        <h4 class="heading">15. Environmental Error</h4>
+        <p>Temperature, Humidity, Pressure, Magnetic Field आदि के कारण होने वाली Error।</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">16. Observational Error</h4>
+        <p>Observer द्वारा Reading लेने में की गई गलती के कारण होने वाली Error।</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">17. Theoretical Error</h4>
+        <p>Wrong Assumption, Approximation या Imperfect Theory के कारण होने वाली Error।</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">18. Random Error</h4>
+        <p>Unknown एवं Unpredictable कारणों से होने वाली Error।</p>
+        <p class="blue-text" style="font-weight: bold;">इसे कम करने का सर्वोत्तम तरीका—</p>
+        <p>Repeated Measurement लेकर Average Value निकालना।</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">19. Limiting Error</h4>
+        <p>Maximum Permissible Error</p>
+        <p class="blue-text" style="font-weight: bold;">Formula :</p>
+        <p>Limiting Error = (Accuracy Class × Full Scale Value) / 100</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">20. Guaranteed Accuracy</h4>
+        <p>Manufacturer द्वारा दी गई Accuracy की Guarantee.</p>
+        <p class="blue-text" style="font-weight: bold;">Formula :</p>
+        <p>Guaranteed Accuracy = ± (Specified Accuracy × Full Scale Value) / 100</p>
+        <hr class="hand-line">
+    </div>
+
+    <div class="protect">
+        <h4 class="heading">21. Most Important Formulas</h4>
+        <ul style="list-style-type: none; margin-left: 0;">
+            <li style="margin-bottom: 10px;">Error = True Value − Measured Value</li>
+            <li style="margin-bottom: 10px;">Sensitivity = ΔOutput / ΔInput</li>
+            <li style="margin-bottom: 10px;">Limiting Error = (Accuracy Class × Full Scale) / 100</li>
+            <li style="margin-bottom: 10px;">Guaranteed Accuracy = ± (Specified Accuracy × Full Scale) / 100</li>
+        </ul>
+        <hr class="hand-line">
+    </div>
+</div>
+
+<!-- PAGE 40 -->
+<div class="notebook-page">
+    <div class="binding"></div>
+    <div class="page-number">PAGE – 40</div>
+
+    <div class="protect">
+        <h4 class="heading">22. Most Important VVI Questions</h4>
+        <ul>
+            <li>Define Measurement.</li>
+            <li>Draw and explain the Generalized Measurement System.</li>
+            <li>Explain Deflecting Torque.</li>
+            <li>Explain Controlling Torque.</li>
+            <li>Explain Damping Torque.</li>
+            <li>Define Accuracy and Precision.</li>
+            <li>Differentiate Accuracy and Precision.</li>
+            <li>Explain Resolution.</li>
+            <li>Define Tolerance.</li>
+            <li>Explain Sensitivity.</li>
+            <li>Define Repeatability.</li>
+            <li>What is Error?</li>
+            <li>Classify Errors.</li>
+            <li>Explain Gross Error.</li>
+            <li>Explain Instrumental Error.</li>
+            <li>Explain Environmental Error.</li>
+            <li>Explain Observational Error.</li>
+            <li>Explain Theoretical Error.</li>
+            <li>Explain Random Error.</li>
+            <li>Define Limiting Error.</li>
+            <li>Define Guaranteed Accuracy.</li>
+        </ul>
+        <hr class="hand-line">
+    </div>
+
+    <h2 class="heading center protect" style="margin-top: 50px; font-size: 28px;">★ UNIT–1 COMPLETED ★</h2>
+
+</div>
+
+</body>
+</html>
