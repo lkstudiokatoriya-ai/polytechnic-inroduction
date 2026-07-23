@@ -242,7 +242,11 @@
 }
 
 body{
-    overflow:hidden;
+    overflow-x:hidden;
+    overflow-y:auto;
+    margin:0;
+    padding:0;
+
     user-select:none;
     -webkit-user-select:none;
     -webkit-touch-callout:none;
@@ -363,6 +367,11 @@ body{
 
 #notesContainer{
     display:none;
+    width:100%;
+    min-height:100vh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    box-sizing:border-box;
 }
 
 /* Rotate Screen */
