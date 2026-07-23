@@ -230,10 +230,257 @@
             page-break-after: always;
         }
     }
+    /* ===========================
+   WELCOME SCREEN CSS
+=========================== */
+
+:root{
+    --primary:#2563eb;
+    --secondary:#0f172a;
+    --glass:rgba(255,255,255,.08);
+    --border:rgba(255,255,255,.2);
+}
+
+body{
+    overflow:hidden;
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-touch-callout:none;
+    touch-action:manipulation;
+}
+
+/* Welcome Screen */
+
+#welcomeScreen{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    background:linear-gradient(135deg,#0f172a,#1e3a8a,#2563eb);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:999999;
+    padding:20px;
+}
+
+.welcome-box{
+    width:100%;
+    max-width:420px;
+    background:var(--glass);
+    backdrop-filter:blur(20px);
+    border:1px solid var(--border);
+    border-radius:25px;
+    padding:30px;
+    text-align:center;
+    color:#fff;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+    animation:popup .45s ease;
+}
+
+@keyframes popup{
+    from{
+        transform:scale(.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.welcome-logo{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:#fff;
+    color:#2563eb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    margin:auto;
+    margin-bottom:20px;
+}
+
+.welcome-box h1{
+    color:#fff;
+    font-size:28px;
+    margin:10px 0;
+}
+
+.welcome-box h2{
+    color:#FFD54F;
+    font-size:22px;
+    margin:10px 0;
+}
+
+.welcome-box p{
+    color:#ddd;
+    font-size:16px;
+    margin-top:15px;
+    line-height:1.6;
+}
+
+/* Buttons */
+
+.button-group{
+    display:flex;
+    gap:15px;
+    margin-top:30px;
+}
+
+.button-group button{
+    flex:1;
+    border:none;
+    padding:15px;
+    border-radius:14px;
+    font-size:17px;
+    cursor:pointer;
+    font-weight:700;
+    transition:.3s;
+}
+
+#continueBtn{
+    background:#22c55e;
+    color:#fff;
+}
+
+#continueBtn:hover{
+    transform:translateY(-3px);
+}
+
+#cancelBtn{
+    background:#ef4444;
+    color:#fff;
+}
+
+#cancelBtn:hover{
+    transform:translateY(-3px);
+}
+
+/* Notes Hide */
+
+#notesContainer{
+    display:none;
+}
+
+/* Rotate Screen */
+
+#rotateScreen{
+    position:fixed;
+    inset:0;
+    background:#000;
+    color:#fff;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    z-index:999998;
+    text-align:center;
+    padding:20px;
+}
+
+.rotate-icon{
+    font-size:80px;
+    animation:rotatePhone 1.2s infinite;
+}
+
+@keyframes rotatePhone{
+    0%{
+        transform:rotate(0deg);
+    }
+    50%{
+        transform:rotate(90deg);
+    }
+    100%{
+        transform:rotate(0deg);
+    }
+}
+
+#rotateScreen h2{
+    color:#fff;
+    margin-top:20px;
+}
+
+#rotateScreen p{
+    color:#ccc;
+    font-size:17px;
+}
+
+/* Mobile */
+
+@media(max-width:768px){
+
+    .welcome-box{
+        padding:25px;
+    }
+
+    .button-group{
+        flex-direction:column;
+    }
+
+    }
 </style>
 </head>
 <body>
+<!-- =========================
+     WELCOME SCREEN
+========================= -->
 
+<div id="welcomeScreen">
+
+    <div class="welcome-box">
+
+        <div class="welcome-logo">📘</div>
+
+        <h1>Electrical Measurement & Instrumentation</h1>
+
+        <h2>UNIT – 1</h2>
+
+        <p>
+            Best Experience in <b>Landscape Mode</b><br>
+            and <b>Full Screen</b>.
+        </p>
+
+        <div class="button-group">
+
+            <button id="continueBtn">
+                Continue
+            </button>
+
+            <button id="cancelBtn">
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     ROTATE SCREEN
+========================= -->
+
+<div id="rotateScreen">
+
+    <div class="rotate-icon">📱</div>
+
+    <h2>Rotate Your Device</h2>
+
+    <p>
+        Please rotate your phone to
+        <b>Landscape Mode</b>.
+    </p>
+
+</div>
+
+<!-- =========================
+     NOTES CONTAINER START
+========================= -->
+
+<div id="notesContainer">
 <!-- PAGE 1 -->
 <div class="notebook-page">
     <div class="binding"></div>
@@ -2629,4 +2876,103 @@
 </div>
 
 </body>
+     <script>
+// Elements
+const welcomeScreen = document.getElementById("welcomeScreen");
+const rotateScreen = document.getElementById("rotateScreen");
+const notesContainer = document.getElementById("notesContainer");
+
+const continueBtn = document.getElementById("continueBtn");
+const cancelBtn = document.getElementById("cancelBtn");
+
+// Continue Button
+continueBtn.addEventListener("click", async () => {
+
+    // Show Notes
+    welcomeScreen.style.display = "none";
+    notesContainer.style.display = "block";
+
+    // Full Screen
+    try {
+        if (!document.fullscreenElement) {
+            await document.documentElement.requestFullscreen();
+        }
+    } catch (e) {
+        console.log("Fullscreen not supported.");
+    }
+
+    // Landscape Lock
+    try {
+        if (screen.orientation && screen.orientation.lock) {
+            await screen.orientation.lock("landscape");
+        }
+    } catch (e) {
+        console.log("Landscape lock not supported.");
+    }
+
+    checkOrientation();
+});
+
+// Cancel Button
+cancelBtn.addEventListener("click", () => {
+
+    if (history.length > 1) {
+        history.back();
+    } else {
+        window.close();
+    }
+
+});
+
+// Orientation Check
+function checkOrientation() {
+
+    if (window.innerHeight > window.innerWidth) {
+
+        rotateScreen.style.display = "flex";
+        notesContainer.style.display = "none";
+
+    } else {
+
+        rotateScreen.style.display = "none";
+        notesContainer.style.display = "block";
+
+    }
+
+}
+
+// Orientation Change
+window.addEventListener("resize", checkOrientation);
+window.addEventListener("orientationchange", checkOrientation);
+
+// Fullscreen Exit
+document.addEventListener("fullscreenchange", () => {
+
+    if (!document.fullscreenElement) {
+        welcomeScreen.style.display = "flex";
+        notesContainer.style.display = "none";
+    }
+
+});
+
+// Disable Right Click
+document.addEventListener("contextmenu", e => e.preventDefault());
+
+// Disable Some Shortcut Keys
+document.addEventListener("keydown", (e) => {
+
+    if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && ["I","J","C"].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key.toUpperCase() === "U")
+    ) {
+        e.preventDefault();
+    }
+
+});
+
+// Initial Check
+checkOrientation();
+
+    </script>
 </html>
